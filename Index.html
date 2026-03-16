@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madrassa Online Islam Moçambique - 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #064e3b;
+            --accent-gold: #d4af37;
+            --bg-cream: #fdfbf7;
+            --text-dark: #1f2937;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Fundo com padrão geométrico islâmico sutil */
+        .islamic-bg {
+            background-color: var(--bg-cream);
+            background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.05'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.444 15.556c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Header Premium */
+        .header {
+            background: linear-gradient(rgba(6, 78, 59, 0.95), rgba(6, 78, 59, 0.95)), 
+                        url('https://www.transparenttextures.com/patterns/arabesque.png');
+            color: var(--white);
+            padding: 4rem 1rem;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-gold);
+            clip-path: ellipse(150% 100% at 50% 0%);
+        }
+
+        .header h1 {
+            font-family: 'Amiri', serif;
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        /* Countdown Style */
+        .timer-container {
+            background: var(--white);
+            max-width: 600px;
+            margin: -30px auto 2rem;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            border: 1px solid var(--accent-gold);
+        }
+
+        .timer-unit {
+            text-align: center;
+        }
+
+        .timer-unit span {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .timer-unit label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #666;
+        }
+
+        /* Botão Principal Estilizado */
+        .cta-container {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .btn-enroll {
+            background: linear-gradient(135deg, var(--accent-gold), #b8860b);
+            color: var(--primary-green);
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-enroll:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.6);
+        }
+
+        /* Accordion Grid */
+        .info-grid {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .acc-item {
+            background: var(--white);
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            transition: 0.3s;
+        }
+
+        .acc-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: none;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary-green);
+            text-align: left;
+        }
+
+        .acc-btn:hover {
+            background: #f9fafb;
+        }
+
+        .acc-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            background: #fafafa;
+        }
+
+        .acc-body {
+            padding: 1.5rem;
+            border-top: 1px dashed var(--accent-gold);
+        }
+
+        .acc-item.active .acc-content {
+            max-height: 1000px;
+        }
+
+        .acc-item.active .icon-plus::before {
+            content: '−';
+        }
+
+        .icon-plus::before {
+            content: '+';
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+        }
+
+        /* Listas Internas */
+        .level-card {
+            background: white;
+            padding: 1rem;
+            border-left: 4px solid var(--accent-gold);
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        ul { list-style: none; }
+        ul li { margin-bottom: 8px; position: relative; padding-left: 25px; }
+        ul li::before {
+            content: '⭐';
+            position: absolute;
+            left: 0;
+            font-size: 0.8rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            margin: 5% auto;
+            border-radius: 20px;
+            overflow: hidden;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn { from { transform: translateY(-50px); } to { transform: translateY(0); } }
+
+        .modal-header {
+            background: var(--primary-green);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .modal-body { padding: 2rem; }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .payment-box {
+            background: #fff9e6;
+            border: 1px solid var(--accent-gold);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body class="islamic-bg">
+
+    <header class="header">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🕌</div>
+        <h1>Islam Moçambique</h1>
+        <p style="font-family: 'Amiri', serif; font-size: 1.4rem; color: var(--accent-gold);">Madrassa Online - Inscrições Abertas</p>
+    </header>
+
+    <div class="timer-container" id="timer">
+        <div class="timer-unit"><span id="days">00</span><label>Dias</label></div>
+        <div class="timer-unit"><span id="hours">00</span><label>Horas</label></div>
+        <div class="timer-unit"><span id="minutes">00</span><label>Minutos</label></div>
+        <div class="timer-unit"><span id="seconds">00</span><label>Segundos</label></div>
+    </div>
+
+    <div class="cta-container">
+        <p style="margin-bottom: 1rem; color: var(--primary-green); font-weight: 600;">Início das aulas: 06 de Abril</p>
+        <button class="btn-enroll" onclick="toggleModal(true)">✍️ Fazer Inscrição Agora</button>
+    </div>
+
+    <main class="info-grid">
+        <div class="acc-item">
+            <button class="acc-btn" onclick="toggleAcc(this)">
+                <span>📚 Níveis e Currículo</span>
+                <span class="icon-plus"></span>
+            </button>
+            <div class="acc-content">
+                <div class="acc-body">
+                    <div class="level-card">
+                        <strong>Nível 1 (Iniciante):</strong>
+                        <ul>
+                            <li>Alfabeto Árabe e Leitura básica</li>
+                            <li>Pequenas Suratas e Duãs diárias</li>
+                            <li>Básico de Wudu e Salat</li>
+                        </ul>
+                    </div>
+                    <div class="level-card">
+                        <strong>Nível 2 & 3 (Avançado):</strong>
+                        <ul>
+                            <li>Tajwid (Regras de Pronúncia)</li>
+                            <li>Memorização e Tafsir</li>
+                            <li>Hadith e Aqidah (Crença)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="acc-item">
+            <button class="acc-btn" onclick="toggleAcc(this)">
+                <span>📜 Certificação e Recibos</span>
+                <span class="icon-plus"></span>
+            </button>
+            <div class="acc-content">
+                <div class="acc-body">
+                    <p>Garantimos total transparência e reconhecimento:</p><br>
+                    <ul>
+                        <li>Recibos digitais após cada pagamento.</li>
+                        <li>Certificado oficial ao concluir o nível.</li>
+                        <li>Entrega física (Maputo) ou digital (outras províncias).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="acc-item">
+            <button class="acc-btn" onclick="toggleAcc(this)">
+                <span>💰 Valor e Manutenção</span>
+                <span class="icon-plus"></span>
+            </button>
+            <div class="acc-content">
+                <div class="acc-body">
+                    <p><strong>Contribuição: 100 MTN</strong></p><br>
+                    <p style="font-size: 0.9rem; color: #555;">Este valor não é uma "venda de conhecimento", mas sim uma ajuda de custo para:</p><br>
+                    <ul>
+                        <li>Manutenção de plataformas e internet.</li>
+                        <li>Preparação de materiais didáticos.</li>
+                        <li>Tempo dedicado pelos professores à correção individual.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="enrollModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Ficha de Inscrição</h2>
+            </div>
+            <div class="modal-body">
+                <form id="regForm">
+                    <label>Nome Completo</label>
+                    <input type="text" id="nome" required placeholder="Seu nome">
+                    
+                    <label>Contacto WhatsApp</label>
+                    <input type="tel" id="zap" required placeholder="8x xxx xxxx">
+                    
+                    <label>Nível</label>
+                    <select id="selNivel">
+                        <option>Nível 1 - Iniciante</option>
+                        <option>Nível 2 - Intermediário</option>
+                        <option>Nível 3 - Avançado</option>
+                    </select>
+
+                    <div class="payment-box">
+                        <p><strong>Pagamento (100 MTN):</strong></p>
+                        <p>📲 M-Pesa: 841153418 (Agira Muquila)</p>
+                        <p>📲 E-Mola: 866186976 (Agira Muquila)</p>
+                    </div>
+
+                    <button type="button" onclick="sendWhatsApp()" class="btn-enroll" style="width:100%; margin-top:1rem;">Concluir no WhatsApp</button>
+                    <button type="button" onclick="toggleModal(false)" style="width:100%; background:none; border:none; margin-top:10px; cursor:pointer; color:#888;">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Madrassa Online Islam Moçambique</p>
+        <p><em>"O melhor de vós é aquele que aprende o Alcorão e o ensina."</em></p>
+    </footer>
+
+    <script>
+        // Lógica do Accordion
+        function toggleAcc(btn) {
+            const item = btn.parentElement;
+            const isActive = item.classList.contains('active');
+            
+            // Fecha todos antes de abrir o novo
+            document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('active'));
+            
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
+
+        // Countdown
+        function updateTimer() {
+            const target = new Date('April 6, 2026 00:00:00').getTime();
+            const now = new Date().getTime();
+            const diff = target - now;
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d;
+            document.getElementById('hours').innerText = h;
+            document.getElementById('minutes').innerText = m;
+            document.getElementById('seconds').innerText = s;
+        }
+        setInterval(updateTimer, 1000);
+
+        // Modal
+        function toggleModal(show) {
+            document.getElementById('enrollModal').style.display = show ? 'block' : 'none';
+        }
+
+        // WhatsApp integration
+        function sendWhatsApp() {
+            const nome = document.getElementById('nome').value;
+            const zap = document.getElementById('zap').value;
+            const nivel = document.getElementById('selNivel').value;
+            
+            if(!nome || !zap) return alert("Por favor, preencha os dados.");
+
+            const msg = `Assalamu Alaikum! Gostaria de confirmar minha inscrição na Madrassa.%0A%0A*Nome:* ${nome}%0A*Contacto:* ${zap}%0A*Nível:* ${nivel}%0A%0AEstou enviando o comprovativo de 100 MTN em anexo.`;
+            window.open(`https://wa.me/258841153418?text=${msg}`);
+        }
+    </script>
+</body>
+</html>
