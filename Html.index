@@ -14,26 +14,15 @@
             --white: #ffffff;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
-        body {
-            background-color: var(--bg-cream);
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
+        body { background-color: var(--bg-cream); color: var(--text-dark); line-height: 1.6; }
 
-        /* Fundo com padrão geométrico islâmico sutil */
         .islamic-bg {
             background-color: var(--bg-cream);
             background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.05'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.444 15.556c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
-        /* Header Premium */
         .header {
             background: linear-gradient(rgba(6, 78, 59, 0.95), rgba(6, 78, 59, 0.95)), 
                         url('https://www.transparenttextures.com/patterns/arabesque.png');
@@ -44,14 +33,8 @@
             clip-path: ellipse(150% 100% at 50% 0%);
         }
 
-        .header h1 {
-            font-family: 'Amiri', serif;
-            font-size: 2.8rem;
-            margin-bottom: 0.5rem;
-            letter-spacing: 1px;
-        }
+        .header h1 { font-family: 'Amiri', serif; font-size: 2.8rem; margin-bottom: 0.5rem; }
 
-        /* Countdown Style */
         .timer-container {
             background: var(--white);
             max-width: 600px;
@@ -64,28 +47,11 @@
             border: 1px solid var(--accent-gold);
         }
 
-        .timer-unit {
-            text-align: center;
-        }
+        .timer-unit { text-align: center; }
+        .timer-unit span { display: block; font-size: 1.5rem; font-weight: 700; color: var(--primary-green); }
+        .timer-unit label { font-size: 0.7rem; color: #666; }
 
-        .timer-unit span {
-            display: block;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-green);
-        }
-
-        .timer-unit label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: #666;
-        }
-
-        /* Botão Principal Estilizado */
-        .cta-container {
-            text-align: center;
-            margin: 3rem 0;
-        }
+        .cta-container { text-align: center; margin: 3rem 0; }
 
         .btn-enroll {
             background: linear-gradient(135deg, var(--accent-gold), #b8860b);
@@ -101,144 +67,29 @@
             text-transform: uppercase;
         }
 
-        .btn-enroll:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.6);
-        }
+        .btn-enroll:hover { transform: scale(1.05); }
 
-        /* Accordion Grid */
-        .info-grid {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
+        .info-grid { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+        .acc-item { background: var(--white); margin-bottom: 1rem; border-radius: 12px; border: 1px solid #eee; overflow: hidden; }
+        .acc-btn { width: 100%; padding: 1.2rem; background: none; border: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; color: var(--primary-green); }
+        .acc-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; background: #fafafa; }
+        .acc-body { padding: 1.5rem; border-top: 1px dashed var(--accent-gold); }
+        .acc-item.active .acc-content { max-height: 1000px; }
 
-        .acc-item {
-            background: var(--white);
-            margin-bottom: 1rem;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #eee;
-            transition: 0.3s;
-        }
-
-        .acc-btn {
-            width: 100%;
-            padding: 1.2rem;
-            background: none;
-            border: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: var(--primary-green);
-            text-align: left;
-        }
-
-        .acc-btn:hover {
-            background: #f9fafb;
-        }
-
-        .acc-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out;
-            background: #fafafa;
-        }
-
-        .acc-body {
-            padding: 1.5rem;
-            border-top: 1px dashed var(--accent-gold);
-        }
-
-        .acc-item.active .acc-content {
-            max-height: 1000px;
-        }
-
-        .acc-item.active .icon-plus::before {
-            content: '−';
-        }
-
-        .icon-plus::before {
-            content: '+';
-            font-size: 1.5rem;
-            color: var(--accent-gold);
-        }
-
-        /* Listas Internas */
-        .level-card {
-            background: white;
-            padding: 1rem;
-            border-left: 4px solid var(--accent-gold);
-            margin-bottom: 10px;
-            border-radius: 4px;
-        }
-
+        .level-card { background: white; padding: 1rem; border-left: 4px solid var(--accent-gold); margin-bottom: 10px; border-radius: 4px; }
         ul { list-style: none; }
         ul li { margin-bottom: 8px; position: relative; padding-left: 25px; }
-        ul li::before {
-            content: '⭐';
-            position: absolute;
-            left: 0;
-            font-size: 0.8rem;
-        }
+        ul li::before { content: '⭐'; position: absolute; left: 0; font-size: 0.8rem; }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 4rem 1rem;
-            color: #666;
-            font-size: 0.9rem;
-        }
+        footer { text-align: center; padding: 4rem 1rem; color: #666; font-size: 0.9rem; }
 
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 500px;
-            margin: 5% auto;
-            border-radius: 20px;
-            overflow: hidden;
-            animation: slideIn 0.3s ease;
-        }
-
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; backdrop-filter: blur(5px); }
+        .modal-content { background: white; width: 90%; max-width: 500px; margin: 5% auto; border-radius: 20px; overflow: hidden; animation: slideIn 0.3s ease; }
         @keyframes slideIn { from { transform: translateY(-50px); } to { transform: translateY(0); } }
-
-        .modal-header {
-            background: var(--primary-green);
-            color: white;
-            padding: 1.5rem;
-            text-align: center;
-        }
-
+        .modal-header { background: var(--primary-green); color: white; padding: 1.5rem; text-align: center; }
         .modal-body { padding: 2rem; }
-
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-
-        .payment-box {
-            background: #fff9e6;
-            border: 1px solid var(--accent-gold);
-            padding: 1rem;
-            border-radius: 10px;
-            margin-top: 1rem;
-        }
+        input, select { width: 100%; padding: 12px; margin: 10px 0 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .payment-box { background: #fff9e6; border: 1px solid var(--accent-gold); padding: 1rem; border-radius: 10px; margin-top: 1rem; }
     </style>
 </head>
 <body class="islamic-bg">
@@ -265,7 +116,7 @@
         <div class="acc-item">
             <button class="acc-btn" onclick="toggleAcc(this)">
                 <span>📚 Níveis e Currículo</span>
-                <span class="icon-plus"></span>
+                <span style="color:var(--accent-gold)">+</span>
             </button>
             <div class="acc-content">
                 <div class="acc-body">
@@ -274,34 +125,8 @@
                         <ul>
                             <li>Alfabeto Árabe e Leitura básica</li>
                             <li>Pequenas Suratas e Duãs diárias</li>
-                            <li>Básico de Wudu e Salat</li>
                         </ul>
                     </div>
-                    <div class="level-card">
-                        <strong>Nível 2 & 3 (Avançado):</strong>
-                        <ul>
-                            <li>Tajwid (Regras de Pronúncia)</li>
-                            <li>Memorização e Tafsir</li>
-                            <li>Hadith e Aqidah (Crença)</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="acc-item">
-            <button class="acc-btn" onclick="toggleAcc(this)">
-                <span>📜 Certificação e Recibos</span>
-                <span class="icon-plus"></span>
-            </button>
-            <div class="acc-content">
-                <div class="acc-body">
-                    <p>Garantimos total transparência e reconhecimento:</p><br>
-                    <ul>
-                        <li>Recibos digitais após cada pagamento.</li>
-                        <li>Certificado oficial ao concluir o nível.</li>
-                        <li>Entrega física (Maputo) ou digital (outras províncias).</li>
-                    </ul>
                 </div>
             </div>
         </div>
@@ -309,16 +134,14 @@
         <div class="acc-item">
             <button class="acc-btn" onclick="toggleAcc(this)">
                 <span>💰 Valor e Manutenção</span>
-                <span class="icon-plus"></span>
+                <span style="color:var(--accent-gold)">+</span>
             </button>
             <div class="acc-content">
                 <div class="acc-body">
                     <p><strong>Contribuição: 100 MTN</strong></p><br>
-                    <p style="font-size: 0.9rem; color: #555;">Este valor não é uma "venda de conhecimento", mas sim uma ajuda de custo para:</p><br>
                     <ul>
                         <li>Manutenção de plataformas e internet.</li>
                         <li>Preparação de materiais didáticos.</li>
-                        <li>Tempo dedicado pelos professores à correção individual.</li>
                     </ul>
                 </div>
             </div>
@@ -327,9 +150,7 @@
 
     <div id="enrollModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Ficha de Inscrição</h2>
-            </div>
+            <div class="modal-header"><h2>Ficha de Inscrição</h2></div>
             <div class="modal-body">
                 <form id="regForm">
                     <label>Nome Completo</label>
@@ -349,6 +170,8 @@
                         <p><strong>Pagamento (100 MTN):</strong></p>
                         <p>📲 M-Pesa: 841153418 (Agira Muquila)</p>
                         <p>📲 E-Mola: 866186976 (Agira Muquila)</p>
+                        <hr style="margin: 10px 0; border: 0; border-top: 1px solid #d4af3733;">
+                        <p style="font-size: 0.85rem; color: #666;">⚠️ Envie o comprovativo para o número abaixo após clicar no botão.</p>
                     </div>
 
                     <button type="button" onclick="sendWhatsApp()" class="btn-enroll" style="width:100%; margin-top:1rem;">Concluir no WhatsApp</button>
@@ -364,52 +187,38 @@
     </footer>
 
     <script>
-        // Lógica do Accordion
         function toggleAcc(btn) {
             const item = btn.parentElement;
             const isActive = item.classList.contains('active');
-            
-            // Fecha todos antes de abrir o novo
             document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('active'));
-            
-            if (!isActive) {
-                item.classList.add('active');
-            }
+            if (!isActive) item.classList.add('active');
         }
 
-        // Countdown
         function updateTimer() {
             const target = new Date('April 6, 2026 00:00:00').getTime();
             const now = new Date().getTime();
             const diff = target - now;
-
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-            document.getElementById('days').innerText = d;
-            document.getElementById('hours').innerText = h;
-            document.getElementById('minutes').innerText = m;
-            document.getElementById('seconds').innerText = s;
+            if (diff < 0) return;
+            document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+            document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById('minutes').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('seconds').innerText = Math.floor((diff % (1000 * 60)) / 1000);
         }
         setInterval(updateTimer, 1000);
 
-        // Modal
-        function toggleModal(show) {
-            document.getElementById('enrollModal').style.display = show ? 'block' : 'none';
-        }
+        function toggleModal(show) { document.getElementById('enrollModal').style.display = show ? 'block' : 'none'; }
 
-        // WhatsApp integration
         function sendWhatsApp() {
             const nome = document.getElementById('nome').value;
             const zap = document.getElementById('zap').value;
             const nivel = document.getElementById('selNivel').value;
             
-            if(!nome || !zap) return alert("Por favor, preencha os dados.");
+            if(!nome || !zap) return alert("Por favor, preencha os seus dados.");
 
-            const msg = `Assalamu Alaikum! Gostaria de confirmar minha inscrição na Madrassa.%0A%0A*Nome:* ${nome}%0A*Contacto:* ${zap}%0A*Nível:* ${nivel}%0A%0AEstou enviando o comprovativo de 100 MTN em anexo.`;
-            window.open(`https://wa.me/258841153418?text=${msg}`);
+            const msg = `Assalamu Alaikum! Gostaria de confirmar minha inscrição na Madrassa.%0A%0A*Nome:* ${nome}%0A*Contacto:* ${zap}%0A*Nível:* ${nivel}%0A%0AEstou enviando o comprovativo de 100 MTN em anexo para validação.`;
+            
+            // Número de confirmação atualizado para 860407269
+            window.open(`https://wa.me/258860407269?text=${msg}`);
         }
     </script>
 </body>
