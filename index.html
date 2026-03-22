@@ -254,16 +254,36 @@
 
         function toggleModal(show) { document.getElementById('enrollModal').style.display = show ? 'block' : 'none'; }
 
-        function sendWhatsApp() {
+        async function sendWhatsApp() {
             const nome = document.getElementById('nome').value;
             const zap = document.getElementById('zap').value;
             const nivel = document.getElementById('selNivel').value;
+            
             if(!nome || !zap) return alert("Por favor, preencha os dados.");
-            
-            const msg = `Assalamu Alaikum! Inscrição Madrassa:%0A*Nome:* ${nome}%0A*Contacto:* ${zap}%0A*Nível:* ${nivel}%0AEnvio o comprovativo de 100 MTN em anexo.`;
-            
-            // Redirecionamento direto para o número de confirmação solicitado
-            window.open(`https://wa.me/258860407269?text=${msg}`);
+
+            // Mostra um aviso ao usuário enquanto o sistema processa
+            alert("A processar pedido de pagamento... Aguarde o PIN no seu telemóvel.");
+
+            try {
+                // 1. Faz a chamada para a sua ponte na Vercel (substitua o link abaixo pelo seu link da Vercel)
+                const response = await fetch('https://SUA-URL-AQUI.vercel.app/api/pagar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        msisdn: zap,
+                        amount: 100, // Valor da inscrição na Madrassa
+                        nome: nome
+                    })
+                });
+
+                // 2. Após o pedido de PIN, abre o WhatsApp para enviar o comprovativo
+                const msg = `Assalamu Alaikum! Gostaria de confirmar minha inscrição na Madrassa.%0A%0A*Nome:* ${nome}%0A*Contacto:* ${zap}%0A*Nível:* ${nivel}%0A%0AJá solicitei o pagamento de 100 MTN.`;
+                window.open(`https://wa.me/258860407269?text=${msg}`);
+
+            } catch (error) {
+                console.error("Erro no pagamento:", error);
+                alert("Erro ao ligar ao sistema de pagamento. Tente novamente.");
+            }
         }
     </script>
 </body>
