@@ -15,276 +15,161 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-
         body { background-color: var(--bg-cream); color: var(--text-dark); line-height: 1.6; }
 
-        .islamic-bg {
-            background-color: var(--bg-cream);
-            background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.05'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.444 15.556c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-
         .header {
-            background: linear-gradient(rgba(6, 78, 59, 0.95), rgba(6, 78, 59, 0.95)), 
-                        url('https://www.transparenttextures.com/patterns/arabesque.png');
-            color: var(--white);
-            padding: 4rem 1rem;
-            text-align: center;
-            border-bottom: 5px solid var(--accent-gold);
-            clip-path: ellipse(150% 100% at 50% 0%);
+            background: linear-gradient(rgba(6, 78, 59, 0.95), rgba(6, 78, 59, 0.95)), url('https://www.transparenttextures.com/patterns/arabesque.png');
+            color: var(--white); padding: 3rem 1rem; text-align: center; border-bottom: 5px solid var(--accent-gold);
         }
-
-        .header h1 { font-family: 'Amiri', serif; font-size: 2.8rem; margin-bottom: 0.5rem; }
 
         .timer-container {
-            background: var(--white);
-            max-width: 600px;
-            margin: -30px auto 2rem;
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-around;
-            border: 1px solid var(--accent-gold);
+            background: var(--white); max-width: 500px; margin: -20px auto 2rem; padding: 1rem;
+            border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; justify-content: space-around; border: 1px solid var(--accent-gold);
         }
 
-        .timer-unit { text-align: center; }
-        .timer-unit span { display: block; font-size: 1.5rem; font-weight: 700; color: var(--primary-green); }
-        .timer-unit label { font-size: 0.7rem; color: #666; text-transform: uppercase; }
-
-        .cta-container { text-align: center; margin: 3rem 0; }
+        .timer-unit span { display: block; font-size: 1.2rem; font-weight: 700; color: var(--primary-green); }
 
         .btn-enroll {
             background: linear-gradient(135deg, var(--accent-gold), #b8860b);
-            color: var(--primary-green);
-            padding: 1.2rem 2.5rem;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.2rem;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
-            transition: 0.3s;
-            text-transform: uppercase;
+            color: var(--primary-green); padding: 1rem 2rem; border-radius: 50px;
+            font-weight: 700; border: none; cursor: pointer; text-transform: uppercase; width: 100%;
         }
 
-        .info-grid { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
-        .acc-item { background: var(--white); margin-bottom: 1rem; border-radius: 12px; border: 1px solid #eee; overflow: hidden; }
-        
-        .acc-btn { 
-            width: 100%; padding: 1.2rem; background: none; border: none; 
-            display: flex; justify-content: space-between; align-items: center; 
-            cursor: pointer; font-weight: 600; color: var(--primary-green); 
-            font-size: 1.1rem; 
+        .payment-methods { display: grid; gap: 10px; margin: 15px 0; }
+        .method-card {
+            border: 2px solid #eee; border-radius: 12px; padding: 12px;
+            display: flex; align-items: center; cursor: pointer; transition: 0.3s;
         }
+        .method-card.selected { border-color: var(--accent-gold); background-color: #fffbeb; }
+        .method-card input { margin-right: 10px; }
+        .method-card img { height: 25px; margin-right: 10px; border-radius: 4px; }
 
-        .acc-content { 
-            max-height: 0; 
-            overflow: hidden; 
-            transition: max-height 0.6s ease-in-out; 
-            background: #fafafa; 
-        }
+        .method-details { background: #f4f4f4; padding: 10px; border-radius: 8px; font-size: 0.8rem; margin-top: 10px; display: none; }
+        .method-details.show { display: block; }
 
-        /* Altura ajustada para exibir todos os cartões dos níveis sem cortes */
-        .acc-item.active .acc-content { 
-            max-height: 2500px; 
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; overflow-y: auto; }
+        .modal-content { background: white; width: 95%; max-width: 450px; margin: 5% auto; border-radius: 20px; padding: 2rem; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0 15px; border: 1px solid #ddd; border-radius: 8px; }
 
-        .acc-body { padding: 1.5rem; border-top: 1px dashed var(--accent-gold); }
-
-        .level-card { 
-            background: white; 
-            padding: 1.2rem; 
-            border-left: 5px solid var(--accent-gold); 
-            margin-bottom: 15px; 
-            border-radius: 6px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
-        ul { list-style: none; }
-        ul li { margin-bottom: 8px; position: relative; padding-left: 25px; }
-        ul li::before { content: '⭐'; position: absolute; left: 0; font-size: 0.8rem; }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; backdrop-filter: blur(5px); }
-        .modal-content { background: white; width: 90%; max-width: 500px; margin: 5% auto; border-radius: 20px; overflow: hidden; }
-        .modal-header { background: var(--primary-green); color: white; padding: 1.5rem; text-align: center; }
-        .modal-body { padding: 2rem; }
-        input, select { width: 100%; padding: 12px; margin: 10px 0 20px; border: 1px solid #ddd; border-radius: 8px; }
-        .payment-box { background: #fff9e6; border: 1px solid var(--accent-gold); padding: 1rem; border-radius: 10px; margin-top: 1rem; }
-        
-        .icon-toggle::after { content: '+'; font-size: 1.5rem; color: var(--accent-gold); font-weight: bold; }
-        .active .icon-toggle::after { content: '−'; }
-
-        footer { text-align: center; padding: 4rem 1rem; color: #666; font-size: 0.9rem; }
+        footer { text-align: center; padding: 2rem; color: #666; font-size: 0.8rem; }
     </style>
 </head>
-<body class="islamic-bg">
+<body>
 
     <header class="header">
-        <div style="font-size: 3rem; margin-bottom: 1rem;">🕌</div>
         <h1>Islam Moçambique</h1>
-        <p style="font-family: 'Amiri', serif; font-size: 1.4rem; color: var(--accent-gold);">Madrassa Online - Inscrições Abertas</p>
+        <p style="color: var(--accent-gold);">Madrassa Online - Inscrições 2026</p>
     </header>
 
     <div class="timer-container" id="timer">
         <div class="timer-unit"><span id="days">00</span><label>Dias</label></div>
-        <div class="timer-unit"><span id="hours">00</span><label>Horas</label></div>
-        <div class="timer-unit"><span id="minutes">00</span><label>Minutos</label></div>
-        <div class="timer-unit"><span id="seconds">00</span><label>Segundos</label></div>
+        <div class="timer-unit"><span id="hours">00</span><label>Hrs</label></div>
+        <div class="timer-unit"><span id="minutes">00</span><label>Min</label></div>
+        <div class="timer-unit"><span id="seconds">00</span><label>Seg</label></div>
     </div>
 
-    <div class="cta-container">
-        <p style="margin-bottom: 1rem; color: var(--primary-green); font-weight: 600;">Início das aulas: 06 de Abril</p>
-        <button class="btn-enroll" onclick="toggleModal(true)">✍️ Fazer Inscrição Agora</button>
+    <div style="text-align: center; padding: 2rem;">
+        <button class="btn-enroll" onclick="toggleModal(true)" style="max-width: 300px;">✍️ Iniciar Inscrição</button>
     </div>
-
-    <main class="info-grid">
-        <div class="acc-item active">
-            <button class="acc-btn" onclick="toggleAcc(this)">
-                <span>📚 Currículo por Nível (Completo)</span>
-                <span class="icon-toggle"></span>
-            </button>
-            <div class="acc-content">
-                <div class="acc-body">
-                    
-                    <div class="level-card">
-                        <strong style="color: var(--primary-green);">Nível 1 - Iniciante (Al-Qaida al-Nurania)</strong>
-                        <ul style="margin-top: 10px;">
-                            <li>Alfabeto Árabe (Pronúncia correta e Makharij)</li>
-                            <li>Junção de letras e leitura básica de palavras</li>
-                            <li>Memorização de Suratas curtas para o Salat</li>
-                            <li>Prática de Wudu e passos fundamentais da oração</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="level-card">
-                        <strong style="color: var(--primary-green);">Nível 2 - Intermediário</strong>
-                        <ul style="margin-top: 10px;">
-                            <li>Leitura fluida do Alcorão Sagrado</li>
-                            <li>Introdução às regras de Tajwid (Nun Sakina e Tanwin)</li>
-                            <li>Memorização de Duãs diárias essenciais</li>
-                            <li>Seerah: Vida do Profeta ﷺ e moral islâmica</li>
-                        </ul>
-                    </div>
-
-                    <div class="level-card">
-                        <strong style="color: var(--primary-green);">Nível 3 - Avançado</strong>
-                        <ul style="margin-top: 10px;">
-                            <li>Tajwid Avançado (Regras de Mad, Sifāt e paragens)</li>
-                            <li>Memorização com foco em Tafsir (Significados)</li>
-                            <li>Estudo de Hadith e ensinamentos práticos</li>
-                            <li>Aqidah (Crença) e Fiqh (Jurisprudência fundamental)</li>
-                        </ul>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <div class="acc-item">
-            <button class="acc-btn" onclick="toggleAcc(this)">
-                <span>📜 Certificação e Suporte</span>
-                <span class="icon-toggle"></span>
-            </button>
-            <div class="acc-content">
-                <div class="acc-body">
-                    <ul>
-                        <li>Certificado oficial ao concluir cada nível.</li>
-                        <li>Recibos digitais de contribuição.</li>
-                        <li>Grupo de apoio exclusivo no WhatsApp.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </main>
 
     <div id="enrollModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h2>Ficha de Inscrição</h2></div>
-            <div class="modal-body">
-                <form id="regForm">
-                    <label>Nome Completo</label>
-                    <input type="text" id="nome" required placeholder="Seu nome">
-                    <label>Contacto WhatsApp</label>
-                    <input type="tel" id="zap" required placeholder="Ex: 84 / 86 / 87">
-                    <label>Nível Pretendido</label>
-                    <select id="selNivel">
-                        <option>Nível 1 - Iniciante</option>
-                        <option>Nível 2 - Intermediário</option>
-                        <option>Nível 3 - Avançado</option>
-                    </select>
+            <h2 style="color: var(--primary-green); text-align: center;">Ficha de Inscrição</h2>
+            <form id="regForm">
+                <label>Nome Completo</label>
+                <input type="text" id="nome" required>
+                
+                <label>Telemóvel (M-Pesa / e-Mola)</label>
+                <input type="tel" id="zap" required placeholder="84... / 86...">
 
-                    <div class="payment-box">
-                        <p><strong>Pagamento Único (100 MTN):</strong></p>
-                        <p>📲 M-Pesa: 841153418</p>
-                        <p>📲 E-Mola: 866186976</p>
-                    </div>
+                <label>Nível</label>
+                <select id="selNivel">
+                    <option>Nível 1 - Iniciante</option>
+                    <option>Nível 2 - Intermediário</option>
+                    <option>Nível 3 - Avançado</option>
+                </select>
 
-                    <button type="button" onclick="sendWhatsApp()" class="btn-enroll" style="width:100%; margin-top:1.5rem;">Confirmar Inscrição</button>
-                    <button type="button" onclick="toggleModal(false)" style="width:100%; background:none; border:none; margin-top:10px; cursor:pointer; color:#888;">Voltar</button>
-                </form>
-            </div>
+                <p><strong>Forma de Pagamento (100 MTN):</strong></p>
+                <div class="payment-methods">
+                    <label class="method-card" onclick="selectMethod('mpesa')">
+                        <input type="radio" name="payMethod" value="mpesa" id="radMpesa">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/M-Pesa_Logo.svg/512px-M-Pesa_Logo.svg.png">
+                        <span>M-Pesa (Automático)</span>
+                    </label>
+
+                    <label class="method-card" onclick="selectMethod('emola')">
+                        <input type="radio" name="payMethod" value="emola">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_S-G3p2Z-yZ7-S0z8E3h3h-fG0U8Lq7h6QA&s">
+                        <span>e-Mola (Automático)</span>
+                    </label>
+
+                    <label class="method-card" onclick="selectMethod('bank')">
+                        <input type="radio" name="payMethod" value="bank">
+                        <span>🏦 Transferência Bancária</span>
+                    </label>
+                </div>
+
+                <div id="bankDetails" class="method-details">
+                    <p><strong>BIM:</strong> 000100000012473356257</p>
+                    <p><strong>NUIT:</strong> 201910009697381</p>
+                </div>
+
+                <button type="button" onclick="processPayment()" class="btn-enroll">Finalizar e Pagar</button>
+                <button type="button" onclick="toggleModal(false)" style="width:100%; background:none; border:none; margin-top:10px; color:#999;">Cancelar</button>
+            </form>
         </div>
     </div>
 
-    <footer>
-        <p>© 2026 Madrassa Online Islam Moçambique</p>
-        <p><em>"O melhor de vós é aquele que aprende o Alcorão e o ensina."</em></p>
-    </footer>
+    <footer><p>© 2026 Madrassa Online Islam Moçambique</p></footer>
 
     <script>
-        function toggleAcc(btn) {
-            const item = btn.parentElement;
-            const isActive = item.classList.contains('active');
-            document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('active'));
-            if (!isActive) item.classList.add('active');
-        }
-
-        function updateTimer() {
-            const target = new Date('April 6, 2026 00:00:00').getTime();
-            const now = new Date().getTime();
-            const diff = target - now;
-            if (diff < 0) return;
-            document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-            document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-            document.getElementById('minutes').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-            document.getElementById('seconds').innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
-        }
-        setInterval(updateTimer, 1000);
-        updateTimer();
-
         function toggleModal(show) { document.getElementById('enrollModal').style.display = show ? 'block' : 'none'; }
 
-        async function sendWhatsApp() {
+        function selectMethod(method) {
+            document.querySelectorAll('.method-card').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            document.getElementById('bankDetails').classList.toggle('show', method === 'bank');
+        }
+
+        async function processPayment() {
             const nome = document.getElementById('nome').value;
             const zap = document.getElementById('zap').value;
             const nivel = document.getElementById('selNivel').value;
-            
-            if(!nome || !zap) return alert("Por favor, preencha os dados.");
+            const metodo = document.querySelector('input[name="payMethod"]:checked')?.value;
 
-            // Mostra um aviso ao usuário enquanto o sistema processa
-            alert("A processar pedido de pagamento... Aguarde o PIN no seu telemóvel.");
+            if(!nome || !zap || !metodo) return alert("Preencha todos os campos.");
+
+            const whatsappMsg = `Assalamu Alaikum! Inscrição Madrassa.%0A*Nome:* ${nome}%0A*Método:* ${metodo}%0A*Nível:* ${nivel}`;
+
+            if(metodo === 'bank') {
+                window.open(`https://wa.me/258860407269?text=${whatsappMsg}%0A_Vou enviar o comprovativo bancário._`);
+                return;
+            }
+
+            alert("Aguarde o pedido de PIN no seu telemóvel...");
 
             try {
-                // 1. Faz a chamada para a sua ponte na Vercel (substitua o link abaixo pelo seu link da Vercel)
-                const response = await fetch('https://SUA-URL-AQUI.vercel.app/api/pagar', {
+                await fetch('https://madrassa-online-i-m.vercel.app/api/pagar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        msisdn: zap,
-                        amount: 100, // Valor da inscrição na Madrassa
-                        nome: nome
-                    })
+                    body: JSON.stringify({ msisdn: zap, amount: 100, nome: nome, provider: metodo })
                 });
-
-                // 2. Após o pedido de PIN, abre o WhatsApp para enviar o comprovativo
-                const msg = `Assalamu Alaikum! Gostaria de confirmar minha inscrição na Madrassa.%0A%0A*Nome:* ${nome}%0A*Contacto:* ${zap}%0A*Nível:* ${nivel}%0A%0AJá solicitei o pagamento de 100 MTN.`;
-                window.open(`https://wa.me/258860407269?text=${msg}`);
-
-            } catch (error) {
-                console.error("Erro no pagamento:", error);
-                alert("Erro ao ligar ao sistema de pagamento. Tente novamente.");
+                window.open(`https://wa.me/258860407269?text=${whatsappMsg}%0A_Pagamento automático iniciado._`);
+            } catch (e) {
+                alert("Erro no sistema. Tente novamente ou use Transferência.");
             }
         }
+
+        // Timer simples
+        function updateTimer() {
+            const diff = new Date('2026-04-06') - new Date();
+            if (diff <= 0) return;
+            document.getElementById('days').innerText = Math.floor(diff / 864e5);
+            document.getElementById('hours').innerText = Math.floor((diff % 864e5) / 36e5);
+            document.getElementById('minutes').innerText = Math.floor((diff % 36e5) / 6e4);
+            document.getElementById('seconds').innerText = Math.floor((diff % 6e4) / 1e3);
+        }
+        setInterval(updateTimer, 1000);
     </script>
 </body>
 </html>
