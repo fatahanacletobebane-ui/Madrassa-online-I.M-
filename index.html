@@ -29,12 +29,12 @@
         .timer-unit span { display: block; font-size: 1.4rem; font-weight: 700; color: var(--primary-green); }
         .timer-unit label { font-size: 0.7rem; text-transform: uppercase; color: #666; }
 
-        .price-info { text-align: center; margin: 10px auto; max-width: 500px; font-weight: 600; padding: 10px; border-radius: 8px; background: #fffbeb; border: 1px dashed var(--accent-gold); }
+        .price-info { text-align: center; margin: 10px auto; max-width: 500px; font-weight: 600; padding: 12px; border-radius: 8px; background: #fffbeb; border: 1px dashed var(--accent-gold); font-size: 1.1rem; }
 
         .main-menu { display: grid; gap: 12px; max-width: 400px; margin: 2rem auto; padding: 0 20px; }
         .btn-menu {
             padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; font-size: 0.95rem;
-            display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; color: white; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; color: white; text-decoration: none; text-align: center;
         }
         .btn-enroll { background: var(--primary-green); }
         .btn-info { background: #2563eb; }
@@ -42,17 +42,16 @@
         .btn-contact { background: #16a34a; }
         .btn-menu:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; overflow-y: auto; padding: 20px 0; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; overflow-y: auto; padding: 20px 0; align-items: center; }
         .modal-content { background: white; width: 90%; max-width: 450px; margin: auto; border-radius: 20px; padding: 2rem; position: relative; }
         
         input, select { width: 100%; padding: 12px; margin: 8px 0 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
         .payment-methods { display: grid; gap: 10px; margin: 15px 0; }
         .method-card { border: 2px solid #eee; border-radius: 12px; padding: 10px; display: flex; align-items: center; cursor: pointer; }
-        .method-card.selected { border-color: var(--accent-gold); background-color: #fffbeb; }
         .method-card input { width: auto; margin-right: 10px; margin-bottom: 0; }
 
-        .info-box { background: #f9fafb; padding: 15px; border-radius: 10px; font-size: 0.9rem; margin-bottom: 15px; border-left: 4px solid var(--accent-gold); }
-        .close-btn { float: right; cursor: pointer; font-size: 1.5rem; color: #999; }
+        .info-box { background: #f9fafb; padding: 15px; border-radius: 10px; font-size: 0.95rem; margin-bottom: 15px; border-left: 4px solid var(--accent-gold); }
+        .close-btn { float: right; cursor: pointer; font-size: 1.5rem; color: #999; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -70,13 +69,13 @@
     </div>
 
     <div class="price-info" id="price-display">
-        Inscrição: 100 MT (Promoção até 05/04)
+        Carregando informações...
     </div>
 
     <div class="main-menu">
         <button class="btn-menu btn-enroll" onclick="openModal('enrollModal')">✍️ INSCRIÇÃO</button>
         <a href="https://docs.google.com/document/d/1XnRY5rUxZgSL_9fEBw3F3bpFaY2vIj_OpvCnPGy6XII/edit?usp=drivesdk" target="_blank" class="btn-menu btn-info">📖 INFORMAÇÃO DAS AULAS</a>
-        <button class="btn-menu btn-pay-info" onclick="openModal('paymentModal')">🛍️ COMO PAGAR</button>
+        <button class="btn-menu btn-pay-info" onclick="openModal('paymentModal')">🛍️ COMO FAZER PAGAMENTO</button>
         <a href="https://wa.me/258860407269" class="btn-menu btn-contact">📞 FALA CONOSCO</a>
     </div>
 
@@ -88,10 +87,10 @@
                 <label>Nome Completo</label>
                 <input type="text" id="nome" placeholder="Seu nome" required>
                 
-                <label>Telemóvel</label>
-                <input type="tel" id="tel" placeholder="Ex: 84XXXXXXX" required>
+                <label>Número de Telemóvel</label>
+                <input type="tel" id="tel" placeholder="84... / 86..." required>
 
-                <label>Nível Pretendido</label>
+                <label>Nível</label>
                 <select id="nivel">
                     <option value="Nível 1 - Iniciante">Nível 1 - Iniciante</option>
                     <option value="Nível 2 - Intermediário">Nível 2 - Intermediário</option>
@@ -105,7 +104,7 @@
                     <label class="method-card"><input type="radio" name="pay" value="Transferência Bancária"> Transferência</label>
                 </div>
 
-                <button type="button" onclick="confirmStep()" class="btn-menu btn-enroll" style="width: 100%;">ENVIAR DADOS</button>
+                <button type="button" onclick="confirmStep()" class="btn-menu btn-enroll" style="width: 100%;">ENVIAR DADOS DE INSCRIÇÃO</button>
             </form>
         </div>
     </div>
@@ -113,21 +112,27 @@
     <div id="paymentModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('paymentModal')">&times;</span>
-            <h2 style="color: var(--primary-green); margin-bottom: 15px;">Dados de Pagamento</h2>
+            <h2 style="color: var(--primary-green); margin-bottom: 15px; text-align: center;">Como fazer pagamentos</h2>
+            
+            <p style="margin-bottom: 10px;">O pagamento pode ser feito por:</p>
+            
             <div class="info-box">
-                <p><strong>M-PESA:</strong> 841153418</p>
+                <p><strong>MPESA:</strong> 841153418</p>
                 <p><strong>E-MOLA:</strong> 866186976</p>
-                <p><small>(Agira Muquila)</small></p>
+                <p><em>(Agira Muquila)</em></p>
             </div>
+
             <div class="info-box">
                 <p><strong>Agente Paga fácil:</strong> 1228803</p>
-                <p><small>(Bebane)</small></p>
+                <p><em>(Bebane)</em></p>
             </div>
+
             <div class="info-box">
                 <p><strong>Millennium BIM:</strong></p>
-                <p>NIB: 000100000012473356257</p>
-                <p>NUIT: 201910009697381</p>
+                <p><strong>NIB:</strong> 000100000012473356257</p>
+                <p><strong>NUIB:</strong> 201910009697381</p>
             </div>
+
             <button onclick="closeModal('paymentModal')" class="btn-menu btn-contact" style="width: 100%;">ENTENDI</button>
         </div>
     </div>
@@ -140,34 +145,35 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Lógica de Preço e Timer
         function updateStatus() {
             const now = new Date();
-            const deadlineEarly = new Date('2026-04-05T23:59:59');
-            const deadlineFinal = new Date('2026-04-10T23:59:59');
+            const deadlinePromo = new Date('2026-04-05T23:59:59'); // Fim 100mtn
+            const deadlineFinal = new Date('2026-04-10T23:59:59'); // Fim das inscrições
             const priceTag = document.getElementById('price-display');
 
-            // Atualiza o Timer (Contagem até 05/04)
-            const diff = deadlineEarly - now;
+            // Timer (Contagem decrescente até 05/04/2026)
+            const diff = deadlinePromo - now;
             if (diff > 0) {
                 document.getElementById('days').innerText = String(Math.floor(diff / 864e5)).padStart(2, '0');
                 document.getElementById('hours').innerText = String(Math.floor((diff % 864e5) / 36e5)).padStart(2, '0');
                 document.getElementById('minutes').innerText = String(Math.floor((diff % 36e5) / 6e4)).padStart(2, '0');
                 document.getElementById('seconds').innerText = String(Math.floor((diff % 6e4) / 1e3)).padStart(2, '0');
             } else {
-                document.getElementById('timer').innerHTML = "Período promocional encerrado";
+                document.getElementById('timer').style.display = 'none';
             }
 
-            // Atualiza Preço Baseado na Data
-            if (now <= deadlineEarly) {
-                priceTag.innerHTML = "🏷️ Inscrição: 100 MTN (Promoção)";
+            // Lógica de Preços e Prazos
+            if (now <= deadlinePromo) {
+                priceTag.innerHTML = "💰 Inscrição: 100 MTN (Promoção até 05/04)";
             } else if (now <= deadlineFinal) {
-                priceTag.innerHTML = "⚠️ Inscrição: 150 MTN (Preço Normal)";
+                priceTag.innerHTML = "💰 Inscrição: 150 MTN (Até 10/04)";
                 priceTag.style.background = "#fee2e2";
+                priceTag.style.borderColor = "#ef4444";
             } else {
-                priceTag.innerHTML = "❌ Inscrições Encerradas";
+                priceTag.innerHTML = "❌ Inscrições Encerradas (Prazo: 10/04)";
                 document.querySelector('.btn-enroll').disabled = true;
-                document.querySelector('.btn-enroll').style.background = "#ccc";
+                document.querySelector('.btn-enroll').style.background = "#999";
+                document.querySelector('.btn-enroll').onclick = () => alert("As inscrições terminaram no dia 10/04/2026.");
             }
         }
 
@@ -177,10 +183,10 @@
             const nivel = document.getElementById('nivel').value;
             const pay = document.querySelector('input[name="pay"]:checked').value;
 
-            if(!nome || !tel) return alert("Por favor, preencha o nome e o telefone.");
+            if(!nome || !tel) return alert("Por favor, preencha o seu nome e número.");
 
-            if(confirm("⚠️ ATENÇÃO ⚠️\nCLIQUE EM OK (CONTINUAR) CASO JÁ TENHA EFETUADO O PAGAMENTO")) {
-                const msg = `Assalamo Aleikum! Envio a minha inscrição e a confirmação em anexo:%0A%0A*Nome:* ${nome}%0A*Telefone:* ${tel}%0A*Nível:* ${nivel}%0A*Método:* ${pay}`;
+            if(confirm("⚠️ ATENÇÃO ⚠️\nCLIQUE EM CONTINUAR CASO JÁ TENHA EFETUADO O PAGAMENTO")) {
+                const msg = `Assalamo Aleikum! Envio a minha inscrição e a confirmação em anexo:%0A%0A*Nome:* ${nome}%0A*Número:* ${tel}%0A*Nível:* ${nivel}%0A*Método:* ${pay}`;
                 window.open(`https://wa.me/258860407269?text=${msg}`);
             }
         }
