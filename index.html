@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Madrassa Online Islam Moçambique - 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-green: #064e3b;
@@ -15,43 +15,44 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg-cream); color: var(--text-dark); line-height: 1.6; }
+        body { background-color: var(--bg-cream); color: var(--text-dark); line-height: 1.6; padding-bottom: 50px; }
 
         .header {
             background: linear-gradient(rgba(6, 78, 59, 0.95), rgba(6, 78, 59, 0.95)), url('https://www.transparenttextures.com/patterns/arabesque.png');
-            color: var(--white); padding: 3rem 1rem; text-align: center; border-bottom: 5px solid var(--accent-gold);
+            color: var(--white); padding: 2.5rem 1rem; text-align: center; border-bottom: 5px solid var(--accent-gold);
         }
 
         .timer-container {
-            background: var(--white); max-width: 500px; margin: -20px auto 2rem; padding: 1rem;
+            background: var(--white); max-width: 450px; margin: -25px auto 1.5rem; padding: 1rem;
             border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; justify-content: space-around; border: 1px solid var(--accent-gold);
         }
+        .timer-unit span { display: block; font-size: 1.4rem; font-weight: 700; color: var(--primary-green); }
+        .timer-unit label { font-size: 0.7rem; text-transform: uppercase; color: #666; }
 
-        .timer-unit span { display: block; font-size: 1.2rem; font-weight: 700; color: var(--primary-green); }
+        .price-info { text-align: center; margin: 10px auto; max-width: 500px; font-weight: 600; padding: 10px; border-radius: 8px; background: #fffbeb; border: 1px dashed var(--accent-gold); }
 
-        .btn-enroll {
-            background: linear-gradient(135deg, var(--accent-gold), #b8860b);
-            color: var(--primary-green); padding: 1rem 2rem; border-radius: 50px;
-            font-weight: 700; border: none; cursor: pointer; text-transform: uppercase; width: 100%;
+        .main-menu { display: grid; gap: 12px; max-width: 400px; margin: 2rem auto; padding: 0 20px; }
+        .btn-menu {
+            padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; font-size: 0.95rem;
+            display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; color: white; text-decoration: none;
         }
+        .btn-enroll { background: var(--primary-green); }
+        .btn-info { background: #2563eb; }
+        .btn-pay-info { background: #d97706; }
+        .btn-contact { background: #16a34a; }
+        .btn-menu:hover { opacity: 0.9; transform: translateY(-2px); }
 
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; overflow-y: auto; padding: 20px 0; }
+        .modal-content { background: white; width: 90%; max-width: 450px; margin: auto; border-radius: 20px; padding: 2rem; position: relative; }
+        
+        input, select { width: 100%; padding: 12px; margin: 8px 0 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
         .payment-methods { display: grid; gap: 10px; margin: 15px 0; }
-        .method-card {
-            border: 2px solid #eee; border-radius: 12px; padding: 12px;
-            display: flex; align-items: center; cursor: pointer; transition: 0.3s;
-        }
+        .method-card { border: 2px solid #eee; border-radius: 12px; padding: 10px; display: flex; align-items: center; cursor: pointer; }
         .method-card.selected { border-color: var(--accent-gold); background-color: #fffbeb; }
-        .method-card input { margin-right: 10px; }
-        .method-card img { height: 25px; margin-right: 10px; border-radius: 4px; }
+        .method-card input { width: auto; margin-right: 10px; margin-bottom: 0; }
 
-        .method-details { background: #f4f4f4; padding: 10px; border-radius: 8px; font-size: 0.8rem; margin-top: 10px; display: none; }
-        .method-details.show { display: block; }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; overflow-y: auto; }
-        .modal-content { background: white; width: 95%; max-width: 450px; margin: 5% auto; border-radius: 20px; padding: 2rem; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0 15px; border: 1px solid #ddd; border-radius: 8px; }
-
-        footer { text-align: center; padding: 2rem; color: #666; font-size: 0.8rem; }
+        .info-box { background: #f9fafb; padding: 15px; border-radius: 10px; font-size: 0.9rem; margin-bottom: 15px; border-left: 4px solid var(--accent-gold); }
+        .close-btn { float: right; cursor: pointer; font-size: 1.5rem; color: #999; }
     </style>
 </head>
 <body>
@@ -63,113 +64,129 @@
 
     <div class="timer-container" id="timer">
         <div class="timer-unit"><span id="days">00</span><label>Dias</label></div>
-        <div class="timer-unit"><span id="hours">00</span><label>Hrs</label></div>
+        <div class="timer-unit"><span id="hours">00</span><label>Horas</label></div>
         <div class="timer-unit"><span id="minutes">00</span><label>Min</label></div>
         <div class="timer-unit"><span id="seconds">00</span><label>Seg</label></div>
     </div>
 
-    <div style="text-align: center; padding: 2rem;">
-        <button class="btn-enroll" onclick="toggleModal(true)" style="max-width: 300px;">✍️ Iniciar Inscrição</button>
+    <div class="price-info" id="price-display">
+        Inscrição: 100 MT (Promoção até 05/04)
+    </div>
+
+    <div class="main-menu">
+        <button class="btn-menu btn-enroll" onclick="openModal('enrollModal')">✍️ INSCRIÇÃO</button>
+        <a href="https://docs.google.com/document/d/1XnRY5rUxZgSL_9fEBw3F3bpFaY2vIj_OpvCnPGy6XII/edit?usp=drivesdk" target="_blank" class="btn-menu btn-info">📖 INFORMAÇÃO DAS AULAS</a>
+        <button class="btn-menu btn-pay-info" onclick="openModal('paymentModal')">🛍️ COMO PAGAR</button>
+        <a href="https://wa.me/258860407269" class="btn-menu btn-contact">📞 FALA CONOSCO</a>
     </div>
 
     <div id="enrollModal" class="modal">
         <div class="modal-content">
-            <h2 style="color: var(--primary-green); text-align: center;">Ficha de Inscrição</h2>
+            <span class="close-btn" onclick="closeModal('enrollModal')">&times;</span>
+            <h2 style="color: var(--primary-green); text-align: center; margin-bottom: 15px;">Ficha de Inscrição</h2>
             <form id="regForm">
                 <label>Nome Completo</label>
-                <input type="text" id="nome" required>
+                <input type="text" id="nome" placeholder="Seu nome" required>
                 
-                <label>Telemóvel (M-Pesa / e-Mola)</label>
-                <input type="tel" id="zap" required placeholder="84... / 86...">
+                <label>Telemóvel</label>
+                <input type="tel" id="tel" placeholder="Ex: 84XXXXXXX" required>
 
-                <label>Nível</label>
-                <select id="selNivel">
-                    <option>Nível 1 - Iniciante</option>
-                    <option>Nível 2 - Intermediário</option>
-                    <option>Nível 3 - Avançado</option>
+                <label>Nível Pretendido</label>
+                <select id="nivel">
+                    <option value="Nível 1 - Iniciante">Nível 1 - Iniciante</option>
+                    <option value="Nível 2 - Intermediário">Nível 2 - Intermediário</option>
+                    <option value="Nível 3 - Avançado">Nível 3 - Avançado</option>
                 </select>
 
-                <p><strong>Forma de Pagamento (100 MTN):</strong></p>
+                <label>Método de Pagamento</label>
                 <div class="payment-methods">
-                    <label class="method-card" onclick="selectMethod('mpesa')">
-                        <input type="radio" name="payMethod" value="mpesa" id="radMpesa">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/M-Pesa_Logo.svg/512px-M-Pesa_Logo.svg.png">
-                        <span>M-Pesa (Automático)</span>
-                    </label>
-
-                    <label class="method-card" onclick="selectMethod('emola')">
-                        <input type="radio" name="payMethod" value="emola">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_S-G3p2Z-yZ7-S0z8E3h3h-fG0U8Lq7h6QA&s">
-                        <span>e-Mola (Automático)</span>
-                    </label>
-
-                    <label class="method-card" onclick="selectMethod('bank')">
-                        <input type="radio" name="payMethod" value="bank">
-                        <span>🏦 Transferência Bancária</span>
-                    </label>
+                    <label class="method-card"><input type="radio" name="pay" value="M-Pesa" checked> M-Pesa</label>
+                    <label class="method-card"><input type="radio" name="pay" value="e-Mola"> e-Mola</label>
+                    <label class="method-card"><input type="radio" name="pay" value="Transferência Bancária"> Transferência</label>
                 </div>
 
-                <div id="bankDetails" class="method-details">
-                    <p><strong>BIM:</strong> 000100000012473356257</p>
-                    <p><strong>NUIT:</strong> 201910009697381</p>
-                </div>
-
-                <button type="button" onclick="processPayment()" class="btn-enroll">Finalizar e Pagar</button>
-                <button type="button" onclick="toggleModal(false)" style="width:100%; background:none; border:none; margin-top:10px; color:#999;">Cancelar</button>
+                <button type="button" onclick="confirmStep()" class="btn-menu btn-enroll" style="width: 100%;">ENVIAR DADOS</button>
             </form>
         </div>
     </div>
 
-    <footer><p>© 2026 Madrassa Online Islam Moçambique</p></footer>
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('paymentModal')">&times;</span>
+            <h2 style="color: var(--primary-green); margin-bottom: 15px;">Dados de Pagamento</h2>
+            <div class="info-box">
+                <p><strong>M-PESA:</strong> 841153418</p>
+                <p><strong>E-MOLA:</strong> 866186976</p>
+                <p><small>(Agira Muquila)</small></p>
+            </div>
+            <div class="info-box">
+                <p><strong>Agente Paga fácil:</strong> 1228803</p>
+                <p><small>(Bebane)</small></p>
+            </div>
+            <div class="info-box">
+                <p><strong>Millennium BIM:</strong></p>
+                <p>NIB: 000100000012473356257</p>
+                <p>NUIT: 201910009697381</p>
+            </div>
+            <button onclick="closeModal('paymentModal')" class="btn-menu btn-contact" style="width: 100%;">ENTENDI</button>
+        </div>
+    </div>
+
+    <footer style="text-align: center; padding: 20px; font-size: 0.8rem; color: #777;">
+        © 2026 Madrassa Online Islam Moçambique
+    </footer>
 
     <script>
-        function toggleModal(show) { document.getElementById('enrollModal').style.display = show ? 'block' : 'none'; }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        function selectMethod(method) {
-            document.querySelectorAll('.method-card').forEach(el => el.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-            document.getElementById('bankDetails').classList.toggle('show', method === 'bank');
+        // Lógica de Preço e Timer
+        function updateStatus() {
+            const now = new Date();
+            const deadlineEarly = new Date('2026-04-05T23:59:59');
+            const deadlineFinal = new Date('2026-04-10T23:59:59');
+            const priceTag = document.getElementById('price-display');
+
+            // Atualiza o Timer (Contagem até 05/04)
+            const diff = deadlineEarly - now;
+            if (diff > 0) {
+                document.getElementById('days').innerText = String(Math.floor(diff / 864e5)).padStart(2, '0');
+                document.getElementById('hours').innerText = String(Math.floor((diff % 864e5) / 36e5)).padStart(2, '0');
+                document.getElementById('minutes').innerText = String(Math.floor((diff % 36e5) / 6e4)).padStart(2, '0');
+                document.getElementById('seconds').innerText = String(Math.floor((diff % 6e4) / 1e3)).padStart(2, '0');
+            } else {
+                document.getElementById('timer').innerHTML = "Período promocional encerrado";
+            }
+
+            // Atualiza Preço Baseado na Data
+            if (now <= deadlineEarly) {
+                priceTag.innerHTML = "🏷️ Inscrição: 100 MTN (Promoção)";
+            } else if (now <= deadlineFinal) {
+                priceTag.innerHTML = "⚠️ Inscrição: 150 MTN (Preço Normal)";
+                priceTag.style.background = "#fee2e2";
+            } else {
+                priceTag.innerHTML = "❌ Inscrições Encerradas";
+                document.querySelector('.btn-enroll').disabled = true;
+                document.querySelector('.btn-enroll').style.background = "#ccc";
+            }
         }
 
-        async function processPayment() {
+        function confirmStep() {
             const nome = document.getElementById('nome').value;
-            const zap = document.getElementById('zap').value;
-            const nivel = document.getElementById('selNivel').value;
-            const metodo = document.querySelector('input[name="payMethod"]:checked')?.value;
+            const tel = document.getElementById('tel').value;
+            const nivel = document.getElementById('nivel').value;
+            const pay = document.querySelector('input[name="pay"]:checked').value;
 
-            if(!nome || !zap || !metodo) return alert("Preencha todos os campos.");
+            if(!nome || !tel) return alert("Por favor, preencha o nome e o telefone.");
 
-            const whatsappMsg = `Assalamu Alaikum! Inscrição Madrassa.%0A*Nome:* ${nome}%0A*Método:* ${metodo}%0A*Nível:* ${nivel}`;
-
-            if(metodo === 'bank') {
-                window.open(`https://wa.me/258860407269?text=${whatsappMsg}%0A_Vou enviar o comprovativo bancário._`);
-                return;
-            }
-
-            alert("Aguarde o pedido de PIN no seu telemóvel...");
-
-            try {
-                await fetch('https://madrassa-online-i-m.vercel.app/api/pagar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ msisdn: zap, amount: 100, nome: nome, provider: metodo })
-                });
-                window.open(`https://wa.me/258860407269?text=${whatsappMsg}%0A_Pagamento automático iniciado._`);
-            } catch (e) {
-                alert("Erro no sistema. Tente novamente ou use Transferência.");
+            if(confirm("⚠️ ATENÇÃO ⚠️\nCLIQUE EM OK (CONTINUAR) CASO JÁ TENHA EFETUADO O PAGAMENTO")) {
+                const msg = `Assalamo Aleikum! Envio a minha inscrição e a confirmação em anexo:%0A%0A*Nome:* ${nome}%0A*Telefone:* ${tel}%0A*Nível:* ${nivel}%0A*Método:* ${pay}`;
+                window.open(`https://wa.me/258860407269?text=${msg}`);
             }
         }
 
-        // Timer simples
-        function updateTimer() {
-            const diff = new Date('2026-04-06') - new Date();
-            if (diff <= 0) return;
-            document.getElementById('days').innerText = Math.floor(diff / 864e5);
-            document.getElementById('hours').innerText = Math.floor((diff % 864e5) / 36e5);
-            document.getElementById('minutes').innerText = Math.floor((diff % 36e5) / 6e4);
-            document.getElementById('seconds').innerText = Math.floor((diff % 6e4) / 1e3);
-        }
-        setInterval(updateTimer, 1000);
+        setInterval(updateStatus, 1000);
+        updateStatus();
     </script>
 </body>
 </html>
