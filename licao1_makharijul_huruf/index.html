@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="pt-BR" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madrassa Online - Tajweed e Makharijul Huruf</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a5f4a;
+            --primary-light: #2d8a6e;
+            --secondary: #d4af37;
+            --accent: #0d3b2e;
+            --bg-dark: #0a1f1a;
+            --bg-light: #f8f9fa;
+            --text-light: #ffffff;
+            --text-dark: #2c3e50;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --error: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--primary) 100%);
+            min-height: 100vh;
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px var(--secondary), 0 0 10px var(--secondary); }
+            50% { box-shadow: 0 0 20px var(--secondary), 0 0 30px var(--secondary); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Header */
+        header {
+            background: rgba(10, 31, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .logo::before {
+            content: '🕌';
+            font-size: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            z-index: 999;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--success));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Main Container */
+        main {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            animation: fadeIn 1s ease;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero h1 .arabic {
+            font-family: 'Amiri', serif;
+            font-size: 4rem;
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, var(--secondary), #b8941f);
+            color: var(--bg-dark);
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: glow 2s infinite;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Lesson Cards */
+        .lessons-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .lesson-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease backwards;
+        }
+
+        .lesson-card:nth-child(1) { animation-delay: 0.1s; }
+        .lesson-card:nth-child(2) { animation-delay: 0.2s; }
+        .lesson-card:nth-child(3) { animation-delay: 0.3s; }
+        .lesson-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .lesson-card:hover::before {
+            left: 100%;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--secondary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .lesson-number {
+            background: var(--secondary);
+            color: var(--bg-dark);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .lesson-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        .lesson-card .arabic-title {
+            font-family: 'Amiri', serif;
+            font-size: 1.5rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .lesson-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        .lesson-status.completed {
+            background: rgba(39, 174, 96, 0.2);
+            color: var(--success);
+        }
+
+        .lesson-status.locked {
+            opacity: 0.5;
+        }
+
+        /* Modal/Lesson View */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, var(--bg-dark), var(--primary));
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .close-modal {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 2001;
+        }
+
+        .close-modal:hover {
+            background: var(--error);
+            transform: rotate(90deg);
+        }
+
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .lesson-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .lesson-header h2 {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson-header .arabic {
+            font-family: 'Amiri', serif;
+            font-size: 3rem;
+        }
+
+        /* Interactive Letter Cards */
+        .letters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .letter-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .letter-card:hover {
+            background: rgba(212, 175, 55, 0.1);
+            transform: scale(1.05);
+            border-color: var(--secondary);
+        }
+
+        .letter-card.playing {
+            animation: pulse 0.5s infinite;
+            border-color: var(--success);
+            background: rgba(39, 174, 96, 0.2);
+        }
+
+        .letter-display {
+            font-family: 'Amiri', serif;
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .letter-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .letter-trans {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .play-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--secondary);
+            color: var(--bg-dark);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        /* Section Styling */
+        .section {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .section h3 {
+            color: var(--secondary);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-content {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .highlight-box {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--secondary);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        /* Quiz Section */
+        .quiz-container {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .quiz-question {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .quiz-option {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .quiz-option:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: var(--secondary);
+        }
+
+        .quiz-option.correct {
+            background: rgba(39, 174, 96, 0.3);
+            border-color: var(--success);
+            animation: pulse 0.5s;
+        }
+
+        .quiz-option.wrong {
+            background: rgba(231, 76, 60, 0.3);
+            border-color: var(--error);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .quiz-result {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid var(--secondary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--secondary);
+            color: var(--bg-dark);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Score Display */
+        .score-display {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(10, 31, 26, 0.95);
+            border: 2px solid var(--secondary);
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            z-index: 100;
+        }
+
+        .score-display h4 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Completion Badge */
+        .badge {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--secondary), #b8941f);
+            color: var(--bg-dark);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 3000;
+            animation: fadeIn 0.5s;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .badge.show {
+            display: block;
+        }
+
+        .badge-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .badge h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero h1 .arabic {
+                font-size: 2.5rem;
+            }
+            
+            .lessons-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Throat Diagram */
+        .throat-diagram {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .throat-section {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .throat-section:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .throat-section .label {
+            font-weight: 700;
+            color: var(--secondary);
+            min-width: 150px;
+        }
+
+        .throat-section .letters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .letter-pill {
+            background: rgba(212, 175, 55, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-family: 'Amiri', serif;
+            font-size: 1.3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">Madrassa Online</div>
+            <ul class="nav-links">
+                <li><a href="#inicio">Início</a></li>
+                <li><a href="#licoes">Lições</a></li>
+                <li><a href="#progresso">Progresso</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="inicio">
+        <section class="hero">
+            <h1>
+                Tajweed e Makharijul Huruf
+                <span class="arabic">تجويد و مخارج الحروف</span>
+            </h1>
+            <p>Aprenda a ciência da recitação correta do Alcorão com lições interativas, áudio e avaliações personalizadas</p>
+            <button class="start-btn" onclick="scrollToLessons()">Começar Aprendizado</button>
+        </section>
+
+        <section id="licoes" class="lessons-container">
+            <!-- Lesson 1 -->
+            <div class="lesson-card" onclick="openLesson(1)">
+                <div class="lesson-number">1</div>
+                <h3>O que é Tajweed?</h3>
+                <div class="arabic-title">ما هو التجويد؟</div>
+                <p>Fundamentos da ciência do Tajweed e sua importância na recitação do Alcorão</p>
+                <span class="lesson-status" id="status-1">🔒 Bloqueado</span>
+            </div>
+
+            <!-- Lesson 2 -->
+            <div class="lesson-card" onclick="openLesson(2)">
+                <div class="lesson-number">2</div>
+                <h3>Makharijul Huruf</h3>
+                <div class="arabic-title">مخارج الحروف</div>
+                <p>Conheça os pontos de articulação das letras árabes</p>
+                <span class="lesson-status locked" id="status-2">🔒 Bloqueado</span>
+            </div>
+
+            <!-- Lesson 3 -->
+            <div class="lesson-card" onclick="openLesson(3)">
+                <div class="lesson-number">3</div>
+                <h3>Al-Jawf (الجوف)</h3>
+                <div class="arabic-title">الجوف - espaço vazio</div>
+                <p>As letras de prolongamento e suas características</p>
+                <span class="lesson-status locked" id="status-3">🔒 Bloqueado</span>
+            </div>
+
+            <!-- Lesson 4 -->
+            <div class="lesson-card" onclick="openLesson(4)">
+                <div class="lesson-number">4</div>
+                <h3>Al-Halq (الحلق)</h3>
+                <div class="arabic-title">الحلق - a garganta</div>
+                <p>As três partes da garganta e suas letras</p>
+                <span class="lesson-status locked" id="status-4">🔒 Bloqueado</span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Lesson Modal -->
+    <div class="modal-overlay" id="lessonModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeLesson()">×</button>
+            
+            <div class="score-display">
+                <h4>Pontuação</h4>
+                <div class="score-value" id="currentScore">0</div>
+            </div>
+
+            <div class="lesson-content" id="lessonContent">
+                <!-- Content injected by JS -->
+            </div>
+
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="previousPage()">← Anterior</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextPage()">Próximo →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion Badge -->
+    <div class="badge" id="completionBadge">
+        <div class="badge-icon">🏆</div>
+        <h3>Lição Completa!</h3>
+        <p>Parabéns! Você completou esta lição com sucesso.</p>
+        <button class="start-btn" onclick="closeBadge()" style="margin-top: 1rem;">Continuar</button>
+    </div>
+
+    <script>
+        // State Management
+        let currentLesson = 0;
+        let currentPage = 0;
+        let userScore = 0;
+        let completedLessons = [];
+        let lessonProgress = {};
+
+        // Lesson Data
+        const lessonsData = {
+            1: {
+                title: "O que é Tajweed?",
+                arabic: "ما هو التجويد؟",
+                pages: [
+                    {
+                        type: 'content',
+                        content: `
+                            <div class="lesson-header">
+                                <h2>O que é Tajweed?</h2>
+                                <div class="arabic">ما هو التجويد؟</div>
+                            </div>
+                            <div class="section">
+                                <h3>📖 Definição</h3>
+                                <div class="section-content">
+                                    <p><strong>Tajweed</strong> (تجويد) é a ciência que ensina a ler o Alcorão corretamente, dando a cada letra:</p>
+                                    <div class="highlight-box">
+                                        <ul style="list-style: none; padding: 0;">
+                                            <li>✓ O seu <strong>som correto</strong></li>
+                                            <li>✓ O seu <strong>ponto de articulação</strong></li>
+                                            <li>✓ O seu <strong>tempo adequado</strong></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <h3>🎯 Importância</h3>
+                                <div class="section-content">
+                                    <div class="highlight-box">
+                                        <p style="font-size: 1.2rem; text-align: center; font-style: italic;">
+                                            "O Tajweed começa desde o nível iniciante — não é só para avançados."
+                                        </p>
+                                    </div>
+                                    <p>Aprender Tajweed desde o início ajuda a:</p>
+                                    <ul style="margin-left: 2rem; line-height: 2;">
+                                        <li>Evitar erros na recitação</li>
+                                        <li>Preservar o significado correto do Alcorão</li>
+                                        <li>Recitar da mesma forma que o Profeta (PBUH) recitava</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        type: 'quiz',
+                        question: 'O que o Tajweed ensina sobre cada letra?',
+                        options: [
+                            'Apenas o som correto',
+                            'Som, ponto de articulação e tempo adequado',
+                            'Apenas a escrita',
+                            'Apenas a memorização'
+                        ],
+                        correct: 1
+                    }
+                ]
+            },
+            2: {
+                title: "Makharijul Huruf",
+                arabic: "مخارج الحروف",
+                pages: [
+                    {
+                        type: 'content',
+                        content: `
+                            <div class="lesson-header">
+                                <h2>Makharijul Huruf</h2>
+                                <div class="arabic">مخارج الحروف</div>
+                            </div>
+                            <div class="section">
+                                <h3>🔤 Definição</h3>
+                                <div class="section-content">
+                                    <p><strong>Makharijul Huruf</strong> (مخارج الحروف) significa <em>"Pontos de Articulação das Letras"</em>.</p>
+                                    <p>São os locais específicos de onde saem as letras árabes quando pronunciadas.</p>
+                                    
+                                    <div class="highlight-box">
+                                        <h4 style="color: var(--secondary); margin-bottom: 1rem;">✔️ Por que aprender Makharij?</h4>
+                                        <ul style="list-style: none; padding: 0;">
+                                            <li>🎯 Evitar erros na pronúncia</li>
+                                            <li>🎯 Melhorar a recitação</li>
+                                            <li>🎯 Ler corretamente o Alcorão</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <h3>📍 Os 5 Principais Makharij</h3>
+                                <div class="section-content">
+                                    <div class="letters-grid">
+                                        <div class="letter-card" style="cursor: default;">
+                                            <div class="letter-name">1. Al-Jawf</div>
+                                            <div class="arabic" style="font-size: 2rem;">الجوف</div>
+                                            <div class="letter-trans">Espaço vazio</div>
+                                        </div>
+                                        <div class="letter-card" style="cursor: default;">
+                                            <div class="letter-name">2. Al-Halq</div>
+                                            <div class="arabic" style="font-size: 2rem;">الحلق</div>
+                                            <div class="letter-trans">A garganta</div>
+                                        </div>
+                                        <div class="letter-card" style="cursor: default;">
+                                            <div class="letter-name">3. Al-Lisan</div>
+                                            <div class="arabic" style="font-size: 2rem;">اللسان</div>
+                                            <div class="letter-trans">A língua</div>
+                                        </div>
+                                        <div class="letter-card" style="cursor: default;">
+                                            <div class="letter-name">4. Ash-Shafatain</div>
+                                            <div class="arabic" style="font-size: 2rem;">الشفتان</div>
+                                            <div class="letter-trans">Os lábios</div>
+                                        </div>
+                                        <div class="letter-card" style="cursor: default;">
+                                            <div class="letter-name">5. Al-Khayshum</div>
+                                            <div class="arabic" style="font-size: 2rem;">الخيشوم</div>
+                                            <div class="letter-trans">O nariz</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        type: 'quiz',
+                        question: 'Quantos são os principais Makharij (pontos de articulação)?',
+                        options: ['3', '5', '7', '10'],
+                        correct: 1
+                    }
+                ]
+            },
+            3: {
+                title: "Al-Jawf (الجوف)",
+                arabic: "الجوف - espaço vazio",
+                pages: [
+                    {
+                        type: 'content',
+                        content: `
+                            <div class="lesson-header">
+                                <h2>Al-Jawf (الجوف)</h2>
+                                <div class="arabic">الجوف - O espaço vazio</div>
+                            </div>
+                            <div class="section">
+                                <h3>📍 Localização</h3>
+                                <div class="section-content">
+                                    <p>O <strong>Al-Jawf</strong> é o espaço vazio entre a boca e a garganta.</p>
+                                    <p>É um makhraj <strong>Muqaddar</strong> (estimado) porque o som não prende em um ponto específico.</p>
+                                    
+                                    <div class="highlight-box">
+                                        <h4>🌬️ Características:</h4>
+                                        <ul style="list-style: none; padding: 0; line-height: 2;">
+                                            <li>✨ Chamadas de <strong>Huruf Maddiyah</strong> (letras de prolongamento)</li>
+                                            <li>✨ Também chamadas de <strong>Huruf Hawiyah</strong> (letras do ar)</li>
+                                            <li>✨ O som flui livremente pelo espaço vazio</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <h3>🔤 As 3 Letras de Al-Jawf</h3>
+                                <div class="letters-grid">
+                                    <div class="letter-card" onclick="playSound('alif')">
+                                        <div class="play-icon">▶</div>
+                                        <div class="letter-display">ا</div>
+                                        <div class="letter-name">Alif</div>
+                                        <div class="letter-trans">Som "aa" aberto</div>
+                                    </div>
+                                    <div class="letter-card" onclick="playSound('waw')">
+                                        <div class="play-icon">▶</div>
+                                        <div class="letter-display">و</div>
+                                        <div class="letter-name">Waw</div>
+                                        <div class="letter-trans">Som "uu" arredondado</div>
+                                    </div>
+                                    <div class="letter-card" onclick="playSound('ya')">
+                                        <div class="play-icon">▶</div>
+                                        <div class="letter-display">ي</div>
+                                        <div class="letter-name">Ya</div>
+                                        <div class="letter-trans">Som "ii" estreito</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        type: 'quiz',
+                        question: 'Qual é a característica do makhraj Al-Jawf?',
+                        options: [
+                            'O som prende na garganta',
+                            'É um makhraj Muqaddar (estimado)',
+                            'Usa apenas a língua',
+                            'São letras pesadas'
+                        ],
+                        correct: 1
+                    }
+                ]
+            },
+            4: {
+                title: "Al-Halq (الحلق)",
+                arabic: "الحلق - a garganta",
+                pages: [
+                    {
+                        type: 'content',
+                        content: `
+                            <div class="lesson-header">
+                                <h2>Al-Halq (الحلق)</h2>
+                                <div class="arabic">الحلق - A garganta</div>
+                            </div>
+                            <div class="section">
+                                <h3>🗣️ Visão Geral</h3>
+                                <div class="section-content">
+                                    <p>O <strong>Al-Halq</strong> (الحلق) é dividido em <strong>três partes</strong>, cada uma com suas letras específicas.</p>
+                                    <p>É o segundo makhraj mais profundo depois do Al-Jawf.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="throat-diagram">
+                                <h3 style="text-align: center; color: var(--secondary); margin-bottom: 1.5rem;">Diagrama da Garganta</h3>
+                                
+                                <div class="throat-section" onclick="highlightSection(this)">
+                                    <div class="label">🔹 Aqsal Halq</div>
+                                    <div>
+                                        <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">أقصى الحلق - Parte mais profunda</div>
+                                        <div class="letters">
+                                            <span class="letter-pill">ء (Hamza)</span>
+                                            <span class="letter-pill">هـ (Ha)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="throat-section" onclick="highlightSection(this)">
+                                    <div class="label">🔹 Wastal Halq</div>
+                                    <div>
+                                        <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">وسط الحلق - Parte média</div>
+                                        <div class="letters">
+                                            <span class="letter-pill">ع ('Ain)</span>
+                                            <span class="letter-pill">ح (Ha)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="throat-section" onclick="highlightSection(this)">
+                                    <div class="label">🔹 Adnal Halq</div>
+                                    <div>
+                                        <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">أدنى الحلق - Parte superior</div>
+                                        <div class="letters">
+                                            <span class="letter-pill">غ (Ghain)</span>
+                                            <span class="letter-pill">خ (Kha)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="section">
+                                <h3>🔊 Pratique a Pronúncia</h3>
+                                <div class="letters-grid">
+                                    <div class="letter-card" onclick="playSound('hamza')">
+                                        <div class="play-icon">▶</div>
+                                        <div class="letter-display">ء</div>
+                                        <div class="letter-name">Hamza</div>
+                                        <div class="letter-trans">Parada glotal</div>
+                                    </div>
+                                    <div class="letter-card" onclick="playSound('ha')">
+                                        <div class="play-icon">▶</div>
+                                        <div class="letter-display">هـ</div>
+                                        <div class="letter-name">Ha suave</div>
+                                        <div class="letter-trans">Sopro suave</div>
+                                    </div>
+                                    <div class="letter-card" onclick="playSound('ain')">
+                                        <div class="play-icon">▶</div>
+                                        <div class="letter-display">ع</div>
+                                        <div class="letter-name">'Ain</div>
+                                        <div class="letter-trans">Contração da garganta</div>
+                                    </div>
+                                    <div class="letter-card" onclick="playSound('ha_heavy')">
+                                        <div class="play-icon">▶</div>
+                                        <div class="letter-display">ح</div>
+                                        <div class="letter-name">Ha forte</div>
+                                        <div class="letter-trans">Sopro forte</div>
+                                    </div>
+                                    <div class="letter-card" onclick="playSound('ghain')">
+                                        <div class="play-icon">▶</div>
+                                        <div class="letter-display">غ</div>
+                                        <div class="letter-name">Ghain</div>
+                                        <div class="letter-trans">Vibração vocal</div>
+                                    </div>
+                                    <div class="letter-card" onclick="playSound('kha')">
+                                        <div class="play-icon">▶</div>
+                                        <div class="letter-display">خ</div>
+                                        <div class="letter-name">Kha</div>
+                                        <div class="letter-trans">Sopro rasgado</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        type: 'quiz',
+                        question: 'Quais letras pertencem à parte mais profunda da garganta (Aqsal Halq)?',
+                        options: [
+                            'ع e ح',
+                            'ء e هـ',
+                            'غ e خ',
+                            'ا e و'
+                        ],
+                        correct: 1
+                    }
+                ]
+            }
+        };
+
+        // Initialize
+        function init() {
+            loadProgress();
+            updateUI();
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('madrassaProgress');
+            if (saved) {
+                const data = JSON.parse(saved);
+                completedLessons = data.completed || [];
+                userScore = data.score || 0;
+                lessonProgress = data.progress || {};
+            }
+        }
+
+        function saveProgress() {
+            const data = {
+                completed: completedLessons,
+                score: userScore,
+                progress: lessonProgress
+            };
+            localStorage.setItem('madrassaProgress', JSON.stringify(data));
+        }
+
+        function updateUI() {
+            // Update lesson cards status
+            for (let i = 1; i <= 4; i++) {
+                const statusEl = document.getElementById(`status-${i}`);
+                if (completedLessons.includes(i)) {
+                    statusEl.textContent = '✅ Completo';
+                    statusEl.className = 'lesson-status completed';
+                } else if (i === 1 || completedLessons.includes(i - 1)) {
+                    statusEl.textContent = '🔓 Disponível';
+                    statusEl.className = 'lesson-status';
+                }
+            }
+
+            // Update progress bar
+            const progress = (completedLessons.length / 4) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        function scrollToLessons() {
+            document.getElementById('licoes').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function openLesson(lessonId) {
+            // Check if lesson is unlocked
+            if (lessonId > 1 && !completedLessons.includes(lessonId - 1)) {
+                alert('Complete a lição anterior primeiro!');
+                return;
+            }
+
+            currentLesson = lessonId;
+            currentPage = 0;
+            document.getElementById('currentScore').textContent = userScore;
+            document.getElementById('lessonModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            renderPage();
+        }
+
+        function closeLesson() {
+            document.getElementById('lessonModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            saveProgress();
+        }
+
+        function renderPage() {
+            const lesson = lessonsData[currentLesson];
+            const page = lesson.pages[currentPage];
+            const contentDiv = document.getElementById('lessonContent');
+
+            if (page.type === 'content') {
+                contentDiv.innerHTML = page.content;
+            } else if (page.type === 'quiz') {
+                renderQuiz(page);
+            }
+
+            // Update nav buttons
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').textContent = 
+                currentPage === lesson.pages.length - 1 ? 'Finalizar ✓' : 'Próximo →';
+        }
+
+        function renderQuiz(quizData) {
+            const contentDiv = document.getElementById('lessonContent');
+            contentDiv.innerHTML = `
+                <div class="quiz-container">
+                    <h3 style="text-align: center; color: var(--secondary); margin-bottom: 1rem;">📝 Avaliação</h3>
+                    <div class="quiz-question">${quizData.question}</div>
+                    <div class="quiz-options" id="quizOptions">
+                        ${quizData.options.map((opt, idx) => `
+                            <div class="quiz-option" onclick="checkAnswer(${idx}, ${quizData.correct})">${opt}</div>
+                        `).join('')}
+                    </div>
+                    <div class="quiz-result" id="quizResult"></div>
+                </div>
+            `;
+        }
+
+        function checkAnswer(selected, correct) {
+            const options = document.querySelectorAll('.quiz-option');
+            const resultDiv = document.getElementById('quizResult');
+
+            options.forEach((opt, idx) => {
+                opt.style.pointerEvents = 'none';
+                if (idx === correct) {
+                    opt.classList.add('correct');
+                } else if (idx === selected && idx !== correct) {
+                    opt.classList.add('wrong');
+                }
+            });
+
+            if (selected === correct) {
+                resultDiv.innerHTML = '<span style="color: var(--success);">✅ Correto! +10 pontos</span>';
+                userScore += 10;
+                document.getElementById('currentScore').textContent = userScore;
+                
+                // Mark lesson as complete if it's the last page
+                const lesson = lessonsData[currentLesson];
+                if (currentPage === lesson.pages.length - 1) {
+                    completeLesson();
+                }
+            } else {
+                resultDiv.innerHTML = '<span style="color: var(--error);">❌ Tente novamente na próxima!</span>';
+            }
+        }
+
+        function completeLesson() {
+            if (!completedLessons.includes(currentLesson)) {
+                completedLessons.push(currentLesson);
+                saveProgress();
+                updateUI();
+                
+                setTimeout(() => {
+                    document.getElementById('completionBadge').classList.add('show');
+                }, 500);
+            }
+        }
+
+        function closeBadge() {
+            document.getElementById('completionBadge').classList.remove('show');
+            closeLesson();
+        }
+
+        function nextPage() {
+            const lesson = lessonsData[currentLesson];
+            if (currentPage < lesson.pages.length - 1) {
+                currentPage++;
+                renderPage();
+            } else {
+                closeLesson();
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                renderPage();
+            }
+        }
+
+        function playSound(letter) {
+            // Simulação de áudio - em produção, usar arquivos reais
+            const card = event.currentTarget;
+            card.classList.add('playing');
+            
+            // Criar som sintético usando Web Speech API
+            const utterance = new SpeechSynthesisUtterance();
+            utterance.lang = 'ar-SA';
+            
+            const sounds = {
+                'alif': 'ا',
+                'waw': 'و',
+                'ya': 'ي',
+                'hamza': 'ء',
+                'ha': 'ه',
+                'ain': 'ع',
+                'ha_heavy': 'ح',
+                'ghain': 'غ',
+                'kha': 'خ'
+            };
+            
+            utterance.text = sounds[letter] || letter;
+            speechSynthesis.speak(utterance);
+            
+            setTimeout(() => {
+                card.classList.remove('playing');
+            }, 1000);
+        }
+
+        function highlightSection(element) {
+            document.querySelectorAll('.throat-section').forEach(el => {
+                el.style.background = 'rgba(255,255,255,0.03)';
+            });
+            element.style.background = 'rgba(212, 175, 55, 0.2)';
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLesson();
+            }
+        });
+
+        // Initialize on load
+        window.onload = init;
+    </script>
+</body>
+</html>
