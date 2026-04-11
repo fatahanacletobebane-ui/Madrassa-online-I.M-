@@ -3,196 +3,1204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Madrassa Online Islam Moçambique - 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>FB Aulas Online - Curso Completo de Programação</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-database-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-green: #064e3b;
-            --accent-gold: #d4af37;
-            --bg-cream: #fdfbf7;
-            --text-dark: #1f2937;
-            --white: #ffffff;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg-cream); color: var(--text-dark); line-height: 1.6; padding-bottom: 50px; }
-
-        .header {
-            background: linear-gradient(rgba(6, 78, 59, 0.95), rgba(6, 78, 59, 0.95)), url('https://www.transparenttextures.com/patterns/arabesque.png');
-            color: var(--white); padding: 2.5rem 1rem; text-align: center; border-bottom: 5px solid var(--accent-gold);
-        }
-
-        .timer-container {
-            background: var(--white); max-width: 450px; margin: -25px auto 1.5rem; padding: 1rem;
-            border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; justify-content: space-around; border: 1px solid var(--accent-gold);
-        }
-        .timer-unit span { display: block; font-size: 1.4rem; font-weight: 700; color: var(--primary-green); }
-        .timer-unit label { font-size: 0.7rem; text-transform: uppercase; color: #666; }
-
-        .price-info { text-align: center; margin: 10px auto; max-width: 500px; font-weight: 600; padding: 12px; border-radius: 8px; background: #fffbeb; border: 1px dashed var(--accent-gold); font-size: 1.1rem; }
-
-        .main-menu { display: grid; gap: 12px; max-width: 400px; margin: 2rem auto; padding: 0 20px; }
-        .btn-menu {
-            padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; font-size: 0.95rem;
-            display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; color: white; text-decoration: none; text-align: center;
-        }
-        .btn-enroll { background: var(--primary-green); }
-        .btn-info { background: #2563eb; }
-        .btn-pay-info { background: #d97706; }
-        .btn-contact { background: #16a34a; }
-        .btn-menu:hover { opacity: 0.9; transform: translateY(-2px); }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; overflow-y: auto; padding: 20px 0; align-items: center; }
-        .modal-content { background: white; width: 90%; max-width: 450px; margin: auto; border-radius: 20px; padding: 2rem; position: relative; }
+        * { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'Fira Code', monospace; }
         
-        input, select { width: 100%; padding: 12px; margin: 8px 0 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
-        .payment-methods { display: grid; gap: 10px; margin: 15px 0; }
-        .method-card { border: 2px solid #eee; border-radius: 12px; padding: 10px; display: flex; align-items: center; cursor: pointer; }
-        .method-card input { width: auto; margin-right: 10px; margin-bottom: 0; }
+        .gradient-bg {
+            background: linear-gradient(-45deg, #0f172a, #1e3a5f, #0f172a, #1e40af);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .console-window {
+            background: #0d1117;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+        
+        .console-header {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+        }
+        
+        .console-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .console-content {
+            background: #0d1117;
+            color: #e6edf3;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .code-editor {
+            background: #1e1e1e;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            line-height: 1.6;
+        }
+        
+        .code-input {
+            background: transparent;
+            color: #d4d4d4;
+            border: none;
+            outline: none;
+            resize: none;
+            font-family: 'Fira Code', monospace;
+            line-height: 1.6;
+            tab-size: 2;
+        }
+        
+        .syntax-keyword { color: #c586c0; }
+        .syntax-string { color: #ce9178; }
+        .syntax-function { color: #dcdcaa; }
+        .syntax-comment { color: #6a9955; }
+        .syntax-number { color: #b5cea8; }
+        .syntax-tag { color: #569cd6; }
+        .syntax-attr { color: #9cdcfe; }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-slide-in { animation: slideIn 0.6s ease-out; }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.8); }
+        }
+        
+        .pulse-glow { animation: pulse-glow 2s infinite; }
+        
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+        
+        .installment-card { transition: all 0.3s ease; }
+        .installment-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .installment-paid {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .installment-pending {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+        
+        .quiz-option {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .quiz-option:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+        }
+        
+        .quiz-option.selected {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+        }
+        
+        .quiz-option.correct {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+        }
+        
+        .quiz-option.wrong {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show { transform: translateX(0); }
+        .toast-success { background: #10b981; }
+        .toast-error { background: #ef4444; }
+        .toast-info { background: #3b82f6; }
+        
+        .lesson-locked-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            background: rgba(15, 23, 42, 0.95);
+        }
+        
+        .preview-frame {
+            background: white;
+            border-radius: 8px;
+            min-height: 200px;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white overflow-x-hidden">
 
-        .info-box { background: #f9fafb; padding: 15px; border-radius: 10px; font-size: 0.95rem; margin-bottom: 15px; border-left: 4px solid var(--accent-gold); }
-        .close-btn { float: right; cursor: pointer; font-size: 1.5rem; color: #999; font-weight: bold; }
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center font-bold text-xl">FB</div>
+                    <span class="font-bold text-xl tracking-tight">Aulas Online</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#cursos" class="text-gray-300 hover:text-white transition">Cursos</a>
+                    <a href="#como-funciona" class="text-gray-300 hover:text-white transition">Como Funciona</a>
+                    <button onclick="showAuthModal()" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full font-medium transition pulse-glow">Começar Agora</button>
+                </div>
+                <div id="userNav" class="hidden items-center space-x-4">
+                    <span id="userName" class="text-gray-300"></span>
+                    <button onclick="logout()" class="text-red-400 hover:text-red-300 transition">Sair</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="animate-slide-in">
+                    <div class="inline-block px-4 py-2 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-sm font-medium mb-6">
+                        🚀 Curso Completo para Iniciantes
+                    </div>
+                    <h1 class="text-5xl lg:text-7xl font-bold leading-tight mb-6">
+                        Aprenda <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Programação</span> do Zero ao Profissional
+                    </h1>
+                    <p class="text-xl text-gray-400 mb-8 leading-relaxed">
+                        HTML, CSS e JavaScript com aulas interativas, projetos reais e certificado reconhecido. 
+                        Torne-se um desenvolvedor web completo.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="showAuthModal()" class="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 px-8 py-4 rounded-full font-semibold text-lg transition transform hover:scale-105 shadow-2xl shadow-blue-500/25">
+                            Inscrever-se Agora
+                        </button>
+                        <button onclick="scrollToDemo()" class="glass px-8 py-4 rounded-full font-semibold text-lg transition hover:bg-white/10">
+                            Ver Demonstração
+                        </button>
+                    </div>
+                    <div class="mt-8 flex items-center space-x-6 text-sm text-gray-400">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>50+ Aulas Interativas</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>10 Projetos Práticos</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Certificado Incluso</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative animate-slide-in" style="animation-delay: 0.2s;">
+                    <div class="console-window overflow-hidden">
+                        <div class="console-header px-4 py-3 flex items-center space-x-2">
+                            <div class="console-dot bg-red-500"></div>
+                            <div class="console-dot bg-yellow-500"></div>
+                            <div class="console-dot bg-green-500"></div>
+                            <span class="ml-4 text-sm text-gray-400 font-mono">meu-primeiro-site.html</span>
+                        </div>
+                        <div class="console-content p-6 font-mono text-sm">
+                            <div><span class="syntax-tag">&lt;!DOCTYPE html&gt;</span></div>
+                            <div><span class="syntax-tag">&lt;html&gt;</span></div>
+                            <div class="ml-4"><span class="syntax-tag">&lt;head&gt;</span></div>
+                            <div class="ml-8"><span class="syntax-tag">&lt;title&gt;</span>Meu Site<span class="syntax-tag">&lt;/title&gt;</span></div>
+                            <div class="ml-4"><span class="syntax-tag">&lt;/head&gt;</span></div>
+                            <div class="ml-4"><span class="syntax-tag">&lt;body&gt;</span></div>
+                            <div class="ml-8"><span class="syntax-tag">&lt;h1&gt;</span>Olá, Mundo!<span class="syntax-tag">&lt;/h1&gt;</span></div>
+                            <div class="ml-8"><span class="syntax-tag">&lt;p&gt;</span>Sou um programador<span class="syntax-tag">&lt;/p&gt;</span></div>
+                            <div class="ml-4"><span class="syntax-tag">&lt;/body&gt;</span></div>
+                            <div><span class="syntax-tag">&lt;/html&gt;</span></div>
+                        </div>
+                    </div>
+                    <div class="absolute -top-6 -right-6 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Section -->
+    <section id="payment" class="py-20 px-4 sm:px-6 lg:px-8 hidden">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4">Pagamento da Inscrição</h2>
+                <p class="text-gray-400">Valor total: <span class="text-2xl font-bold text-white">500 MTN</span></p>
+                <p class="text-sm text-gray-500 mt-2">Pode pagar em 3 parcelas</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="installment-card glass-card p-6 rounded-2xl border-2 border-yellow-500/50" id="installment1">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-sm text-gray-400">1ª Parcela</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-300" id="status1">Pendente</span>
+                    </div>
+                    <div class="text-3xl font-bold mb-2">200 MTN</div>
+                    <p class="text-sm text-gray-400 mb-4">Pagamento inicial para ativação</p>
+                    <button onclick="payInstallment(1, 200)" id="btnPay1" class="w-full bg-yellow-600 hover:bg-yellow-700 py-3 rounded-xl font-medium transition">Pagar Agora</button>
+                </div>
+                
+                <div class="installment-card glass-card p-6 rounded-2xl border-2 border-gray-600" id="installment2">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-sm text-gray-400">2ª Parcela</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-600 text-gray-300" id="status2">Bloqueado</span>
+                    </div>
+                    <div class="text-3xl font-bold mb-2 text-gray-500">150 MTN</div>
+                    <p class="text-sm text-gray-500 mb-4">Disponível após 1ª parcela</p>
+                    <button disabled id="btnPay2" class="w-full bg-gray-700 py-3 rounded-xl font-medium cursor-not-allowed opacity-50">Bloqueado</button>
+                </div>
+                
+                <div class="installment-card glass-card p-6 rounded-2xl border-2 border-gray-600" id="installment3">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-sm text-gray-400">3ª Parcela</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-600 text-gray-300" id="status3">Bloqueado</span>
+                    </div>
+                    <div class="text-3xl font-bold mb-2 text-gray-500">150 MTN</div>
+                    <p class="text-sm text-gray-500 mb-4">Disponível após 2ª parcela</p>
+                    <button disabled id="btnPay3" class="w-full bg-gray-700 py-3 rounded-xl font-medium cursor-not-allowed opacity-50">Bloqueado</button>
+                </div>
+            </div>
+            
+            <div class="glass-card p-6 rounded-2xl text-center">
+                <p class="text-gray-400 mb-4">Para pagamento e assistência:</p>
+                <div class="flex items-center justify-center space-x-3 text-2xl font-bold text-green-400">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    <span>860407269</span>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">Envie comprovativo para o WhatsApp para ativação imediata</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Content (Protected) -->
+    <section id="courseContent" class="py-20 px-4 sm:px-6 lg:px-8 hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="glass-card p-6 rounded-2xl mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold">Seu Progresso</h2>
+                        <p class="text-gray-400">Complete cada módulo para desbloquear o próximo</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-3xl font-bold text-blue-400" id="progressPercent">0%</div>
+                        <div class="text-sm text-gray-400">Concluído</div>
+                    </div>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-3">
+                    <div id="progressBar" class="bg-gradient-to-r from-blue-500 to-cyan-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1">
+                    <div class="glass-card rounded-2xl p-6 sticky top-24 max-h-[80vh] overflow-y-auto">
+                        <h3 class="font-bold text-lg mb-4">Módulos do Curso</h3>
+                        <div class="space-y-3" id="moduleList"></div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <div id="lessonContainer" class="glass-card rounded-2xl p-8 min-h-[600px]"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4">Experimente o Ambiente de Aprendizagem</h2>
+                <p class="text-gray-400">Teste nosso editor interativo antes de se inscrever</p>
+            </div>
+            
+            <div class="glass-card rounded-2xl p-1 overflow-hidden">
+                <div class="bg-gray-900 rounded-xl overflow-hidden">
+                    <div class="flex border-b border-gray-700">
+                        <button class="px-6 py-3 text-sm font-medium text-blue-400 border-b-2 border-blue-400 bg-gray-800/50">HTML</button>
+                        <button class="px-6 py-3 text-sm font-medium text-gray-400 hover:text-white">CSS</button>
+                        <button class="px-6 py-3 text-sm font-medium text-gray-400 hover:text-white">JavaScript</button>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2">
+                        <div class="p-6 border-r border-gray-700">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs text-gray-500 uppercase tracking-wider">index.html</span>
+                                <button onclick="runDemoCode()" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium transition flex items-center space-x-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
+                                    <span>Executar</span>
+                                </button>
+                            </div>
+                            <textarea id="demoCode" class="code-input w-full h-64 p-4 text-sm" spellcheck="false"><!-- Crie sua primeira página web -->
+<h1>Olá, Mundo!</h1>
+<p>Eu sou um programador.</p>
+<button onclick="alert('Funciona!')">Clique em mim</button>
+
+<style>
+  h1 { color: blue; }
+  p { font-size: 18px; }
+  button { 
+    background: green; 
+    color: white;
+    padding: 10px;
+  }
+</style></textarea>
+                        </div>
+                        
+                        <div class="p-6 bg-gray-800">
+                            <span class="text-xs text-gray-500 uppercase tracking-wider mb-4 block">Preview do Navegador</span>
+                            <div id="demoOutput" class="preview-frame p-4">
+                                <div class="text-gray-400 text-center mt-8">Clique em Executar para ver o resultado...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="como-funciona" class="py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Como Funciona</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Sistema de aprendizagem progressiva com pagamento facilitado em parcelas</p>
+            </div>
+            
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="glass-card p-8 rounded-2xl text-center group hover:scale-105 transition duration-300">
+                    <div class="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">1. Registo</h3>
+                    <p class="text-gray-400 text-sm">Crie sua conta com nome, número e PIN de segurança</p>
+                </div>
+                
+                <div class="glass-card p-8 rounded-2xl text-center group hover:scale-105 transition duration-300">
+                    <div class="w-16 h-16 bg-yellow-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">2. Pagamento</h3>
+                    <p class="text-gray-400 text-sm">500 MTN em 3 parcelas (200+150+150) via M-Pesa</p>
+                </div>
+                
+                <div class="glass-card p-8 rounded-2xl text-center group hover:scale-105 transition duration-300">
+                    <div class="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">3. Aprovação</h3>
+                    <p class="text-gray-400 text-sm">Admin ativa seu acesso após confirmação do pagamento</p>
+                </div>
+                
+                <div class="glass-card p-8 rounded-2xl text-center group hover:scale-105 transition duration-300">
+                    <div class="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">4. Aprenda</h3>
+                    <p class="text-gray-400 text-sm">Acesse 50+ aulas interativas com projetos reais</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-3 mb-4 md:mb-0">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center font-bold">FB</div>
+                <span class="font-bold">Aulas Online</span>
+            </div>
+            <div class="text-gray-400 text-sm">
+                Suporte: <span class="text-green-400 font-medium">860407269</span> | © 2026 FB Aulas Online
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeAuthModal()"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md">
+            <div class="glass-card rounded-2xl p-8 relative">
+                <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+                
+                <div class="text-center mb-8">
+                    <h2 id="authTitle" class="text-2xl font-bold mb-2">Criar Conta</h2>
+                    <p class="text-gray-400 text-sm">Comece sua jornada na programação</p>
+                </div>
+                
+                <form id="authForm" onsubmit="handleAuth(event)">
+                    <div id="registerFields">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Nome Completo</label>
+                            <input type="text" id="regName" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none transition" placeholder="Seu nome" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Número de Telefone</label>
+                            <input type="tel" id="regNumber" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none transition" placeholder="84/85/86 000 0000" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">PIN (4 dígitos)</label>
+                        <input type="password" id="authPin" maxlength="4" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none transition" placeholder="****" required>
+                    </div>
+                    
+                    <button type="submit" id="authSubmitBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-semibold transition flex items-center justify-center space-x-2">
+                        <span id="authSubmitText">Criar Conta</span>
+                        <div id="authSpinner" class="spinner w-5 h-5 border-2 hidden"></div>
+                    </button>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <p class="text-gray-400 text-sm">
+                        <span id="authSwitchText">Já tem conta?</span>
+                        <button onclick="toggleAuthMode()" id="authSwitchBtn" class="text-blue-400 hover:text-blue-300 ml-1 font-medium">Entrar</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCrbEGkPLcup46CJ_kU4yKjkMkUV-Nyc_M",
+            authDomain: "fb-aulas-online.firebaseapp.com",
+            databaseURL: "https://fb-aulas-online-default-rtdb.firebaseio.com",
+            projectId: "fb-aulas-online",
+            storageBucket: "fb-aulas-online.firebasestorage.app",
+            messagingSenderId: "863467957819",
+            appId: "1:863467957819:web:1bb3442a2705e0f72c761e",
+            measurementId: "G-4WLY5LFQ2N"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        let currentUser = null;
+        let userData = null;
+        let isLoginMode = false;
+        let currentModule = 0;
+        let currentLesson = 0;
+
+        // COMPLETE COURSE DATA - 50+ LESSONS
+        const courseModules = [
+            {
+                id: 1,
+                title: "Módulo 1: Fundamentos da Web",
+                description: "HTML básico e estrutura de páginas",
+                lessons: [
+                    {
+                        id: "1-1",
+                        title: "1.1 O que é a Web?",
+                        type: "theory",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Bem-vindo ao Mundo da Programação!</h3>
+                            <p class="text-gray-300 mb-4">A web é uma rede global de computadores interligados. Quando visita um site, seu navegador pede informações a um servidor.</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold mb-2 text-blue-400">Conceitos Fundamentais:</h4>
+                                <ul class="list-disc list-inside text-gray-300 space-y-2">
+                                    <li><strong>HTML</strong> - Estrutura do site (ossos)</li>
+                                    <li><strong>CSS</strong> - Estilo visual (roupa)</li>
+                                    <li><strong>JavaScript</strong> - Funcionalidade (músculos)</li>
+                                    <li><strong>Servidor</strong> - Computador que guarda sites</li>
+                                    <li><strong>Navegador</strong> - Programa que mostra sites (Chrome, Firefox)</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-900/30 border border-blue-500/30 p-4 rounded-lg">
+                                <p class="text-blue-300">💡 <strong>Dica:</strong> Todos os sites que visita (Facebook, Google, YouTube) usam estas três tecnologias!</p>
+                            </div>
+                        `,
+                        completed: false
+                    },
+                    {
+                        id: "1-2",
+                        title: "1.2 Estrutura HTML Básica",
+                        type: "practice",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Anatomia de um Documento HTML</h3>
+                            <p class="text-gray-300 mb-4">Todo documento HTML segue uma estrutura padrão. Vamos criar nossa primeira página!</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4 font-mono text-sm">
+                                <div><span class="syntax-tag">&lt;!DOCTYPE html&gt;</span> <span class="syntax-comment">&lt;!-- Tipo do documento --&gt;</span></div>
+                                <div><span class="syntax-tag">&lt;html&gt;</span> <span class="syntax-comment">&lt;!-- Raiz do documento --&gt;</span></div>
+                                <div class="ml-4"><span class="syntax-tag">&lt;head&gt;</span> <span class="syntax-comment">&lt;!-- Configurações --&gt;</span></div>
+                                <div class="ml-8"><span class="syntax-tag">&lt;title&gt;</span>Título da Página<span class="syntax-tag">&lt;/title&gt;</span></div>
+                                <div class="ml-4"><span class="syntax-tag">&lt;/head&gt;</span></div>
+                                <div class="ml-4"><span class="syntax-tag">&lt;body&gt;</span> <span class="syntax-comment">&lt;!-- Conteúdo visível --&gt;</span></div>
+                                <div class="ml-8"><span class="syntax-tag">&lt;h1&gt;</span>Olá, Mundo!<span class="syntax-tag">&lt;/h1&gt;</span></div>
+                                <div class="ml-4"><span class="syntax-tag">&lt;/body&gt;</span></div>
+                                <div><span class="syntax-tag">&lt;/html&gt;</span></div>
+                            </div>
+                        `,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Minha Primeira Página</title>
+</head>
+<body>
+    <h1>Olá, Mundo!</h1>
+    <p>Eu estou aprendendo HTML!</p>
+</body>
+</html>`,
+                        expectedOutput: null,
+                        completed: false
+                    },
+                    {
+                        id: "1-3",
+                        title: "1.3 Tags de Título e Parágrafo",
+                        type: "practice",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Títulos e Textos</h3>
+                            <p class="text-gray-300 mb-4">HTML tem 6 níveis de títulos (h1 a h6) e tags para parágrafos.</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold mb-2">Hierarquia de Títulos:</h4>
+                                <ul class="text-gray-300 space-y-1 text-sm">
+                                    <li><span class="syntax-tag">&lt;h1&gt;</span> - Título principal (só 1 por página)</li>
+                                    <li><span class="syntax-tag">&lt;h2&gt;</span> - Subtítulo</li>
+                                    <li><span class="syntax-tag">&lt;h3&gt;</span> - Seção</li>
+                                    <li><span class="syntax-tag">&lt;p&gt;</span> - Parágrafo de texto</li>
+                                </ul>
+                            </div>
+                        `,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Meu Blog</title>
+</head>
+<body>
+    <!-- Crie um h1 com "Bem-vindo ao Meu Site" -->
+    
+    <!-- Crie um h2 com "Sobre Mim" -->
+    
+    <!-- Crie um p com uma descrição sobre você -->
+    
+</body>
+</html>`,
+                        checkFunction: (code) => {
+                            return code.includes('<h1>') && code.includes('<h2>') && code.includes('<p>');
+                        },
+                        completed: false
+                    },
+                    {
+                        id: "1-4",
+                        title: "1.4 Listas Ordenadas e Não Ordenadas",
+                        type: "practice",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Criando Listas</h3>
+                            <p class="text-gray-300 mb-4">Listas são fundamentais para organizar informações.</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4 font-mono text-sm">
+                                <div><span class="syntax-comment">&lt;!-- Lista não ordenada (bullets) --&gt;</span></div>
+                                <div><span class="syntax-tag">&lt;ul&gt;</span></div>
+                                <div class="ml-4"><span class="syntax-tag">&lt;li&gt;</span>Item 1<span class="syntax-tag">&lt;/li&gt;</span></div>
+                                <div class="ml-4"><span class="syntax-tag">&lt;li&gt;</span>Item 2<span class="syntax-tag">&lt;/li&gt;</span></div>
+                                <div><span class="syntax-tag">&lt;/ul&gt;</span></div>
+                                <div class="mt-2"><span class="syntax-comment">&lt;!-- Lista ordenada (números) --&gt;</span></div>
+                                <div><span class="syntax-tag">&lt;ol&gt;</span></div>
+                                <div class="ml-4"><span class="syntax-tag">&lt;li&gt;</span>Primeiro<span class="syntax-tag">&lt;/li&gt;</span></div>
+                                <div class="ml-4"><span class="syntax-tag">&lt;li&gt;</span>Segundo<span class="syntax-tag">&lt;/li&gt;</span></div>
+                                <div><span class="syntax-tag">&lt;/ol&gt;</span></div>
+                            </div>
+                        `,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Minhas Listas</title>
+</head>
+<body>
+    <h1>Meus Hobbies</h1>
+    <!-- Crie uma ul com 3 hobbies -->
+    
+    
+    <h2>Minhas Metas</h2>
+    <!-- Crie uma ol com 3 metas -->
+    
+</body>
+</html>`,
+                        checkFunction: (code) => code.includes('<ul>') && code.includes('<ol>') && code.includes('<li>'),
+                        completed: false
+                    },
+                    {
+                        id: "1-5",
+                        title: "1.5 Links e Navegação",
+                        type: "practice",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Criando Links</h3>
+                            <p class="text-gray-300 mb-4">A tag <span class="syntax-tag">&lt;a&gt;</span> cria links para outras páginas.</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4 font-mono text-sm">
+                                <div><span class="syntax-comment">&lt;!-- Link externo --&gt;</span></div>
+                                <div><span class="syntax-tag">&lt;a</span> <span class="syntax-attr">href</span>=<span class="syntax-string">"https://google.com"</span><span class="syntax-tag">&gt;</span>Google<span class="syntax-tag">&lt;/a&gt;</span></div>
+                                <div class="mt-2"><span class="syntax-comment">&lt;!-- Link em nova aba --&gt;</span></div>
+                                <div><span class="syntax-tag">&lt;a</span> <span class="syntax-attr">href</span>=<span class="syntax-string">"..."</span> <span class="syntax-attr">target</span>=<span class="syntax-string">"_blank"</span><span class="syntax-tag">&gt;</span>Abrir Nova Aba<span class="syntax-tag">&lt;/a&gt;</span></div>
+                            </div>
+                        `,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Meus Links</title>
+</head>
+<body>
+    <h1>Sites Favoritos</h1>
+    <!-- Crie um link para google.com -->
+    
+    <!-- Crie um link para youtube.com que abra em nova aba -->
+    
+</body>
+</html>`,
+                        checkFunction: (code) => code.includes('<a') && code.includes('href='),
+                        completed: false
+                    },
+                    {
+                        id: "1-6",
+                        title: "1.6 Imagens na Web",
+                        type: "practice",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Inserindo Imagens</h3>
+                            <p class="text-gray-300 mb-4">A tag <span class="syntax-tag">&lt;img&gt;</span> é self-closing (não precisa de fechamento).</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4 font-mono text-sm">
+                                <div><span class="syntax-tag">&lt;img</span> <span class="syntax-attr">src</span>=<span class="syntax-string">"foto.jpg"</span> <span class="syntax-attr">alt</span>=<span class="syntax-string">"Descrição"</span> <span class="syntax-attr">width</span>=<span class="syntax-string">"300"</span><span class="syntax-tag">&gt;</span></div>
+                            </div>
+                            <ul class="text-gray-300 text-sm space-y-1">
+                                <li><strong>src</strong> - Caminho da imagem</li>
+                                <li><strong>alt</strong> - Texto alternativo (acessibilidade)</li>
+                                <li><strong>width/height</strong> - Dimensões</li>
+                            </ul>
+                        `,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Minha Galeria</title>
+</head>
+<body>
+    <h1>Galeria de Fotos</h1>
+    <!-- Adicione uma imagem de gato -->
+    <img src="https://placekitten.com/300/200" alt="Gatinho fofo">
+    
+    <!-- Adicione outra imagem com width="400" -->
+    
+</body>
+</html>`,
+                        checkFunction: (code) => code.includes('<img') && code.includes('src='),
+                        completed: false
+                    },
+                    {
+                        id: "1-7",
+                        title: "1.7 Tabelas em HTML",
+                        type: "practice",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Criando Tabelas</h3>
+                            <p class="text-gray-300 mb-4">Tabelas organizam dados em linhas e colunas.</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4 font-mono text-sm">
+                                <div><span class="syntax-tag">&lt;table&gt;</span></div>
+                                <div class="ml-4"><span class="syntax-tag">&lt;tr&gt;</span> <span class="syntax-comment">&lt;!-- table row (linha) --&gt;</span></div>
+                                <div class="ml-8"><span class="syntax-tag">&lt;th&gt;</span>Cabeçalho<span class="syntax-tag">&lt;/th&gt;</span></div>
+                                <div class="ml-8"><span class="syntax-tag">&lt;td&gt;</span>Dado<span class="syntax-tag">&lt;/td&gt;</span></div>
+                                <div class="ml-4"><span class="syntax-tag">&lt;/tr&gt;</span></div>
+                                <div><span class="syntax-tag">&lt;/table&gt;</span></div>
+                            </div>
+                        `,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Minha Tabela</title>
+</head>
+<body>
+    <h1>Horário de Aulas</h1>
+    <table border="1">
+        <tr>
+            <th>Horário</th>
+            <th>Segunda</th>
+            <th>Terça</th>
+        </tr>
+        <tr>
+            <td>08:00</td>
+            <td>Matemática</td>
+            <td>Português</td>
+        </tr>
+        <!-- Adicione mais uma linha -->
+        
+    </table>
+</body>
+</html>`,
+                        checkFunction: (code) => code.includes('<table') && code.includes('<tr>') && code.includes('<td>'),
+                        completed: false
+                    },
+                    {
+                        id: "1-8",
+                        title: "1.8 Formulários Básicos",
+                        type: "practice",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Criando Formulários</h3>
+                            <p class="text-gray-300 mb-4">Formulários coletam dados dos usuários.</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4 font-mono text-sm">
+                                <div><span class="syntax-tag">&lt;form&gt;</span></div>
+                                <div class="ml-4"><span class="syntax-tag">&lt;input</span> <span class="syntax-attr">type</span>=<span class="syntax-string">"text"</span> <span class="syntax-attr">placeholder</span>=<span class="syntax-string">"Nome"</span><span class="syntax-tag">&gt;</span></div>
+                                <div class="ml-4"><span class="syntax-tag">&lt;input</span> <span class="syntax-attr">type</span>=<span class="syntax-string">"email"</span> <span class="syntax-attr">placeholder</span>=<span class="syntax-string">"Email"</span><span class="syntax-tag">&gt;</span></div>
+                                <div class="ml-4"><span class="syntax-tag">&lt;button</span> <span class="syntax-attr">type</span>=<span class="syntax-string">"submit"</span><span class="syntax-tag">&gt;</span>Enviar<span class="syntax-tag">&lt;/button&gt;</span></div>
+                                <div><span class="syntax-tag">&lt;/form&gt;</span></div>
+                            </div>
+                        `,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulário de Contato</title>
+</head>
+<body>
+    <h1>Entre em Contato</h1>
+    <form>
+        <label>Nome:</label><br>
+        <input type="text" placeholder="Seu nome"><br><br>
+        
+        <!-- Adicione campo de email -->
+        
+        <!-- Adicione campo de mensagem (textarea) -->
+        
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>`,
+                        checkFunction: (code) => code.includes('<form') && code.includes('<input'),
+                        completed: false
+                    },
+                    {
+                        id: "1-9",
+                        title: "1.9 Projeto: Página de Perfil",
+                        type: "project",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">🎯 Projeto 1: Página de Perfil Pessoal</h3>
+                            <p class="text-gray-300 mb-4">Crie uma página completa sobre você usando tudo que aprendeu!</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold mb-2 text-green-400">Requisitos:</h4>
+                                <ul class="list-disc list-inside text-gray-300 space-y-1">
+                                    <li>Título principal (h1) com seu nome</li>
+                                    <li>Foto sua (ou placeholder)</li>
+                                    <li>Biografia em parágrafo</li>
+                                    <li>Lista de hobbies (ul)</li>
+                                    <li>Lista de top 3 filmes (ol)</li>
+                                    <li>Links para suas redes sociais</li>
+                                    <li>Tabela com seus horários</li>
+                                </ul>
+                            </div>
+                        `,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Meu Perfil</title>
+</head>
+<body>
+    <!-- Crie sua página de perfil aqui -->
+    <!-- Use: h1, img, p, ul, ol, a, table -->
+    
+    
+    
+    
+</body>
+</html>`,
+                        checkFunction: (code) => {
+                            return code.includes('<h1') && code.includes('<img') && code.includes('<ul') && 
+                                   code.includes('<ol') && code.includes('<a') && code.includes('<table');
+                        },
+                        completed: false
+                    },
+                    {
+                        id: "1-10",
+                        title: "1.10 Quiz: HTML Básico",
+                        type: "quiz",
+                        content: `<h3 class="text-2xl font-bold mb-4">Avaliação do Módulo 1</h3>`,
+                        questions: [
+                            {
+                                q: "Qual tag cria o título principal de uma página?",
+                                options: ["<head>", "<h1>", "<title>", "<header>"],
+                                correct: 1
+                            },
+                            {
+                                q: "Qual atributo define o destino de um link?",
+                                options: ["src", "href", "link", "url"],
+                                correct: 1
+                            },
+                            {
+                                q: "Qual tag cria uma lista com números?",
+                                options: ["<ul>", "<li>", "<ol>", "<list>"],
+                                correct: 2
+                            },
+                            {
+                                q: "A tag <img> precisa de tag de fechamento?",
+                                options: ["Sim, sempre", "Não, é self-closing", "Apenas se tiver legenda", "Depende do navegador"],
+                                correct: 1
+                            }
+                        ],
+                        completed: false
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Módulo 2: Estilização com CSS",
+                description: "Cores, layouts e design responsivo",
+                lessons: [
+                    {
+                        id: "2-1",
+                        title: "2.1 Introdução ao CSS",
+                        type: "theory",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">O que é CSS?</h3>
+                            <p class="text-gray-300 mb-4">CSS (Cascading Style Sheets) controla a aparência visual do HTML.</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold mb-2">Três Formas de Usar CSS:</h4>
+                                <ol class="list-decimal list-inside text-gray-300 space-y-2">
+                                    <li><strong>Inline:</strong> Direto na tag (style="...")</li>
+                                    <li><strong>Interno:</strong> Tag &lt;style&gt; no head</li>
+                                    <li><strong>Externo:</strong> Arquivo .css separado (melhor prática)</li>
+                                </ol>
+                            </div>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4 font-mono text-sm">
+                                <div><span class="syntax-comment">/* Seletor { propriedade: valor; } */</span></div>
+                                <div>h1 {</div>
+                                <div class="ml-4">color: blue;</div>
+                                <div class="ml-4">font-size: 24px;</div>
+                                <div>}</div>
+                            </div>
+                        `,
+                        completed: false
+                    },
+                    {
+                        id: "2-2",
+                        title: "2.2 Cores e Backgrounds",
+                        type: "practice",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Trabalhando com Cores</h3>
+                            <p class="text-gray-300 mb-4">CSS suporta nomes, hexadecimais, RGB e HSL.</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4 font-mono text-sm">
+                                <div>color: red; <span class="syntax-comment">/* nome */</span></div>
+                                <div>color: #FF0000; <span class="syntax-comment">/* hexadecimal */</span></div>
+                                <div>color: rgb(255, 0, 0); <span class="syntax-comment">/* RGB */</span></div>
+                                <div>background-color: #f0f0f0;</div>
+                                <div>background-image: url('foto.jpg');</div>
+                            </div>
+                        `,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Cores</title>
+    <style>
+        body {
+            background-color: #1a1a2e;
+            color: white;
+        }
+        h1 {
+            color: #e94560;
+            /* Adicione background-color: #16213e; */
+            
+        }
+        p {
+            color: rgb(200, 200, 200);
+        }
     </style>
 </head>
 <body>
-
-    <header class="header">
-        <h1>Islam Moçambique</h1>
-        <p style="color: var(--accent-gold);">Madrassa Online - Inscrições 2026</p>
-    </header>
-
-    <div class="timer-container" id="timer">
-        <div class="timer-unit"><span id="days">00</span><label>Dias</label></div>
-        <div class="timer-unit"><span id="hours">00</span><label>Horas</label></div>
-        <div class="timer-unit"><span id="minutes">00</span><label>Min</label></div>
-        <div class="timer-unit"><span id="seconds">00</span><label>Seg</label></div>
-    </div>
-
-    <div class="price-info" id="price-display">
-        Carregando informações...
-    </div>
-
-    <div class="main-menu">
-        <button class="btn-menu btn-enroll" onclick="openModal('enrollModal')">✍️ INSCRIÇÃO</button>
-        <a href="https://docs.google.com/document/d/1XnRY5rUxZgSL_9fEBw3F3bpFaY2vIj_OpvCnPGy6XII/edit?usp=drivesdk" target="_blank" class="btn-menu btn-info">📖 INFORMAÇÃO DAS AULAS</a>
-        <button class="btn-menu btn-pay-info" onclick="openModal('paymentModal')">🛍️ COMO FAZER PAGAMENTO</button>
-        <a href="https://wa.me/258860407269" class="btn-menu btn-contact">📞 FALA CONOSCO</a>
-    </div>
-
-    <div id="enrollModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('enrollModal')">&times;</span>
-            <h2 style="color: var(--primary-green); text-align: center; margin-bottom: 15px;">Ficha de Inscrição</h2>
-            <form id="regForm">
-                <label>Nome Completo</label>
-                <input type="text" id="nome" placeholder="Seu nome" required>
-                
-                <label>Número de Telemóvel</label>
-                <input type="tel" id="tel" placeholder="84... / 86..." required>
-
-                <label>Nível</label>
-                <select id="nivel">
-                    <option value="Nível 1 - Iniciante">Nível 1 - Iniciante</option>
-                    <option value="Nível 2 - Intermediário">Nível 2 - Intermediário</option>
-                    <option value="Nível 3 - Avançado">Nível 3 - Avançado</option>
-                </select>
-
-                <label>Método de Pagamento</label>
-                <div class="payment-methods">
-                    <label class="method-card"><input type="radio" name="pay" value="M-Pesa" checked> M-Pesa</label>
-                    <label class="method-card"><input type="radio" name="pay" value="e-Mola"> e-Mola</label>
-                    <label class="method-card"><input type="radio" name="pay" value="Transferência Bancária"> Transferência</label>
-                </div>
-
-                <button type="button" onclick="confirmStep()" class="btn-menu btn-enroll" style="width: 100%;">ENVIAR DADOS DE INSCRIÇÃO</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="paymentModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('paymentModal')">&times;</span>
-            <h2 style="color: var(--primary-green); margin-bottom: 15px; text-align: center;">Como fazer pagamentos</h2>
-            
-            <p style="margin-bottom: 10px;">O pagamento pode ser feito por:</p>
-            
-            <div class="info-box">
-                <p><strong>MPESA:</strong> 841153418</p>
-                <p><strong>E-MOLA:</strong> 866186976</p>
-                <p><em>(Agira Muquila)</em></p>
-            </div>
-
-            <div class="info-box">
-                <p><strong>Agente Paga fácil:</strong> 1228803</p>
-                <p><em>(Bebane)</em></p>
-            </div>
-
-            <div class="info-box">
-                <p><strong>Millennium BIM:</strong></p>
-                <p><strong>NIB:</strong> 000100000012473356257</p>
-                <p><strong>NUIB:</strong> 201910009697381</p>
-            </div>
-
-            <button onclick="closeModal('paymentModal')" class="btn-menu btn-contact" style="width: 100%;">ENTENDI</button>
-        </div>
-    </div>
-
-    <footer style="text-align: center; padding: 20px; font-size: 0.8rem; color: #777;">
-        © 2026 Madrassa Online Islam Moçambique
-    </footer>
-
-    <script>
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        function updateStatus() {
-            const now = new Date();
-            const deadlinePromo = new Date('2026-04-05T23:59:59'); // Fim 100mtn
-            const deadlineFinal = new Date('2026-04-10T23:59:59'); // Fim das inscrições
-            const priceTag = document.getElementById('price-display');
-
-            // Timer (Contagem decrescente até 05/04/2026)
-            const diff = deadlinePromo - now;
-            if (diff > 0) {
-                document.getElementById('days').innerText = String(Math.floor(diff / 864e5)).padStart(2, '0');
-                document.getElementById('hours').innerText = String(Math.floor((diff % 864e5) / 36e5)).padStart(2, '0');
-                document.getElementById('minutes').innerText = String(Math.floor((diff % 36e5) / 6e4)).padStart(2, '0');
-                document.getElementById('seconds').innerText = String(Math.floor((diff % 6e4) / 1e3)).padStart(2, '0');
-            } else {
-                document.getElementById('timer').style.display = 'none';
-            }
-
-            // Lógica de Preços e Prazos
-            if (now <= deadlinePromo) {
-                priceTag.innerHTML = "💰 Inscrição: 100 MTN (Promoção até 05/04)";
-            } else if (now <= deadlineFinal) {
-                priceTag.innerHTML = "💰 Inscrição: 150 MTN (Até 10/04)";
-                priceTag.style.background = "#fee2e2";
-                priceTag.style.borderColor = "#ef4444";
-            } else {
-                priceTag.innerHTML = "❌ Inscrições Encerradas (Prazo: 10/04)";
-                document.querySelector('.btn-enroll').disabled = true;
-                document.querySelector('.btn-enroll').style.background = "#999";
-                document.querySelector('.btn-enroll').onclick = () => alert("As inscrições terminaram no dia 10/04/2026.");
-            }
-        }
-
-        function confirmStep() {
-            const nome = document.getElementById('nome').value;
-            const tel = document.getElementById('tel').value;
-            const nivel = document.getElementById('nivel').value;
-            const pay = document.querySelector('input[name="pay"]:checked').value;
-
-            if(!nome || !tel) return alert("Por favor, preencha o seu nome e número.");
-
-            if(confirm("⚠️ ATENÇÃO ⚠️\nCLIQUE EM CONTINUAR CASO JÁ TENHA EFETUADO O PAGAMENTO")) {
-                const msg = `Assalamo Aleikum! Envio a minha inscrição e a confirmação em anexo:%0A%0A*Nome:* ${nome}%0A*Número:* ${tel}%0A*Nível:* ${nivel}%0A*Método:* ${pay}`;
-                window.open(`https://wa.me/258860407269?text=${msg}`);
-            }
-        }
-
-        setInterval(updateStatus, 1000);
-        updateStatus();
-    </script>
+    <h1>Título Colorido</h1>
+    <p>Este parágrafo tem cor personalizada.</p>
 </body>
-</html>
+</html>`,
+                        checkFunction: (code) => code.includes('background-color') && code.includes('color'),
+                        completed: false
+                    },
+                    {
+                        id: "2-3",
+                        title: "2.3 Fontes e Textos",
+                        type: "practice",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Estilização de Texto</h3>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4 font-mono text-sm">
+                                <div>font-family: Arial, sans-serif;</div>
+                                <div>font-size: 18px;</div>
+                                <div>font-weight: bold;</div>
+                                <div>text-align: center;</div>
+                                <div>text-decoration: underline;</div>
+                                <div>line-height: 1.6;</div>
+                            </div>
+                        `,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Tipografia</title>
+    <style>
+        h1 {
+            font-family: Georgia, serif;
+            font-size: 32px;
+            text-align: center;
+        }
+        .destaque {
+            font-weight: bold;
+            /* Adicione text-decoration: underline; */
+            
+            /* Adicione line-height: 2; */
+            
+        }
+    </style>
+</head>
+<body>
+    <h1>Título Centralizado</h1>
+    <p class="destaque">Texto em destaque com formatação especial.</p>
+</body>
+</html>`,
+                        checkFunction: (code) => code.includes('font-family') && code.includes('text-align'),
+                        completed: false
+                    },
+                    {
+                        id: "2-4",
+                        title: "2.4 Box Model (Modelo de Caixa)",
+                        type: "theory",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Entendendo o Box Model</h3>
+                            <p class="text-gray-300 mb-4">Todo elemento HTML é uma caixa com: conteúdo, padding, border e margin.</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4">
+                                <div class="space-y-2">
+                                    <div class="p-4 bg-blue-500/20 border-2 border-blue-500">
+                                        <div class="p-4 bg-green-500/20 border-2 border-green-500">
+                                            <div class="p-4 bg-yellow-500/20 text-center">CONTEÚDO</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul class="mt-4 text-sm text-gray-300 space-y-1">
+                                    <li><span class="text-blue-400">Azul:</span> Margin (espaço externo)</li>
+                                    <li><span class="text-green-400">Verde:</span> Border (borda)</li>
+                                    <li><span class="text-yellow-400">Amarelo:</span> Padding (espaço interno)</li>
+                                </ul>
+                            </div>
+                        `,
+                        completed: false
+                    },
+                    {
+                        id: "2-5",
+                        title: "2.5 Margens e Paddings",
+                        type: "practice",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Espaciamento com CSS</h3>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4 font-mono text-sm">
+                                <div><span class="syntax-comment">/* Margin: espaço FORA do elemento */</span></div>
+                                <div>margin: 20px; <span class="syntax-comment">/* todos os lados */</span></div>
+                                <div>margin-top: 10px;</div>
+                                <div>margin: 10px 20px; <span class="syntax-comment">/* vertical horizontal */</span></div>
+                                <div class="mt-2"><span class="syntax-comment">/* Padding: espaço DENTRO do elemento */</span></div>
+                                <div>padding: 15px;</div>
+                            </div>
+                        `,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Box Model</title>
+    <style>
+        .caixa {
+            background-color: #e94560;
+            color: white;
+            /* Adicione padding: 30px; */
+            
+            /* Adicione margin: 20px; */
+            
+            /* Adicione border: 3px solid white; */
+            
+        }
+    </style>
+</head>
+<body style="background-color: #1a1a2e;">
+    <div class="caixa">
+        <h2>Eu sou uma caixa!</h2>
+        <p>Observe o espaçamento ao redor.</p>
+    </div>
+    <div class="caixa">
+        <h2>Segunda caixa</h2>
+    </div>
+</body>
+</html>`,
+                        checkFunction: (code) => code.includes('padding') && code.includes('margin') && code.includes('border'),
+                        completed: false
+                    },
+                    {
+                        id: "2-6",
+                        title: "2.6 Classes e IDs",
+                        type: "practice",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Seletores CSS</h3>
+                            <p class="text-gray-300 mb-4">Classes (.) para múltiplos elementos, IDs (#) para únicos.</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4 font-mono text-sm">
+                                <div><span class="syntax-comment">/* Classe - pode usar várias vezes */</span></div>
+                                <div>.botao { background: blue; }</div>
+                                <div class="mt-2"><span class="syntax-comment">/* ID - único na página */</span></div>
+                                <div>#cabecalho { height: 100px; }</div>
+                            </div>
+                        `,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Seletores</title>
+    <style>
+        .destaque {
+            color: #e94560;
+            font-weight: bold;
+        }
+        #titulo-principal {
+            text-align: center;
+            font-size: 36px;
+        }
+        .card {
+            background: white;
+            color: #1a1a2e;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body style="background-color: #1a1a2e; color: white;">
+    <h1 id="titulo-principal">Meu Site</h1>
+    
+    <div class="card">
+        <h2 class="destaque">Título do Card 1</h2>
+        <p>Texto normal aqui.</p>
+    </div>
+    
+    <div class="card">
+        <!-- Use a classe destaque neste h2 também -->
+        <h2>Card 2</h2>
+        <p>Outro texto.</p>
+    </div>
+</body>
+</html>`,
+                        checkFunction: (code) => code.includes('class=') && code.includes('id='),
+                        completed: false
+                    },
+                    {
+                        id: "2-7",
+                        title: "2.7 Display: Block vs Inline",
+                        type: "theory",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Comportamento dos Elementos</h3>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4">
+                                <ul class="text-gray-300 space-y-2">
+                                    <li><strong>Block:</strong> Ocupa largura total (div, p, h1, section)</li>
+                                    <li><strong>Inline:</strong> Ocupa só o necessário (span, a, strong)</li>
+                                    <li><strong>Inline-block:</strong> Mistura dos dois</li>
+                                    <li><strong>None:</strong> Esconde o elemento</li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-800 p-4 rounded-lg font-mono text-sm">
+                                display: block;<br>
+                                display: inline;<br>
+                                display: inline-block;<br>
+                                display: none;
+                            </div>
+                        `,
+                        completed: false
+                    },
+                    {
+                        id: "2-8",
+                        title: "2.8 Flexbox - Alinhamento",
+                        type: "practice",
+                        content: `
+                            <h3 class="text-2xl font-bold mb-4">Flexbox Layout</h3>
+                            <p class="text-gray-300 mb-4">Sistema moderno para criar layouts flexíveis.</p>
+                            <div class="bg-gray-800 p-4 rounded-lg mb-4 font-mono text-sm">
+                                <div>.container {</div>
+                                <div class="ml-4">display: flex;</div>
+                                <div class="ml-4">justify-content: center; <span class="syntax-comment">/* horizontal */</span></div>
+                                <div class="ml-4">align-items: center; <span class="syntax-comment">/* vertical */</span></div>
+                                <div class="ml-4">gap: 20px;</div>
+                                <div>}</div>
+                            </div>
+                        `,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Flexbox</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 300px;
+            background: #16213e;
+        }
+        .item {
+            width: 100px;
+            height: 100px;
+            background: #e94560;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="item">1</div>
+        <div class="item">2</div>
+        <div class="item">3</div>
+    </div>
+</body>
+</html>`
