@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Madrassa Online - Educação Islâmica & Tecnologia</title>
+    <title>Aulas Online - Educação & Tecnologia</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -112,10 +112,20 @@
             color: var(--accent);
         }
 
-        .logo-arabic {
-            font-family: 'Noto Naskh Arabic', serif;
-            font-size: 1.8rem;
-            color: var(--accent-light);
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            font-weight: 400;
         }
 
         .user-info {
@@ -199,7 +209,7 @@
             margin: 0 auto;
         }
 
-        .islamic-decoration {
+        .decoration {
             font-size: 3rem;
             color: var(--accent);
             margin: 1rem 0;
@@ -524,11 +534,6 @@
             border-radius: 50%;
             cursor: pointer;
             font-size: 1.2rem;
-            transition: var(--transition);
-        }
-
-        .modal-close:hover {
-            background: rgba(255,255,255,0.3);
         }
 
         .modal-body {
@@ -553,16 +558,11 @@
             border-radius: var(--radius-sm);
             font-size: 1rem;
             transition: var(--transition);
-            font-family: 'Poppins', sans-serif;
         }
 
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
-        }
-
-        .form-input:invalid {
-            border-color: #e74c3c;
         }
 
         .btn-submit {
@@ -601,22 +601,6 @@
             cursor: pointer;
         }
 
-        .auth-toggle a:hover {
-            text-decoration: underline;
-        }
-
-        .forgot-pin {
-            text-align: right;
-            margin-top: -1rem;
-            margin-bottom: 1rem;
-        }
-
-        .forgot-pin a {
-            color: var(--primary);
-            font-size: 0.85rem;
-            text-decoration: none;
-        }
-
         /* Loading State */
         .loading {
             display: inline-block;
@@ -645,9 +629,6 @@
             transform: translateX(400px);
             transition: var(--transition);
             z-index: 3000;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
         }
 
         .toast.show {
@@ -668,7 +649,11 @@
                 padding: 0 1rem;
             }
 
-            .logo span:not(.logo-arabic) {
+            .logo-title {
+                font-size: 1.25rem;
+            }
+
+            .logo-subtitle {
                 display: none;
             }
 
@@ -725,7 +710,6 @@
 
         .back-btn:hover {
             background: var(--primary-dark);
-            transform: scale(1.05);
         }
     </style>
 </head>
@@ -736,12 +720,14 @@
     <header>
         <div class="header-content">
             <div class="logo">
-                <i class="fas fa-mosque"></i>
-                <span class="logo-arabic">مدرسة</span>
-                <span>Madrassa Online</span>
+                <i class="fas fa-graduation-cap"></i>
+                <div class="logo-text">
+                    <span class="logo-title">Aulas Online</span>
+                    <span class="logo-subtitle">Educação & Tecnologia</span>
+                </div>
             </div>
             <div class="user-info" id="userInfo">
-                <div class="balance-badge">
+                <div class="balance-badge" onclick="openRecarga()" style="cursor: pointer;" title="Clique para recarregar">
                     <i class="fas fa-coins"></i>
                     <span id="userBalance">0.00 Moz Coin</span>
                 </div>
@@ -755,10 +741,10 @@
     <main class="container" id="mainContent">
         <!-- Welcome Section -->
         <section class="welcome-section" id="welcomeSection" style="display: none;">
-            <div class="islamic-decoration">☪</div>
-            <h1 class="welcome-title">Bem-vindo à Madrassa Online</h1>
+            <div class="decoration"><i class="fas fa-graduation-cap"></i></div>
+            <h1 class="welcome-title">Bem-vindo às Aulas Online</h1>
             <p class="welcome-subtitle" id="welcomeText">
-                Que Allah abençoe sua jornada de conhecimento. Aqui você encontra educação islâmica de qualidade e cursos de programação para o futuro.
+                Sua plataforma de educação e tecnologia. Aprenda no seu ritmo, onde estiver.
             </p>
         </section>
 
@@ -803,7 +789,7 @@
         <section class="courses-section" id="coursesSection" style="display: none;">
             <div class="section-header">
                 <h2 class="section-title">
-                    <i class="fas fa-graduation-cap"></i>
+                    <i class="fas fa-book-open"></i>
                     Cursos Disponíveis
                 </h2>
             </div>
@@ -955,8 +941,8 @@
 
         <!-- Auth Section (Shown when not logged in) -->
         <section class="welcome-section" id="authSection">
-            <div class="islamic-decoration">☪</div>
-            <h1 class="welcome-title">Bem-vindo à Madrassa Online</h1>
+            <div class="decoration"><i class="fas fa-graduation-cap"></i></div>
+            <h1 class="welcome-title">Bem-vindo às Aulas Online</h1>
             <p class="welcome-subtitle">
                 Plataforma de educação islâmica e tecnológica. Registe-se ou faça login para aceder aos cursos.
             </p>
@@ -1012,8 +998,8 @@
                         <input type="text" class="form-input" id="refCode" placeholder="Código de quem convidou">
                     </div>
 
-                    <div class="forgot-pin" id="forgotPinLink">
-                        <a href="#" onclick="recoverPin()">Esqueceu o PIN?</a>
+                    <div class="forgot-pin" id="forgotPinLink" style="text-align: right; margin-bottom: 1rem;">
+                        <a href="#" onclick="recoverPin()" style="color: var(--primary); font-size: 0.85rem;">Esqueceu o PIN?</a>
                     </div>
 
                     <button type="submit" class="btn-submit" id="submitBtn">
@@ -1039,10 +1025,10 @@
         // Firebase Configuration - Replace with your actual config
         const firebaseConfig = {
             apiKey: "AIzaSyCW9ZZadm4WJ_FKtOjvkP1czsfImwzl98c",
-            authDomain: "madrassa-online.firebaseapp.com",
-            databaseURL: "https://madrassa-online-default-rtdb.firebaseio.com",
-            projectId: "madrassa-online",
-            storageBucket: "madrassa-online.appspot.com",
+            authDomain: "aulas-online.firebaseapp.com",
+            databaseURL: "https://aulas-online-default-rtdb.firebaseio.com",
+            projectId: "aulas-online",
+            storageBucket: "aulas-online.appspot.com",
             messagingSenderId: "123456789",
             appId: "1:123456789:web:abcdef123456"
         };
@@ -1054,11 +1040,10 @@
         // State
         let currentUser = null;
         let isRegistering = false;
-        const GITHUB_BASE_URL = "https://raw.githubusercontent.com/seu-usuario/madrassa-online/main/";
 
         // Check session on load
         window.onload = function() {
-            const savedUser = localStorage.getItem('madrassaUser');
+            const savedUser = localStorage.getItem('aulasOnlineUser');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
                 showDashboard();
@@ -1111,6 +1096,7 @@
         // Auth Handler
         async function handleAuth(e) {
             e.preventDefault();
+            
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="loading"></span> Processando...';
@@ -1119,7 +1105,6 @@
             const email = document.getElementById('userEmail').value;
             const pin = document.getElementById('userPin').value;
 
-            // Validate email has @
             if (!email.includes('@')) {
                 showToast('Email deve conter @', 'error');
                 submitBtn.disabled = false;
@@ -1131,11 +1116,9 @@
                 const userId = phone.replace(/\D/g, '');
                 
                 if (isRegistering) {
-                    // Registration
                     const name = document.getElementById('userName').value;
                     const refCode = document.getElementById('refCode').value;
                     
-                    // Check if user exists
                     const snapshot = await database.ref('users/' + userId).once('value');
                     if (snapshot.exists()) {
                         showToast('Número já registado!', 'error');
@@ -1144,10 +1127,8 @@
                         return;
                     }
 
-                    // Generate referral code
                     const myRefCode = 'REF' + Math.random().toString(36).substr(2, 6).toUpperCase();
 
-                    // Create user data
                     const userData = {
                         name: name,
                         phone: phone,
@@ -1164,7 +1145,6 @@
 
                     await database.ref('users/' + userId).set(userData);
 
-                    // Process referral reward if exists
                     if (refCode) {
                         await processReferral(refCode, 'registration');
                     }
@@ -1173,7 +1153,6 @@
                     hideModal();
                     
                 } else {
-                    // Login
                     const snapshot = await database.ref('users/' + userId).once('value');
                     
                     if (!snapshot.exists()) {
@@ -1204,7 +1183,7 @@
                         ...userData
                     };
                     
-                    localStorage.setItem('madrassaUser', JSON.stringify(currentUser));
+                    localStorage.setItem('aulasOnlineUser', JSON.stringify(currentUser));
                     showToast('Bem-vindo, ' + userData.name + '!', 'success');
                     hideModal();
                     showDashboard();
@@ -1221,7 +1200,6 @@
         // Process Referral
         async function processReferral(refCode, type) {
             try {
-                // Find user with this referral code
                 const snapshot = await database.ref('users').orderByChild('referralCode').equalTo(refCode).once('value');
                 
                 if (snapshot.exists()) {
@@ -1233,7 +1211,6 @@
                     
                     await database.ref('users/' + referrerId + '/sellerBalance').set(newBalance);
                     
-                    // Log transaction
                     await database.ref('transactions').push({
                         type: 'referral_' + type,
                         from: currentUser ? currentUser.id : 'new_user',
@@ -1257,7 +1234,6 @@
             }
 
             try {
-                // Find user by email
                 const snapshot = await database.ref('users').orderByChild('email').equalTo(email).once('value');
                 
                 if (!snapshot.exists()) {
@@ -1268,11 +1244,7 @@
                 const userId = Object.keys(snapshot.val())[0];
                 const userData = snapshot.val()[userId];
                 
-                // In real implementation, send email with PIN
-                // For now, show toast
                 showToast('PIN enviado para: ' + maskEmail(email), 'success');
-                
-                // Simulate email sending
                 console.log('PIN recovery for:', email, 'PIN:', userData.pin);
                 
             } catch (error) {
@@ -1293,16 +1265,15 @@
             document.getElementById('coursesSection').style.display = 'block';
             document.getElementById('userInfo').classList.add('active');
             
-            document.getElementById('welcomeText').textContent = 'Bem-vindo de volta, ' + currentUser.name + '! Que Allah abençoe sua jornada de conhecimento.';
+            document.getElementById('welcomeText').textContent = 'Bem-vindo de volta, ' + currentUser.name + '! Continue sua jornada de aprendizagem.';
             
             updateDashboard();
             
-            // Listen for real-time updates
             database.ref('users/' + currentUser.id).on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     currentUser = { ...currentUser, ...data };
-                    localStorage.setItem('madrassaUser', JSON.stringify(currentUser));
+                    localStorage.setItem('aulasOnlineUser', JSON.stringify(currentUser));
                     updateDashboard();
                 }
             });
@@ -1321,6 +1292,15 @@
             navigator.clipboard.writeText(code).then(() => {
                 showToast('Código copiado!', 'success');
             });
+        }
+
+        // Open Recarga
+        function openRecarga() {
+            if (!currentUser) {
+                showToast('Faça login primeiro!', 'error');
+                return;
+            }
+            loadExternalContent(`recarga/index.html?user=${currentUser.id}`);
         }
 
         // Course Access
@@ -1347,14 +1327,11 @@
             const main = document.getElementById('mainContent');
             const backBtn = document.getElementById('backBtn');
             
-            // Construct full URL (assuming GitHub Pages structure)
-            // In production, replace with actual GitHub Pages URL
             frame.src = url;
             frame.classList.add('active');
             main.style.display = 'none';
             backBtn.classList.add('active');
             
-            // Hide header user info when in course
             document.getElementById('userInfo').style.display = 'none';
         }
 
@@ -1376,7 +1353,7 @@
         // Logout
         function logout() {
             currentUser = null;
-            localStorage.removeItem('madrassaUser');
+            localStorage.removeItem('aulasOnlineUser');
             database.ref('users/' + (currentUser?.id || '')).off();
             
             document.getElementById('authSection').style.display = 'block';
@@ -1408,40 +1385,6 @@
                 hideModal();
             }
         });
-
-        // Payment Integration Placeholder
-        async function processPayment(amount, courseId) {
-            // Check balance
-            if ((currentUser.balance || 0) < amount) {
-                showToast('Saldo insuficiente! Recarregue na página de recarga.', 'error');
-                // Redirect to recarga
-                setTimeout(() => loadExternalContent('recarga/index.html'), 2000);
-                return false;
-            }
-
-            try {
-                // Deduct balance
-                const newBalance = currentUser.balance - amount;
-                await database.ref('users/' + currentUser.id + '/balance').set(newBalance);
-                
-                // Add course to user
-                await database.ref('users/' + currentUser.id + '/courses/' + courseId).set({
-                    purchasedAt: Date.now(),
-                    price: amount
-                });
-
-                // Process referral commission if applicable
-                if (currentUser.referredBy) {
-                    await processReferral(currentUser.referredBy, 'purchase');
-                }
-
-                showToast('Pagamento efectuado com sucesso!', 'success');
-                return true;
-            } catch (error) {
-                showToast('Erro no pagamento!', 'error');
-                return false;
-            }
-        }
     </script>
 </body>
 </html>
