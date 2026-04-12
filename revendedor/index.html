@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Vendedor - Aulas Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --primary: #1a5f4a;
+            --primary-light: #2d8b6f;
+            --primary-dark: #0d3d2f;
+            --accent: #d4af37;
+            --accent-light: #f4d03f;
+            --bg-warm: #faf8f5;
+            --bg-cream: #f5f0e8;
+            --text-dark: #2c3e50;
+            --text-light: #5d6d7e;
+            --white: #ffffff;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --shadow: 0 10px 40px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 16px;
+            --radius-sm: 8px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-warm) 0%, var(--bg-cream) 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--accent-light);
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .logo-text p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .vendor-badge {
+            background: var(--accent);
+            color: var(--primary-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-card.primary {
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card.accent {
+            border-left: 4px solid var(--accent);
+        }
+
+        .stat-card.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .stat-card.warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-value i {
+            font-size: 1.25rem;
+            color: var(--accent);
+        }
+
+        .stat-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
+        /* Main Content */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--bg-cream);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            color: var(--primary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .panel-body {
+            padding: 1.5rem;
+        }
+
+        /* Recharges List */
+        .recharge-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .recharge-item {
+            background: var(--bg-cream);
+            border-radius: var(--radius-sm);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            border-left: 4px solid var(--warning);
+        }
+
+        .recharge-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .recharge-item.pending {
+            border-left-color: var(--warning);
+        }
+
+        .recharge-item.completed {
+            border-left-color: var(--success);
+            opacity: 0.7;
+        }
+
+        .recharge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+        }
+
+        .recharge-user {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .recharge-phone {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .recharge-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .recharge-details {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .recharge-details span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .recharge-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #219a52;
+            transform: scale(1.02);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* History Panel */
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--bg-cream);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-info h4 {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .history-info p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .history-amount {
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Login Section */
+        .login-container {
+            max-width: 400px;
+            margin: 5rem auto;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .login-header i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--accent-light);
+        }
+
+        .login-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--bg-cream);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-hover);
+            transform: translateX(400px);
+            transition: var(--transition);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            background: var(--bg-cream);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .filter-tab:hover:not(.active) {
+            background: rgba(26, 95, 74, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .recharge-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-header">
+            <i class="fas fa-store"></i>
+            <h2>Painel do Vendedor</h2>
+            <p>Aulas Online</p>
+        </div>
+        <div class="login-body">
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Seu Número de Vendedor</label>
+                    <input type="tel" class="form-input" id="vendorPhone" placeholder="860407269" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">PIN</label>
+                    <input type="password" class="form-input" id="vendorPin" placeholder="****" required maxlength="4">
+                </div>
+                <button type="submit" class="btn btn-success btn-full" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+            </form>
+            <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-light);">
+                <i class="fas fa-info-circle"></i> Use o mesmo PIN do sistema Aulas Online
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard (hidden initially) -->
+    <div id="dashboardScreen" style="display: none;">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-content">
+                    <div class="logo-section">
+                        <div class="logo-icon">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <div class="logo-text">
+                            <h1>Painel do Vendedor</h1>
+                            <p>Gerencie recargas e comissões</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span class="vendor-badge" id="vendorName">Vendedor</span>
+                        <button class="btn btn-danger" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card accent">
+                    <div class="stat-label">Minhas Comissões</div>
+                    <div class="stat-value">
+                        <span id="commissionBalance">0.00</span>
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="stat-subtitle">Moz Coins acumulados</div>
+                </div>
+                <div class="stat-card primary">
+                    <div class="stat-label">Recargas Pendentes</div>
+                    <div class="stat-value">
+                        <span id="pendingCount">0</span>
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-subtitle">Aguardando aprovação</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-label">Recargas Aprovadas</div>
+                    <div class="stat-value">
+                        <span id="approvedCount">0</span>
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-subtitle">Total hoje</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-label">Total em MTN</div>
+                    <div class="stat-value">
+                        <span id="totalAmount">0</span>
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-subtitle">Valor processado hoje</div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="content-grid">
+                <!-- Left: Pending Recharges -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <i class="fas fa-bell"></i>
+                            Recargas Pendentes
+                        </h3>
+                        <button class="btn" style="background: var(--bg-cream); color: var(--text-dark);" onclick="refreshData()">
+                            <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                    </div>
+                    <div class="panel-body">
+                        <div class="filter-tabs">
+                            <button class="filter-tab active" onclick="filterRecharges('all')">Todas</button>
+                            <button class="filter-tab" onclick="filterRecharges('mpesa')">M-Pesa</button>
+                            <button class="filter-tab" onclick="filterRecharges('emola')">e-Mola</button>
+                            <button class="filter-tab" onclick="filterRecharges('mkesh')">mKesh</button>
+                        </div>
+                        <div class="recharge-list" id="rechargeList">
+                            <div class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <p>Carregando recargas...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: History -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <i class="fas fa-history"></i>
+                            Histórico Hoje
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="historyList">
+                            <div class="empty-state">
+                                <i class="fas fa-clipboard-list"></i>
+                                <p>Sem atividade hoje</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-info-circle"></i>
+        <span id="toastMessage">Mensagem</span>
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURAÇÃO FIREBASE - MADRASSA ONLINE
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
+            authDomain: "madrassa-online-b851c.firebaseapp.com",
+            databaseURL: "https://madrassa-online-b851c-default-rtdb.firebaseio.com",
+            projectId: "madrassa-online-b851c",
+            storageBucket: "madrassa-online-b851c.firebasestorage.app",
+            messagingSenderId: "360782668012",
+            appId: "1:360782668012:web:d501ef187911db632445c9",
+            measurementId: "G-RV9GD4S22T"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // ==========================================
+        // VARIÁVEIS GLOBAIS
+        // ==========================================
+        let currentVendor = null;
+        let allRecharges = [];
+        let currentFilter = 'all';
+
+        // ==========================================
+        // LOGIN DO VENDEDOR
+        // ==========================================
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('loginBtn');
+            const phone = document.getElementById('vendorPhone').value.replace(/\D/g, '');
+            const pin = document.getElementById('vendorPin').value;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> A verificar...';
+            
+            try {
+                // Verificar se é um usuário válido e está marcado como vendedor
+                // Ou criar lógica específica de vendedores
+                const snapshot = await database.ref('users/' + phone).once('value');
+                
+                if (!snapshot.exists()) {
+                    showToast('Vendedor não encontrado', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+                    return;
+                }
+                
+                const userData = snapshot.val();
+                
+                // Verificar PIN
+                if (userData.pin !== pin) {
+                    showToast('PIN incorreto', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+                    return;
+                }
+                
+                // Verificar se é vendedor (pode ser por flag ou por lista de vendedores autorizados)
+                // Por enquanto, qualquer usuário pode acessar, mas mostramos comissões
+                currentVendor = {
+                    id: phone,
+                    ...userData
+                };
+                
+                // Salvar sessão
+                localStorage.setItem('aulasOnlineVendor', JSON.stringify(currentVendor));
+                
+                showDashboard();
+                showToast('Bem-vindo, ' + userData.name + '!', 'success');
+                
+            } catch (error) {
+                console.error(error);
+                showToast('Erro ao fazer login: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+            }
+        }
+
+        // ==========================================
+        // MOSTRAR DASHBOARD
+        // ==========================================
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').style.display = 'block';
+            
+            document.getElementById('vendorName').textContent = currentVendor.name || 'Vendedor';
+            
+            // Iniciar listeners
+            startListeners();
+            loadRecharges();
+        }
+
+        // ==========================================
+        // LISTENERS EM TEMPO REAL
+        // ==========================================
+        function startListeners() {
+            // Atualizar saldo de comissões
+            database.ref('users/' + currentVendor.id + '/sellerBalance').on('value', (snap) => {
+                const balance = snap.val() || 0;
+                document.getElementById('commissionBalance').textContent = balance.toFixed(2);
+            });
+        }
+
+        // ==========================================
+        // CARREGAR RECARGAS
+        // ==========================================
+        function loadRecharges() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            // Listener de recargas pendentes
+            database.ref('recharges')
+                .orderByChild('status')
+                .equalTo('pending')
+                .on('value', (snapshot) => {
+                    const recharges = [];
+                    snapshot.forEach((child) => {
+                        recharges.push({
+                            id: child.key,
+                            ...child.val()
+                        });
+                    });
+                    
+                    allRecharges = recharges;
+                    displayRecharges();
+                    updateStats();
+                });
+            
+            // Carregar histórico de hoje (aprovadas por este vendedor)
+            database.ref('recharges')
+                .orderByChild('processedAt')
+                .startAt(today.getTime())
+                .on('value', (snapshot) => {
+                    const history = [];
+                    let totalAmount = 0;
+                    let approvedCount = 0;
+                    
+                    snapshot.forEach((child) => {
+                        const data = child.val();
+                        if (data.status === 'completed' && data.processedBy === currentVendor.id) {
+                            history.push({
+                                id: child.key,
+                                ...data
+                            });
+                            totalAmount += data.amount;
+                            approvedCount++;
+                        }
+                    });
+                    
+                    // Ordenar por timestamp decrescente
+                    history.sort((a, b) => b.timestamp - a.timestamp);
+                    
+                    displayHistory(history);
+                    
+                    document.getElementById('approvedCount').textContent = approvedCount;
+                    document.getElementById('totalAmount').textContent = totalAmount;
+                });
+        }
+
+        // ==========================================
+        // EXIBIR RECARGAS
+        // ==========================================
+        function displayRecharges() {
+            const list = document.getElementById('rechargeList');
+            
+            let filtered = allRecharges;
+            if (currentFilter !== 'all') {
+                filtered = allRecharges.filter(r => r.method === currentFilter);
+            }
+            
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>${currentFilter === 'all' ? 'Nenhuma recarga pendente' : 'Nenhuma recarga ' + currentFilter}</p>
+                    </div>
+                `;
+                document.getElementById('pendingCount').textContent = '0';
+                return;
+            }
+            
+            document.getElementById('pendingCount').textContent = filtered.length;
+            
+            list.innerHTML = filtered.map(recharge => `
+                <div class="recharge-item pending" id="recharge-${recharge.id}">
+                    <div class="recharge-header">
+                        <div>
+                            <div class="recharge-user">${recharge.userId}</div>
+                            <div class="recharge-phone">${formatPhone(recharge.userId)}</div>
+                        </div>
+                        <div class="recharge-amount">${recharge.amount} MTN</div>
+                    </div>
+                    <div class="recharge-details">
+                        <span><i class="fas fa-credit-card"></i> ${formatPayment(recharge.method)}</span>
+                        <span><i class="fas fa-clock"></i> ${formatTime(recharge.timestamp)}</span>
+                        <span><i class="fas fa-hashtag"></i> ${recharge.transactionCode || 'N/A'}</span>
+                    </div>
+                    <div class="recharge-actions">
+                        <button class="btn btn-success" onclick="approveRecharge('${recharge.id}', ${recharge.amount}, '${recharge.userId}')">
+                            <i class="fas fa-check"></i> Aprovar & Recarregar
+                        </button>
+                        <button class="btn btn-danger" onclick="rejectRecharge('${recharge.id}')">
+                            <i class="fas fa-times"></i> Rejeitar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==========================================
+        // EXIBIR HISTÓRICO
+        // ==========================================
+        function displayHistory(history) {
+            const list = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>Sem atividade hoje</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <div class="history-info">
+                        <h4>${formatPhone(item.userId)}</h4>
+                        <p>${formatTime(item.timestamp)} • ${formatPayment(item.method)}</p>
+                    </div>
+                    <div class="history-amount">+${item.amount} MTN</div>
+                </div>
+            `).join('');
+        }
+
+        // ==========================================
+        // APROVAR RECARGA
+        // ==========================================
+        async function approveRecharge(rechargeId, amount, userId) {
+            const btn = document.querySelector(`#recharge-${rechargeId} .btn-success`);
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Processando...';
+            
+            try {
+                const now = Date.now();
+                
+                // 1. Atualizar status da recarga
+                await database.ref('recharges/' + rechargeId).update({
+                    status: 'completed',
+                    processedBy: currentVendor.id,
+                    processedAt: now
+                });
+                
+                // 2. Adicionar saldo ao usuário
+                const userRef = database.ref('users/' + userId);
+                const userSnap = await userRef.once('value');
+                const currentBalance = userSnap.val()?.balance || 0;
+                
+                await userRef.update({
+                    balance: currentBalance + amount
+                });
+                
+                // 3. Adicionar comissão ao vendedor (0.5% ou valor fixo)
+                const commission = amount * 0.005; // 0.5% de comissão
+                const vendorRef = database.ref('users/' + currentVendor.id);
+                const vendorSnap = await vendorRef.once('value');
+                const currentCommission = vendorSnap.val()?.sellerBalance || 0;
+                
+                await vendorRef.update({
+                    sellerBalance: currentCommission + commission
+                });
+                
+                // 4. Registrar transação de comissão
+                await database.ref('transactions').push({
+                    type: 'vendor_commission',
+                    rechargeId: rechargeId,
+                    vendorId: currentVendor.id,
+                    userId: userId,
+                    amount: commission,
+                    rechargeAmount: amount,
+                    timestamp: now,
+                    status: 'completed'
+                });
+                
+                showToast(`Recarga aprovada! Comissão: ${commission.toFixed(2)} Moz Coin`, 'success');
+                
+            } catch (error) {
+                console.error(error);
+                showToast('Erro ao aprovar: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check"></i> Aprovar & Recarregar';
+            }
+        }
+
+        // ==========================================
+        // REJEITAR RECARGA
+        // ==========================================
+        async function rejectRecharge(rechargeId) {
+            if (!confirm('Tem certeza que deseja rejeitar esta recarga?')) {
+                return;
+            }
+            
+            try {
+                await database.ref('recharges/' + rechargeId).update({
+                    status: 'rejected',
+                    processedBy: currentVendor.id,
+                    processedAt: Date.now()
+                });
+                
+                showToast('Recarga rejeitada', 'success');
+            } catch (error) {
+                showToast('Erro ao rejeitar: ' + error.message, 'error');
+            }
+        }
+
+        // ==========================================
+        // FILTRAR RECARGAS
+        // ==========================================
+        function filterRecharges(method) {
+            currentFilter = method;
+            
+            // Atualizar tabs
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            displayRecharges();
+        }
+
+        // ==========================================
+        // ATUALIZAR ESTATÍSTICAS
+        // ==========================================
+        function updateStats() {
+            // Estatísticas são atualizadas pelos listeners
+        }
+
+        function refreshData() {
+            loadRecharges();
+            showToast('Dados atualizados!', 'success');
+        }
+
+        // ==========================================
+        // LOGOUT
+        // ==========================================
+        function logout() {
+            currentVendor = null;
+            localStorage.removeItem('aulasOnlineVendor');
+            database.ref('users/' + (currentVendor?.id || '')).off();
+            database.ref('recharges').off();
+            
+            document.getElementById('dashboardScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+            
+            document.getElementById('loginForm').reset();
+            document.getElementById('loginBtn').disabled = false;
+            document.getElementById('loginBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+        }
+
+        // ==========================================
+        // UTILITÁRIOS
+        // ==========================================
+        function formatPhone(phone) {
+            if (!phone || phone.length < 9) return phone;
+            return phone.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
+        }
+
+        function formatPayment(method) {
+            const methods = {
+                'mpesa': 'M-Pesa',
+                'emola': 'e-Mola',
+                'mkesh': 'mKesh'
+            };
+            return methods[method] || method;
+        }
+
+        function formatTime(timestamp) {
+            if (!timestamp) return '-';
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('pt-MZ', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toast.className = 'toast ' + type;
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+        window.onload = function() {
+            // Verificar sessão salva
+            const savedVendor = localStorage.getItem('aulasOnlineVendor');
+            if (savedVendor) {
+                currentVendor = JSON.parse(savedVendor);
+                showDashboard();
+            }
+        };
+    </script>
+</body>
+</html>
