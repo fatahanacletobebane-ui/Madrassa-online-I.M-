@@ -69,7 +69,6 @@
         .header h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
         .header p { opacity: 0.9; font-size: 0.9rem; }
 
-        /* Balance Section */
         .balance-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -102,9 +101,6 @@
             color: var(--text-dark);
         }
 
-        .balance-card.seller .balance-value { color: var(--accent); }
-
-        /* Content */
         .content { padding: 1.5rem; }
 
         .section-title {
@@ -117,7 +113,6 @@
             gap: 0.5rem;
         }
 
-        /* Amount Grid */
         .amount-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -157,10 +152,9 @@
 
         .custom-input.show { display: block; }
 
-        /* Methods */
         .methods {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 0.75rem;
             margin-bottom: 1.5rem;
         }
@@ -185,11 +179,9 @@
         .method-btn i { font-size: 1.5rem; margin-bottom: 0.5rem; display: block; }
         .method-btn.mpesa i { color: #dc3545; }
         .method-btn.emola i { color: #28a745; }
-        .method-btn.mkesh i { color: #ffc107; }
-        .method-btn.vendedor i { color: var(--primary); }
         .method-btn.bim i { color: var(--info); }
+        .method-btn.vendedor i { color: var(--primary); }
 
-        /* Payment Details Section */
         .payment-details {
             background: linear-gradient(135deg, rgba(26, 95, 74, 0.05) 0%, rgba(26, 95, 74, 0.02) 100%);
             border: 2px dashed var(--primary-light);
@@ -200,14 +192,6 @@
         }
 
         .payment-details.show { display: block; }
-
-        .payment-details h4 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
 
         .agent-info {
             background: white;
@@ -233,6 +217,24 @@
             color: var(--primary);
             font-weight: 700;
             font-size: 1.1rem;
+        }
+
+        .instructions-box {
+            background: #fff8e1;
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .instructions-box ol {
+            margin-left: 1.2rem;
+            color: var(--text-dark);
+        }
+
+        .instructions-box li {
+            margin-bottom: 0.5rem;
         }
 
         .code-input-section {
@@ -267,7 +269,7 @@
 
         .code-status {
             margin-top: 0.5rem;
-            padding: 0.5rem;
+            padding: 0.75rem;
             border-radius: var(--radius-sm);
             font-size: 0.85rem;
             display: none;
@@ -287,7 +289,6 @@
             color: var(--info);
         }
 
-        /* Vendedores */
         .vendedores-section {
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
             border: 2px dashed var(--accent);
@@ -333,13 +334,15 @@
         .vendedor-card .status.online { background: var(--success); }
         .vendedor-card .status.offline { background: var(--danger); }
 
-        /* Summary */
         .summary {
             background: var(--bg-cream);
             padding: 1rem;
             border-radius: var(--radius-sm);
             margin-bottom: 1.5rem;
+            display: none;
         }
+
+        .summary.show { display: block; }
 
         .summary-row {
             display: flex;
@@ -357,7 +360,6 @@
             border-top: 2px solid rgba(0,0,0,0.1);
         }
 
-        /* Submit Button */
         .btn-submit {
             width: 100%;
             padding: 1.25rem;
@@ -397,7 +399,6 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Alert */
         .alert {
             padding: 1rem;
             border-radius: var(--radius-sm);
@@ -408,9 +409,7 @@
         .alert.show { display: block; }
         .alert-error { background: #ffebee; color: #c62828; border-left: 4px solid #f44336; }
         .alert-success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #4caf50; }
-        .alert-info { background: #e3f2fd; color: #1565c0; border-left: 4px solid #2196f3; }
 
-        /* Success State */
         .success-state {
             display: none;
             text-align: center;
@@ -432,7 +431,6 @@
             margin: 0 auto 2rem;
         }
 
-        /* History */
         .history-section {
             margin-top: 2rem;
             padding-top: 2rem;
@@ -452,7 +450,6 @@
 
         .history-item.completed { border-left-color: var(--success); }
 
-        /* Back Button */
         .back-btn {
             position: fixed;
             bottom: 2rem;
@@ -471,43 +468,6 @@
             z-index: 100;
         }
 
-        /* Instructions Box */
-        .instructions-box {
-            background: #fff8e1;
-            border-left: 4px solid var(--accent);
-            padding: 1rem;
-            border-radius: var(--radius-sm);
-            margin-bottom: 1rem;
-            font-size: 0.85rem;
-        }
-
-        .instructions-box ol {
-            margin-left: 1.2rem;
-            color: var(--text-dark);
-        }
-
-        .instructions-box li {
-            margin-bottom: 0.5rem;
-        }
-
-        /* Debug Panel */
-        .debug-panel {
-            background: #263238;
-            color: #aed581;
-            padding: 1rem;
-            border-radius: var(--radius-sm);
-            margin-top: 1rem;
-            font-family: monospace;
-            font-size: 0.75rem;
-            max-height: 200px;
-            overflow-y: auto;
-            display: none;
-        }
-
-        .debug-panel.show { display: block; }
-        .debug-panel .error { color: #ef5350; }
-        .debug-panel .success { color: #69f0ae; }
-
         @media (max-width: 480px) {
             .amount-grid { grid-template-columns: repeat(3, 1fr); }
             .methods { grid-template-columns: repeat(2, 1fr); }
@@ -519,7 +479,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Main Screen -->
         <div id="mainScreen">
             <div class="header">
                 <div class="header-icon">
@@ -541,7 +500,6 @@
             </div>
 
             <div class="content">
-                <!-- Alert -->
                 <div class="alert" id="alertBox"></div>
 
                 <h3 class="section-title"><i class="fas fa-coins"></i> Selecione o Valor</h3>
@@ -586,10 +544,6 @@
                         <i class="fas fa-mobile-alt"></i>
                         <span>e-Mola</span>
                     </button>
-                    <button class="method-btn mkesh" onclick="selectMethod('mkesh', this)">
-                        <i class="fas fa-mobile-alt"></i>
-                        <span>mKesh</span>
-                    </button>
                     <button class="method-btn bim" onclick="selectMethod('bim', this)">
                         <i class="fas fa-university"></i>
                         <span>BIM</span>
@@ -600,9 +554,10 @@
                     </button>
                 </div>
 
-                <!-- Payment Details Section -->
                 <div class="payment-details" id="paymentDetails">
-                    <h4><i class="fas fa-info-circle"></i> Dados para Pagamento</h4>
+                    <h4 style="color: var(--primary); margin-bottom: 1rem;">
+                        <i class="fas fa-info-circle"></i> Dados para Pagamento
+                    </h4>
 
                     <div id="mpesaDetails" style="display: none;">
                         <div class="agent-info">
@@ -632,7 +587,7 @@
                         <strong><i class="fas fa-list-ol"></i> Como funciona:</strong>
                         <ol>
                             <li>Faça o pagamento no agente indicado acima</li>
-                            <li>Guarde o código/código da transferência</li>
+                            <li>Guarde o código da transferência</li>
                             <li>Insira o código no campo abaixo</li>
                             <li>Se o código for válido na consola, recebe o saldo automaticamente</li>
                         </ol>
@@ -651,7 +606,6 @@
                     </div>
                 </div>
 
-                <!-- Vendedores Section -->
                 <div class="vendedores-section" id="vendedoresSection">
                     <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
                         <i class="fas fa-map-marker-alt" style="color: var(--accent);"></i>
@@ -660,23 +614,20 @@
                     <p style="font-size: 0.85rem; color: var(--text-light);">
                         Selecione um vendedor próximo para fazer a recarga presencialmente.
                     </p>
-                    <div class="vendedor-grid" id="vendedorGrid">
-                        <!-- Populado via JS -->
-                    </div>
+                    <div class="vendedor-grid" id="vendedorGrid"></div>
                 </div>
 
-                <!-- Summary -->
-                <div class="summary" id="summaryBox" style="display: none;">
+                <div class="summary" id="summaryBox">
                     <div class="summary-row">
                         <span>Valor da Recarga:</span>
                         <span id="sumAmount">0 MTN</span>
                     </div>
                     <div class="summary-row">
-                        <span>Taxa de Processamento:</span>
+                        <span>Taxa:</span>
                         <span>0 MTN</span>
                     </div>
                     <div class="summary-row">
-                        <span>Total a Pagar:</span>
+                        <span>Total:</span>
                         <span id="sumTotal">0 MTN</span>
                     </div>
                 </div>
@@ -686,12 +637,8 @@
                     <span id="btnText">Selecione valor e método</span>
                 </button>
 
-                <!-- Debug Panel -->
-                <div class="debug-panel" id="debugPanel"></div>
-
-                <!-- History -->
                 <div class="history-section">
-                    <h3 class="section-title"><i class="fas fa-history"></i> Histórico de Recargas</h3>
+                    <h3 class="section-title"><i class="fas fa-history"></i> Histórico</h3>
                     <div id="historyList">
                         <p style="text-align: center; color: var(--text-light); padding: 2rem;">
                             <i class="fas fa-spinner fa-spin"></i> Carregando...
@@ -701,7 +648,6 @@
             </div>
         </div>
 
-        <!-- Success Screen -->
         <div class="success-state" id="successScreen">
             <div class="success-icon">
                 <i class="fas fa-check"></i>
@@ -710,7 +656,7 @@
             <p style="color: var(--text-light); margin-bottom: 0.5rem;">
                 Código: <strong id="successCode" style="color: var(--primary); font-size: 1.2rem;"></strong>
             </p>
-            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 2rem;">
+            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 2rem;" id="successMessage">
                 Sua solicitação foi enviada para processamento.
             </p>
             <button class="btn-submit" onclick="closeWindow()">
@@ -724,9 +670,6 @@
     </button>
 
     <script>
-        // ==========================================
-        // CONFIGURAÇÃO FIREBASE - MADRASSA ONLINE
-        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
             authDomain: "madrassa-online-b851c.firebaseapp.com",
@@ -734,13 +677,9 @@
             projectId: "madrassa-online-b851c",
             storageBucket: "madrassa-online-b851c.firebasestorage.app",
             messagingSenderId: "360782668012",
-            appId: "1:360782668012:web:d501ef187911db632445c9",
-            measurementId: "G-RV9GD4S22T"
+            appId: "1:360782668012:web:d501ef187911db632445c9"
         };
 
-        // ==========================================
-        // VARIÁVEIS GLOBAIS
-        // ==========================================
         let database;
         let currentUser = null;
         let selectedAmount = 0;
@@ -749,69 +688,41 @@
         let transferCode = '';
         let isCodeValid = false;
 
-        // Vendedores de exemplo (em produção, carregar do Firebase)
         const vendedores = [
             { id: '860407269', name: 'Ahmad Musa', location: 'Maputo Centro', phone: '860407269', status: 'online' },
             { id: '841234567', name: 'Fatima Omar', location: 'Matola', phone: '841234567', status: 'online' },
             { id: '872345678', name: 'Yusuf Ibrahim', location: 'Beira', phone: '872345678', status: 'offline' }
         ];
 
-        // ==========================================
-        // INICIALIZAÇÃO
-        // ==========================================
-        function log(message, type = 'info') {
-            console.log(`[${type.toUpperCase()}] ${message}`);
-            const panel = document.getElementById('debugPanel');
-            const div = document.createElement('div');
-            div.className = type;
-            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            panel.appendChild(div);
-            panel.scrollTop = panel.scrollHeight;
-        }
-
         window.onload = function() {
-            log('Iniciando sistema de recarga...', 'info');
-
             try {
-                // Inicializar Firebase
                 firebase.initializeApp(firebaseConfig);
                 database = firebase.database();
-                log('Firebase inicializado', 'success');
+                console.log('Firebase OK');
 
-                // Obter usuário da URL ou localStorage
                 const params = new URLSearchParams(window.location.search);
                 const userId = params.get('user') || localStorage.getItem('aulasOnlineUserId');
 
                 if (userId) {
                     currentUser = userId;
                     localStorage.setItem('aulasOnlineUserId', userId);
-                    log('Usuário identificado: ' + userId, 'success');
                     initUser(userId);
                 } else {
-                    log('Nenhum usuário identificado', 'warning');
-                    showAlert('Faça login na plataforma principal', 'error');
-                    document.getElementById('historyList').innerHTML = 
-                        '<p style="text-align: center; color: var(--text-light);">Faça login para ver o histórico</p>';
+                    showAlert('Faça login primeiro', 'error');
+                    document.getElementById('historyList').innerHTML = '<p style="text-align: center; padding: 2rem;">Faça login para ver o histórico</p>';
                 }
-
             } catch (error) {
-                log('ERRO ao inicializar: ' + error.message, 'error');
+                console.error('Erro:', error);
                 showAlert('Erro de sistema: ' + error.message, 'error');
-                document.getElementById('debugPanel').classList.add('show');
             }
         };
 
-        // ==========================================
-        // INICIALIZAR USUÁRIO
-        // ==========================================
         async function initUser(userId) {
             try {
-                // Verificar/criar usuário
                 const userRef = database.ref('users/' + userId);
                 const snapshot = await userRef.once('value');
 
                 if (!snapshot.exists()) {
-                    log('Criando novo usuário...', 'info');
                     await userRef.set({
                         balance: 0,
                         sellerBalance: 0,
@@ -820,7 +731,6 @@
                     });
                 }
 
-                // Listener do saldo
                 userRef.on('value', (snap) => {
                     if (snap.exists()) {
                         const data = snap.val();
@@ -829,43 +739,26 @@
                     }
                 });
 
-                // Carregar histórico
                 loadHistory(userId);
-
-                // Renderizar vendedores
                 renderVendedores();
-
             } catch (error) {
-                log('Erro ao inicializar usuário: ' + error.message, 'error');
-                showAlert('Erro ao carregar dados: ' + error.message, 'error');
+                console.error('Erro:', error);
             }
         }
 
-        // ==========================================
-        // SELEÇÃO DE VALOR
-        // ==========================================
         function selectAmount(amount, btn) {
             selectedAmount = amount;
-
-            // Remover seleção anterior
             document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-
-            // Esconder input custom
             document.getElementById('customAmount').classList.remove('show');
-
             updateSummary();
-            log('Valor selecionado: ' + amount + ' MTN', 'info');
         }
 
         function showCustomInput(btn) {
             document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-
-            const input = document.getElementById('customAmount');
-            input.classList.add('show');
-            input.focus();
-
+            document.getElementById('customAmount').classList.add('show');
+            document.getElementById('customAmount').focus();
             selectedAmount = 0;
             updateSummary();
         }
@@ -875,25 +768,18 @@
             updateSummary();
         }
 
-        // ==========================================
-        // SELEÇÃO DE MÉTODO
-        // ==========================================
         function selectMethod(method, btn) {
             selectedMethod = method;
-
             document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
 
-            // Mostrar/esconder seções específicas
             const paymentDetails = document.getElementById('paymentDetails');
             const vendedorSection = document.getElementById('vendedoresSection');
 
-            // Esconder todos os detalhes primeiro
             document.getElementById('mpesaDetails').style.display = 'none';
             document.getElementById('emolaDetails').style.display = 'none';
             document.getElementById('bimDetails').style.display = 'none';
 
-            // Resetar código
             transferCode = '';
             isCodeValid = false;
             document.getElementById('transferCode').value = '';
@@ -906,31 +792,17 @@
                 selectedVendedor = null;
                 document.querySelectorAll('.vendedor-card').forEach(c => c.classList.remove('selected'));
 
-                // Mostrar detalhes específicos
-                if (method === 'mpesa') {
-                    document.getElementById('mpesaDetails').style.display = 'block';
-                } else if (method === 'emola') {
-                    document.getElementById('emolaDetails').style.display = 'block';
-                } else if (method === 'bim') {
-                    document.getElementById('bimDetails').style.display = 'block';
-                }
-
+                if (method === 'mpesa') document.getElementById('mpesaDetails').style.display = 'block';
+                else if (method === 'emola') document.getElementById('emolaDetails').style.display = 'block';
+                else if (method === 'bim') document.getElementById('bimDetails').style.display = 'block';
             } else if (method === 'vendedor') {
                 paymentDetails.classList.remove('show');
                 vendedorSection.classList.add('show');
-            } else {
-                paymentDetails.classList.remove('show');
-                vendedorSection.classList.remove('show');
-                selectedVendedor = null;
             }
 
             updateSummary();
-            log('Método selecionado: ' + method, 'info');
         }
 
-        // ==========================================
-        // VALIDAÇÃO DO CÓDIGO
-        // ==========================================
         let codeValidationTimeout;
 
         function validateCodeInput(code) {
@@ -939,10 +811,7 @@
 
             const statusEl = document.getElementById('codeStatus');
 
-            // Limpar timeout anterior
-            if (codeValidationTimeout) {
-                clearTimeout(codeValidationTimeout);
-            }
+            if (codeValidationTimeout) clearTimeout(codeValidationTimeout);
 
             if (transferCode.length < 5) {
                 statusEl.className = 'code-status';
@@ -951,11 +820,9 @@
                 return;
             }
 
-            // Mostrar estado de verificação
             statusEl.className = 'code-status checking show';
-            statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando código...';
+            statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
 
-            // Debounce para evitar muitas requisições
             codeValidationTimeout = setTimeout(() => {
                 validateCodeWithConsole(transferCode);
             }, 1000);
@@ -965,9 +832,6 @@
             const statusEl = document.getElementById('codeStatus');
 
             try {
-                log('Verificando código na consola: ' + code, 'info');
-
-                // Verificar na consola/admin se o código existe e está disponível
                 const consoleRef = database.ref('console/transactions').orderByChild('code').equalTo(code);
                 const snapshot = await consoleRef.once('value');
 
@@ -977,43 +841,33 @@
                         codeData = { id: child.key, ...child.val() };
                     });
 
-                    // Verificar se o código já foi usado
                     if (codeData.status === 'used') {
                         statusEl.className = 'code-status invalid show';
                         statusEl.innerHTML = '<i class="fas fa-times-circle"></i> Código já utilizado';
                         isCodeValid = false;
-                        log('Código já utilizado: ' + code, 'warning');
                     } else if (codeData.amount === selectedAmount) {
                         statusEl.className = 'code-status valid show';
-                        statusEl.innerHTML = '<i class="fas fa-check-circle"></i> Código válido! Saldo será creditado automaticamente';
+                        statusEl.innerHTML = '<i class="fas fa-check-circle"></i> Código válido!';
                         isCodeValid = true;
-                        log('Código válido encontrado na consola', 'success');
                     } else {
                         statusEl.className = 'code-status invalid show';
                         statusEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> Valor incorreto. Esperado: ${codeData.amount} MTN`;
                         isCodeValid = false;
-                        log('Valor do código não corresponde: ' + codeData.amount + ' vs ' + selectedAmount, 'warning');
                     }
                 } else {
                     statusEl.className = 'code-status invalid show';
-                    statusEl.innerHTML = '<i class="fas fa-times-circle"></i> Código não encontrado na consola';
+                    statusEl.innerHTML = '<i class="fas fa-times-circle"></i> Código não encontrado';
                     isCodeValid = false;
-                    log('Código não encontrado na consola: ' + code, 'warning');
                 }
-
             } catch (error) {
                 statusEl.className = 'code-status invalid show';
-                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro ao verificar código';
+                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro ao verificar';
                 isCodeValid = false;
-                log('Erro ao validar código: ' + error.message, 'error');
             }
 
             updateSummary();
         }
 
-        // ==========================================
-        // RENDERIZAR VENDEDORES
-        // ==========================================
         function renderVendedores() {
             const grid = document.getElementById('vendedorGrid');
             grid.innerHTML = vendedores.map(v => `
@@ -1038,12 +892,8 @@
             document.querySelectorAll('.vendedor-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
             updateSummary();
-            log('Vendedor selecionado: ' + vendedorId, 'info');
         }
 
-        // ==========================================
-        // ATUALIZAR RESUMO
-        // ==========================================
         function updateSummary() {
             const summary = document.getElementById('summaryBox');
             const btn = document.getElementById('submitBtn');
@@ -1056,17 +906,15 @@
                     canSubmit = selectedVendedor !== null;
                 } else if (selectedMethod === 'mpesa' || selectedMethod === 'emola' || selectedMethod === 'bim') {
                     canSubmit = isCodeValid && transferCode.length > 0;
-                } else {
-                    canSubmit = true;
                 }
             }
 
             if (selectedAmount > 0) {
-                summary.style.display = 'block';
+                summary.classList.add('show');
                 document.getElementById('sumAmount').textContent = selectedAmount + ' MTN';
                 document.getElementById('sumTotal').textContent = selectedAmount + ' MTN';
             } else {
-                summary.style.display = 'none';
+                summary.classList.remove('show');
             }
 
             btn.disabled = !canSubmit;
@@ -1082,9 +930,6 @@
             }
         }
 
-        // ==========================================
-        // PROCESSAR RECARGA
-        // ==========================================
         async function processRecharge() {
             if (!currentUser) {
                 showAlert('Usuário não identificado', 'error');
@@ -1092,20 +937,12 @@
             }
 
             const btn = document.getElementById('submitBtn');
-            const originalContent = btn.innerHTML;
-
             btn.disabled = true;
             btn.innerHTML = '<span class="loading"></span> Processando...';
 
-            log('Iniciando processamento de recarga...', 'info');
-
             try {
-                // Validar
-                if (selectedAmount < 10) {
-                    throw new Error('Valor mínimo: 10 MTN');
-                }
+                if (selectedAmount < 10) throw new Error('Valor mínimo: 10 MTN');
 
-                // Gerar código único da transação
                 const txCode = 'TX' + Date.now().toString(36).toUpperCase();
 
                 const rechargeData = {
@@ -1121,14 +958,12 @@
                     processedAt: null
                 };
 
-                // Se tiver código válido, marcar como processado automaticamente
                 if (isCodeValid && transferCode) {
                     rechargeData.status = 'completed';
                     rechargeData.processedAt = firebase.database.ServerValue.TIMESTAMP;
                     rechargeData.processedBy = 'system';
                     rechargeData.autoProcessed = true;
 
-                    // Atualizar o código na consola como usado
                     const consoleRef = database.ref('console/transactions').orderByChild('code').equalTo(transferCode);
                     const snap = await consoleRef.once('value');
                     if (snap.exists()) {
@@ -1142,7 +977,6 @@
                         });
                     }
 
-                    // Adicionar saldo ao usuário imediatamente
                     const userRef = database.ref('users/' + currentUser);
                     const userSnap = await userRef.once('value');
                     const currentBalance = userSnap.val()?.balance || 0;
@@ -1150,85 +984,41 @@
                         balance: currentBalance + selectedAmount,
                         lastRecharge: firebase.database.ServerValue.TIMESTAMP
                     });
-
-                    log('Saldo creditado automaticamente: ' + selectedAmount + ' MTN', 'success');
                 }
 
-                log('Salvando recarga...', 'info');
+                await database.ref('recharges').push(rechargeData);
 
-                // Salvar com timeout
-                const savePromise = database.ref('recharges').push(rechargeData);
-                const timeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Timeout ao salvar')), 15000)
-                );
-
-                const newRecharge = await Promise.race([savePromise, timeoutPromise]);
-
-                log('✅ Recarga salva: ' + newRecharge.key, 'success');
-
-                // Notificar vendedor se selecionado
                 if (selectedVendedor) {
-                    try {
-                        await database.ref('notifications/' + selectedVendedor).push({
-                            type: 'new_recharge',
-                            rechargeId: newRecharge.key,
-                            userId: currentUser,
-                            amount: selectedAmount,
-                            timestamp: firebase.database.ServerValue.TIMESTAMP,
-                            read: false
-                        });
-                        log('Notificação enviada ao vendedor', 'success');
-                    } catch (notifErr) {
-                        log('Erro ao notificar vendedor (não crítico)', 'warning');
-                    }
+                    await database.ref('notifications/' + selectedVendedor).push({
+                        type: 'new_recharge',
+                        userId: currentUser,
+                        amount: selectedAmount,
+                        timestamp: firebase.database.ServerValue.TIMESTAMP,
+                        read: false
+                    });
                 }
 
-                // Mostrar sucesso
                 showSuccess(txCode, isCodeValid);
 
-                // Notificar parent
-                if (window.parent !== window) {
-                    window.parent.postMessage({
-                        type: 'RECHARGE_SUCCESS',
-                        transactionCode: txCode,
-                        amount: selectedAmount,
-                        autoProcessed: isCodeValid
-                    }, '*');
-                }
-
             } catch (error) {
-                log('❌ ERRO: ' + error.message, 'error');
                 showAlert('Erro: ' + error.message, 'error');
-
                 btn.disabled = false;
-                btn.innerHTML = originalContent;
-
-                // Mostrar debug em caso de erro
-                document.getElementById('debugPanel').classList.add('show');
+                btn.innerHTML = '<i class="fas fa-check-circle"></i><span>Confirmar Recarga</span>';
             }
         }
 
-        // ==========================================
-        // MOSTRAR SUCESSO
-        // ==========================================
-        function showSuccess(code, autoProcessed = false) {
+        function showSuccess(code, autoProcessed) {
             document.getElementById('mainScreen').style.display = 'none';
             document.getElementById('successScreen').classList.add('show');
             document.getElementById('successCode').textContent = code;
 
-            // Adicionar mensagem de sucesso adicional se processado automaticamente
             if (autoProcessed) {
-                const successScreen = document.getElementById('successScreen');
-                const autoMsg = document.createElement('div');
-                autoMsg.style.cssText = 'background: #e8f5e9; color: #2e7d32; padding: 1rem; border-radius: 8px; margin: 1rem 0; font-size: 0.9rem;';
-                autoMsg.innerHTML = '<i class="fas fa-check-circle"></i> <strong>Saldo creditado instantaneamente!</strong><br>O código foi validado e seu saldo já está disponível.';
-                successScreen.insertBefore(autoMsg, successScreen.children[successScreen.children.length - 1]);
+                document.getElementById('successMessage').innerHTML = 
+                    '<strong style="color: var(--success);">✓ Saldo creditado instantaneamente!</strong><br>' +
+                    'O código foi validado e seu saldo já está disponível.';
             }
         }
 
-        // ==========================================
-        // CARREGAR HISTÓRICO
-        // ==========================================
         function loadHistory(userId) {
             const list = document.getElementById('historyList');
 
@@ -1238,7 +1028,7 @@
                 .limitToLast(10)
                 .on('value', (snapshot) => {
                     if (!snapshot.exists()) {
-                        list.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">Nenhuma recarga encontrada</p>';
+                        list.innerHTML = '<p style="text-align: center; padding: 2rem;">Nenhuma recarga</p>';
                         return;
                     }
 
@@ -1263,24 +1053,14 @@
                             </span>
                         </div>
                     `).join('');
-                }, (error) => {
-                    log('Erro ao carregar histórico: ' + error.message, 'error');
-                    list.innerHTML = '<p style="text-align: center; color: var(--danger);">Erro ao carregar histórico</p>';
                 });
         }
 
-        // ==========================================
-        // UTILITÁRIOS
-        // ==========================================
         function showAlert(message, type) {
             const alert = document.getElementById('alertBox');
             alert.className = 'alert alert-' + type + ' show';
             alert.textContent = message;
-
-            // Auto-hide após 5 segundos
-            setTimeout(() => {
-                alert.classList.remove('show');
-            }, 5000);
+            setTimeout(() => alert.classList.remove('show'), 5000);
         }
 
         function formatDate(timestamp) {
@@ -1290,13 +1070,7 @@
         }
 
         function formatMethod(method) {
-            const methods = { 
-                mpesa: 'M-Pesa', 
-                emola: 'e-Mola', 
-                mkesh: 'mKesh', 
-                vendedor: 'Vendedor',
-                bim: 'BIM'
-            };
+            const methods = { mpesa: 'M-Pesa', emola: 'e-Mola', bim: 'BIM', vendedor: 'Vendedor' };
             return methods[method] || method;
         }
 
