@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registo - Madrassa Online</title>
+    <title>Registo - Aulas Online</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -45,7 +45,7 @@
             overflow-x: hidden;
         }
 
-        /* Islamic Pattern Background */
+        /* Background Pattern */
         .pattern-bg {
             position: fixed;
             top: 0;
@@ -135,17 +135,15 @@
             text-align: left;
         }
 
-        .logo-arabic {
-            font-family: 'Noto Naskh Arabic', serif;
+        .logo-title {
             font-size: 1.5rem;
-            color: var(--accent-light);
+            font-weight: 700;
             display: block;
         }
 
-        .logo-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+        .logo-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.9;
         }
 
         .header-subtitle {
@@ -602,11 +600,11 @@
                         <i class="fas fa-user-graduate"></i>
                     </div>
                     <div class="logo-text">
-                        <span class="logo-arabic">تسجيل</span>
-                        <span class="logo-title">Novo Aluno</span>
+                        <span class="logo-title">Aulas Online</span>
+                        <span class="logo-subtitle">Novo Aluno</span>
                     </div>
                 </div>
-                <p class="header-subtitle">Preencha os dados abaixo para criar sua conta na Madrassa Online</p>
+                <p class="header-subtitle">Preencha os dados abaixo para criar sua conta nas Aulas Online</p>
             </div>
 
             <div class="register-body">
@@ -717,7 +715,7 @@
                             <input type="checkbox" id="acceptTerms" required>
                             <span class="checkbox-label">
                                 Aceito os <a href="#" onclick="showTerms()">Termos de Uso</a> e 
-                                <a href="#" onclick="showPrivacy()">Política de Privacidade</a> da Madrassa Online. 
+                                <a href="#" onclick="showPrivacy()">Política de Privacidade</a> das Aulas Online. 
                                 Confirmo que tenho pelo menos 13 anos de idade.
                             </span>
                         </label>
@@ -738,7 +736,7 @@
             </div>
             <h2 class="success-title">Registo Efectuado com Sucesso!</h2>
             <p class="success-text">
-                Bem-vindo à Madrassa Online! Sua conta foi criada e está pendente de aprovação.
+                Bem-vindo às Aulas Online! Sua conta foi criada e está pendente de aprovação.
                 Você receberá um email de confirmação em breve.
             </p>
             
@@ -775,13 +773,13 @@
     </div>
 
     <script>
-        // Firebase Configuration - Must match parent window
+        // Firebase Configuration - USE A MESMA CONFIGURAÇÃO DO WEBSITE MÃE
         const firebaseConfig = {
             apiKey: "AIzaSyCW9ZZadm4WJ_FKtOjvkP1czsfImwzl98c",
-            authDomain: "madrassa-online.firebaseapp.com",
-            databaseURL: "https://madrassa-online-default-rtdb.firebaseio.com",
-            projectId: "madrassa-online",
-            storageBucket: "madrassa-online.appspot.com",
+            authDomain: "aulas-online.firebaseapp.com",
+            databaseURL: "https://aulas-online-default-rtdb.firebaseio.com",
+            projectId: "aulas-online",
+            storageBucket: "aulas-online.appspot.com",
             messagingSenderId: "123456789",
             appId: "1:123456789:web:abcdef123456"
         };
@@ -802,7 +800,6 @@
             
             strengthDiv.classList.add('show');
             
-            // Simple strength logic
             let strength = 'weak';
             if (pin.length === 4) {
                 const uniqueDigits = new Set(pin).size;
@@ -821,10 +818,8 @@
             const errorDiv = document.getElementById('errorMessage');
             const errorText = document.getElementById('errorText');
             
-            // Reset error
             errorDiv.classList.remove('show');
             
-            // Get values
             const fullName = document.getElementById('fullName').value.trim();
             const phone = document.getElementById('phoneNumber').value.trim().replace(/\D/g, '');
             const email = document.getElementById('email').value.trim();
@@ -832,7 +827,6 @@
             const confirmPin = document.getElementById('confirmPin').value;
             const referralCode = document.getElementById('referralCode').value.trim().toUpperCase();
             
-            // Validations
             if (phone.length < 9) {
                 showError('Número de telefone inválido. Deve ter pelo menos 9 dígitos.');
                 return;
@@ -853,14 +847,12 @@
                 return;
             }
             
-            // Loading state
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="loading"></span> Processando...';
             
             try {
                 const userId = phone;
                 
-                // Check if user exists
                 const snapshot = await database.ref('users/' + userId).once('value');
                 if (snapshot.exists()) {
                     showError('Este número já está registado. Use a opção de login.');
@@ -869,7 +861,6 @@
                     return;
                 }
                 
-                // Check if email exists
                 const emailSnapshot = await database.ref('users').orderByChild('email').equalTo(email).once('value');
                 if (emailSnapshot.exists()) {
                     showError('Este email já está registado.');
@@ -878,10 +869,8 @@
                     return;
                 }
                 
-                // Generate referral code
                 const myRefCode = 'REF-' + Math.random().toString(36).substr(2, 6).toUpperCase();
                 
-                // Create user data
                 const userData = {
                     name: fullName,
                     phone: phone,
@@ -893,22 +882,17 @@
                     referredBy: referralCode || null,
                     createdAt: Date.now(),
                     approved: false,
-                    courses: {},
-                    lastLogin: null
+                    courses: {}
                 };
                 
-                // Save to Firebase
                 await database.ref('users/' + userId).set(userData);
                 
-                // Process referral if exists
                 if (referralCode) {
                     await processReferral(referralCode, phone);
                 }
                 
-                // Show success
                 showSuccess(phone, email, myRefCode);
                 
-                // Notify parent window (if in iframe)
                 if (window.parent !== window) {
                     window.parent.postMessage({
                         type: 'REGISTRATION_SUCCESS',
@@ -928,18 +912,15 @@
         // Process Referral
         async function processReferral(refCode, newUserPhone) {
             try {
-                // Find referrer
                 const snapshot = await database.ref('users').orderByChild('referralCode').equalTo(refCode).once('value');
                 
                 if (snapshot.exists()) {
                     const referrerId = Object.keys(snapshot.val())[0];
                     const referrer = snapshot.val()[referrerId];
                     
-                    // Add 0.02 to referrer seller balance
                     const newBalance = (referrer.sellerBalance || 0) + 0.02;
                     await database.ref('users/' + referrerId + '/sellerBalance').set(newBalance);
                     
-                    // Log transaction
                     await database.ref('transactions').push({
                         type: 'referral_registration',
                         from: newUserPhone,
@@ -948,8 +929,6 @@
                         timestamp: Date.now(),
                         status: 'completed'
                     });
-                    
-                    console.log('Referral processed:', refCode, '->', referrerId);
                 }
             } catch (error) {
                 console.error('Referral processing error:', error);
@@ -962,8 +941,6 @@
             const errorText = document.getElementById('errorText');
             errorText.textContent = message;
             errorDiv.classList.add('show');
-            
-            // Scroll to error
             errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         
@@ -980,10 +957,8 @@
         // Close Window
         function closeWindow() {
             if (window.parent !== window) {
-                // If in iframe, tell parent to close
                 window.parent.postMessage({ type: 'CLOSE_REGISTRATION' }, '*');
             } else {
-                // If standalone, redirect to main page
                 window.location.href = '../index.html';
             }
         }
@@ -1012,17 +987,8 @@
             }, 3000);
         }
         
-        // Listen for messages from parent
-        window.addEventListener('message', function(e) {
-            if (e.data.type === 'FIREBASE_CONFIG') {
-                // Re-initialize with parent config if provided
-                console.log('Received config from parent');
-            }
-        });
-        
         // Input formatting
         document.getElementById('phoneNumber').addEventListener('input', function(e) {
-            // Allow only numbers
             this.value = this.value.replace(/\D/g, '');
         });
         
