@@ -22,6 +22,7 @@
             --success: #27ae60;
             --warning: #f39c12;
             --danger: #e74c3c;
+            --info: #3498db;
             --shadow: 0 10px 40px rgba(0,0,0,0.1);
             --radius: 16px;
             --radius-sm: 8px;
@@ -186,6 +187,105 @@
         .method-btn.emola i { color: #28a745; }
         .method-btn.mkesh i { color: #ffc107; }
         .method-btn.vendedor i { color: var(--primary); }
+        .method-btn.bim i { color: var(--info); }
+
+        /* Payment Details Section */
+        .payment-details {
+            background: linear-gradient(135deg, rgba(26, 95, 74, 0.05) 0%, rgba(26, 95, 74, 0.02) 100%);
+            border: 2px dashed var(--primary-light);
+            border-radius: var(--radius-sm);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .payment-details.show { display: block; }
+
+        .payment-details h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .agent-info {
+            background: white;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .agent-info h5 {
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .agent-info p {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .agent-info .highlight {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .code-input-section {
+            margin-top: 1rem;
+        }
+
+        .code-input-section label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--primary-light);
+            border-radius: var(--radius-sm);
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 2px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 95, 74, 0.1);
+        }
+
+        .code-status {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .code-status.show { display: block; }
+        .code-status.valid {
+            background: #e8f5e9;
+            color: var(--success);
+        }
+        .code-status.invalid {
+            background: #ffebee;
+            color: var(--danger);
+        }
+        .code-status.checking {
+            background: #e3f2fd;
+            color: var(--info);
+        }
 
         /* Vendedores */
         .vendedores-section {
@@ -308,6 +408,7 @@
         .alert.show { display: block; }
         .alert-error { background: #ffebee; color: #c62828; border-left: 4px solid #f44336; }
         .alert-success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #4caf50; }
+        .alert-info { background: #e3f2fd; color: #1565c0; border-left: 4px solid #2196f3; }
 
         /* Success State */
         .success-state {
@@ -370,6 +471,25 @@
             z-index: 100;
         }
 
+        /* Instructions Box */
+        .instructions-box {
+            background: #fff8e1;
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .instructions-box ol {
+            margin-left: 1.2rem;
+            color: var(--text-dark);
+        }
+
+        .instructions-box li {
+            margin-bottom: 0.5rem;
+        }
+
         /* Debug Panel */
         .debug-panel {
             background: #263238;
@@ -392,8 +512,10 @@
             .amount-grid { grid-template-columns: repeat(3, 1fr); }
             .methods { grid-template-columns: repeat(2, 1fr); }
             .balance-section { grid-template-columns: 1fr; }
+            .back-btn { bottom: 1rem; left: 1rem; padding: 0.75rem 1.5rem; }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
     <div class="container">
@@ -423,7 +545,7 @@
                 <div class="alert" id="alertBox"></div>
 
                 <h3 class="section-title"><i class="fas fa-coins"></i> Selecione o Valor</h3>
-                
+
                 <div class="amount-grid">
                     <button class="amount-btn" onclick="selectAmount(50, this)">
                         <span class="value">50</span>
@@ -454,7 +576,7 @@
                 <input type="number" class="custom-input" id="customAmount" placeholder="Valor personalizado (MTN)" min="10" oninput="setCustomAmount(this.value)">
 
                 <h3 class="section-title"><i class="fas fa-credit-card"></i> Método de Pagamento</h3>
-                
+
                 <div class="methods">
                     <button class="method-btn mpesa" onclick="selectMethod('mpesa', this)">
                         <i class="fas fa-mobile-alt"></i>
@@ -468,10 +590,65 @@
                         <i class="fas fa-mobile-alt"></i>
                         <span>mKesh</span>
                     </button>
+                    <button class="method-btn bim" onclick="selectMethod('bim', this)">
+                        <i class="fas fa-university"></i>
+                        <span>BIM</span>
+                    </button>
                     <button class="method-btn vendedor" onclick="selectMethod('vendedor', this)">
                         <i class="fas fa-store"></i>
                         <span>Vendedor</span>
                     </button>
+                </div>
+
+                <!-- Payment Details Section -->
+                <div class="payment-details" id="paymentDetails">
+                    <h4><i class="fas fa-info-circle"></i> Dados para Pagamento</h4>
+
+                    <div id="mpesaDetails" style="display: none;">
+                        <div class="agent-info">
+                            <h5><i class="fas fa-store"></i> Agente M-Pesa Paga Fácil</h5>
+                            <p>Nome: <span class="highlight">Bebane</span></p>
+                            <p>Número: <span class="highlight">1228803</span></p>
+                        </div>
+                    </div>
+
+                    <div id="emolaDetails" style="display: none;">
+                        <div class="agent-info">
+                            <h5><i class="fas fa-store"></i> Agente e-Mola</h5>
+                            <p>Nome: <span class="highlight">Anacleto</span></p>
+                            <p>Número: <span class="highlight">860407269</span></p>
+                        </div>
+                    </div>
+
+                    <div id="bimDetails" style="display: none;">
+                        <div class="agent-info">
+                            <h5><i class="fas fa-university"></i> Transferência Bancária BIM</h5>
+                            <p>NIB: <span class="highlight">0001000000124733562</span></p>
+                            <p style="font-size: 0.75rem; margin-top: 0.5rem;">Faça a transferência e insira o comprovativo</p>
+                        </div>
+                    </div>
+
+                    <div class="instructions-box">
+                        <strong><i class="fas fa-list-ol"></i> Como funciona:</strong>
+                        <ol>
+                            <li>Faça o pagamento no agente indicado acima</li>
+                            <li>Guarde o código/código da transferência</li>
+                            <li>Insira o código no campo abaixo</li>
+                            <li>Se o código for válido na consola, recebe o saldo automaticamente</li>
+                        </ol>
+                    </div>
+
+                    <div class="code-input-section">
+                        <label for="transferCode">
+                            <i class="fas fa-key"></i> Código da Transferência
+                        </label>
+                        <input type="text" 
+                               class="code-input" 
+                               id="transferCode" 
+                               placeholder="Ex: TX123456789"
+                               oninput="validateCodeInput(this.value)">
+                        <div class="code-status" id="codeStatus"></div>
+                    </div>
                 </div>
 
                 <!-- Vendedores Section -->
@@ -569,6 +746,8 @@
         let selectedAmount = 0;
         let selectedMethod = '';
         let selectedVendedor = null;
+        let transferCode = '';
+        let isCodeValid = false;
 
         // Vendedores de exemplo (em produção, carregar do Firebase)
         const vendedores = [
@@ -592,17 +771,17 @@
 
         window.onload = function() {
             log('Iniciando sistema de recarga...', 'info');
-            
+
             try {
                 // Inicializar Firebase
                 firebase.initializeApp(firebaseConfig);
                 database = firebase.database();
                 log('Firebase inicializado', 'success');
-                
+
                 // Obter usuário da URL ou localStorage
                 const params = new URLSearchParams(window.location.search);
                 const userId = params.get('user') || localStorage.getItem('aulasOnlineUserId');
-                
+
                 if (userId) {
                     currentUser = userId;
                     localStorage.setItem('aulasOnlineUserId', userId);
@@ -614,7 +793,7 @@
                     document.getElementById('historyList').innerHTML = 
                         '<p style="text-align: center; color: var(--text-light);">Faça login para ver o histórico</p>';
                 }
-                
+
             } catch (error) {
                 log('ERRO ao inicializar: ' + error.message, 'error');
                 showAlert('Erro de sistema: ' + error.message, 'error');
@@ -630,7 +809,7 @@
                 // Verificar/criar usuário
                 const userRef = database.ref('users/' + userId);
                 const snapshot = await userRef.once('value');
-                
+
                 if (!snapshot.exists()) {
                     log('Criando novo usuário...', 'info');
                     await userRef.set({
@@ -640,7 +819,7 @@
                         createdAt: Date.now()
                     });
                 }
-                
+
                 // Listener do saldo
                 userRef.on('value', (snap) => {
                     if (snap.exists()) {
@@ -649,13 +828,13 @@
                         document.getElementById('sellerBalance').textContent = (data.sellerBalance || 0).toFixed(2);
                     }
                 });
-                
+
                 // Carregar histórico
                 loadHistory(userId);
-                
+
                 // Renderizar vendedores
                 renderVendedores();
-                
+
             } catch (error) {
                 log('Erro ao inicializar usuário: ' + error.message, 'error');
                 showAlert('Erro ao carregar dados: ' + error.message, 'error');
@@ -667,14 +846,14 @@
         // ==========================================
         function selectAmount(amount, btn) {
             selectedAmount = amount;
-            
+
             // Remover seleção anterior
             document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-            
+
             // Esconder input custom
             document.getElementById('customAmount').classList.remove('show');
-            
+
             updateSummary();
             log('Valor selecionado: ' + amount + ' MTN', 'info');
         }
@@ -682,11 +861,11 @@
         function showCustomInput(btn) {
             document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-            
+
             const input = document.getElementById('customAmount');
             input.classList.add('show');
             input.focus();
-            
+
             selectedAmount = 0;
             updateSummary();
         }
@@ -701,22 +880,135 @@
         // ==========================================
         function selectMethod(method, btn) {
             selectedMethod = method;
-            
+
             document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-            
-            // Mostrar/esconder vendedores
+
+            // Mostrar/esconder seções específicas
+            const paymentDetails = document.getElementById('paymentDetails');
             const vendedorSection = document.getElementById('vendedoresSection');
-            if (method === 'vendedor') {
-                vendedorSection.classList.add('show');
-            } else {
+
+            // Esconder todos os detalhes primeiro
+            document.getElementById('mpesaDetails').style.display = 'none';
+            document.getElementById('emolaDetails').style.display = 'none';
+            document.getElementById('bimDetails').style.display = 'none';
+
+            // Resetar código
+            transferCode = '';
+            isCodeValid = false;
+            document.getElementById('transferCode').value = '';
+            document.getElementById('codeStatus').className = 'code-status';
+            document.getElementById('codeStatus').textContent = '';
+
+            if (method === 'mpesa' || method === 'emola' || method === 'bim') {
+                paymentDetails.classList.add('show');
                 vendedorSection.classList.remove('show');
                 selectedVendedor = null;
                 document.querySelectorAll('.vendedor-card').forEach(c => c.classList.remove('selected'));
+
+                // Mostrar detalhes específicos
+                if (method === 'mpesa') {
+                    document.getElementById('mpesaDetails').style.display = 'block';
+                } else if (method === 'emola') {
+                    document.getElementById('emolaDetails').style.display = 'block';
+                } else if (method === 'bim') {
+                    document.getElementById('bimDetails').style.display = 'block';
+                }
+
+            } else if (method === 'vendedor') {
+                paymentDetails.classList.remove('show');
+                vendedorSection.classList.add('show');
+            } else {
+                paymentDetails.classList.remove('show');
+                vendedorSection.classList.remove('show');
+                selectedVendedor = null;
             }
-            
+
             updateSummary();
             log('Método selecionado: ' + method, 'info');
+        }
+
+        // ==========================================
+        // VALIDAÇÃO DO CÓDIGO
+        // ==========================================
+        let codeValidationTimeout;
+
+        function validateCodeInput(code) {
+            transferCode = code.trim().toUpperCase();
+            isCodeValid = false;
+
+            const statusEl = document.getElementById('codeStatus');
+
+            // Limpar timeout anterior
+            if (codeValidationTimeout) {
+                clearTimeout(codeValidationTimeout);
+            }
+
+            if (transferCode.length < 5) {
+                statusEl.className = 'code-status';
+                statusEl.textContent = '';
+                updateSummary();
+                return;
+            }
+
+            // Mostrar estado de verificação
+            statusEl.className = 'code-status checking show';
+            statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando código...';
+
+            // Debounce para evitar muitas requisições
+            codeValidationTimeout = setTimeout(() => {
+                validateCodeWithConsole(transferCode);
+            }, 1000);
+        }
+
+        async function validateCodeWithConsole(code) {
+            const statusEl = document.getElementById('codeStatus');
+
+            try {
+                log('Verificando código na consola: ' + code, 'info');
+
+                // Verificar na consola/admin se o código existe e está disponível
+                const consoleRef = database.ref('console/transactions').orderByChild('code').equalTo(code);
+                const snapshot = await consoleRef.once('value');
+
+                if (snapshot.exists()) {
+                    let codeData = null;
+                    snapshot.forEach((child) => {
+                        codeData = { id: child.key, ...child.val() };
+                    });
+
+                    // Verificar se o código já foi usado
+                    if (codeData.status === 'used') {
+                        statusEl.className = 'code-status invalid show';
+                        statusEl.innerHTML = '<i class="fas fa-times-circle"></i> Código já utilizado';
+                        isCodeValid = false;
+                        log('Código já utilizado: ' + code, 'warning');
+                    } else if (codeData.amount === selectedAmount) {
+                        statusEl.className = 'code-status valid show';
+                        statusEl.innerHTML = '<i class="fas fa-check-circle"></i> Código válido! Saldo será creditado automaticamente';
+                        isCodeValid = true;
+                        log('Código válido encontrado na consola', 'success');
+                    } else {
+                        statusEl.className = 'code-status invalid show';
+                        statusEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> Valor incorreto. Esperado: ${codeData.amount} MTN`;
+                        isCodeValid = false;
+                        log('Valor do código não corresponde: ' + codeData.amount + ' vs ' + selectedAmount, 'warning');
+                    }
+                } else {
+                    statusEl.className = 'code-status invalid show';
+                    statusEl.innerHTML = '<i class="fas fa-times-circle"></i> Código não encontrado na consola';
+                    isCodeValid = false;
+                    log('Código não encontrado na consola: ' + code, 'warning');
+                }
+
+            } catch (error) {
+                statusEl.className = 'code-status invalid show';
+                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro ao verificar código';
+                isCodeValid = false;
+                log('Erro ao validar código: ' + error.message, 'error');
+            }
+
+            updateSummary();
         }
 
         // ==========================================
@@ -756,22 +1048,37 @@
             const summary = document.getElementById('summaryBox');
             const btn = document.getElementById('submitBtn');
             const btnText = document.getElementById('btnText');
-            
-            const canSubmit = selectedAmount > 0 && selectedMethod && 
-                             (selectedMethod !== 'vendedor' || selectedVendedor);
-            
-            if (canSubmit) {
+
+            let canSubmit = false;
+
+            if (selectedAmount > 0 && selectedMethod) {
+                if (selectedMethod === 'vendedor') {
+                    canSubmit = selectedVendedor !== null;
+                } else if (selectedMethod === 'mpesa' || selectedMethod === 'emola' || selectedMethod === 'bim') {
+                    canSubmit = isCodeValid && transferCode.length > 0;
+                } else {
+                    canSubmit = true;
+                }
+            }
+
+            if (selectedAmount > 0) {
                 summary.style.display = 'block';
                 document.getElementById('sumAmount').textContent = selectedAmount + ' MTN';
                 document.getElementById('sumTotal').textContent = selectedAmount + ' MTN';
-                btn.disabled = false;
-                btnText.textContent = 'Confirmar Recarga';
             } else {
                 summary.style.display = 'none';
-                btn.disabled = true;
-                btnText.textContent = selectedMethod === 'vendedor' && !selectedVendedor 
-                    ? 'Selecione um vendedor' 
-                    : 'Selecione valor e método';
+            }
+
+            btn.disabled = !canSubmit;
+
+            if (canSubmit) {
+                btnText.textContent = 'Confirmar Recarga';
+            } else if (selectedMethod === 'vendedor' && !selectedVendedor) {
+                btnText.textContent = 'Selecione um vendedor';
+            } else if ((selectedMethod === 'mpesa' || selectedMethod === 'emola' || selectedMethod === 'bim') && !isCodeValid) {
+                btnText.textContent = 'Insira um código válido';
+            } else {
+                btnText.textContent = 'Selecione valor e método';
             }
         }
 
@@ -786,45 +1093,79 @@
 
             const btn = document.getElementById('submitBtn');
             const originalContent = btn.innerHTML;
-            
+
             btn.disabled = true;
             btn.innerHTML = '<span class="loading"></span> Processando...';
-            
+
             log('Iniciando processamento de recarga...', 'info');
-            
+
             try {
                 // Validar
                 if (selectedAmount < 10) {
                     throw new Error('Valor mínimo: 10 MTN');
                 }
-                
-                // Gerar código único
+
+                // Gerar código único da transação
                 const txCode = 'TX' + Date.now().toString(36).toUpperCase();
-                
+
                 const rechargeData = {
                     userId: currentUser,
                     amount: selectedAmount,
                     method: selectedMethod,
                     vendedorId: selectedVendedor,
+                    transferCode: transferCode || null,
                     status: 'pending',
                     timestamp: firebase.database.ServerValue.TIMESTAMP,
                     transactionCode: txCode,
                     processedBy: null,
                     processedAt: null
                 };
-                
+
+                // Se tiver código válido, marcar como processado automaticamente
+                if (isCodeValid && transferCode) {
+                    rechargeData.status = 'completed';
+                    rechargeData.processedAt = firebase.database.ServerValue.TIMESTAMP;
+                    rechargeData.processedBy = 'system';
+                    rechargeData.autoProcessed = true;
+
+                    // Atualizar o código na consola como usado
+                    const consoleRef = database.ref('console/transactions').orderByChild('code').equalTo(transferCode);
+                    const snap = await consoleRef.once('value');
+                    if (snap.exists()) {
+                        snap.forEach((child) => {
+                            database.ref('console/transactions/' + child.key).update({
+                                status: 'used',
+                                usedBy: currentUser,
+                                usedAt: firebase.database.ServerValue.TIMESTAMP,
+                                transactionId: txCode
+                            });
+                        });
+                    }
+
+                    // Adicionar saldo ao usuário imediatamente
+                    const userRef = database.ref('users/' + currentUser);
+                    const userSnap = await userRef.once('value');
+                    const currentBalance = userSnap.val()?.balance || 0;
+                    await userRef.update({
+                        balance: currentBalance + selectedAmount,
+                        lastRecharge: firebase.database.ServerValue.TIMESTAMP
+                    });
+
+                    log('Saldo creditado automaticamente: ' + selectedAmount + ' MTN', 'success');
+                }
+
                 log('Salvando recarga...', 'info');
-                
+
                 // Salvar com timeout
                 const savePromise = database.ref('recharges').push(rechargeData);
                 const timeoutPromise = new Promise((_, reject) => 
                     setTimeout(() => reject(new Error('Timeout ao salvar')), 15000)
                 );
-                
+
                 const newRecharge = await Promise.race([savePromise, timeoutPromise]);
-                
+
                 log('✅ Recarga salva: ' + newRecharge.key, 'success');
-                
+
                 // Notificar vendedor se selecionado
                 if (selectedVendedor) {
                     try {
@@ -841,26 +1182,27 @@
                         log('Erro ao notificar vendedor (não crítico)', 'warning');
                     }
                 }
-                
+
                 // Mostrar sucesso
-                showSuccess(txCode);
-                
+                showSuccess(txCode, isCodeValid);
+
                 // Notificar parent
                 if (window.parent !== window) {
                     window.parent.postMessage({
                         type: 'RECHARGE_SUCCESS',
                         transactionCode: txCode,
-                        amount: selectedAmount
+                        amount: selectedAmount,
+                        autoProcessed: isCodeValid
                     }, '*');
                 }
-                
+
             } catch (error) {
                 log('❌ ERRO: ' + error.message, 'error');
                 showAlert('Erro: ' + error.message, 'error');
-                
+
                 btn.disabled = false;
                 btn.innerHTML = originalContent;
-                
+
                 // Mostrar debug em caso de erro
                 document.getElementById('debugPanel').classList.add('show');
             }
@@ -869,10 +1211,19 @@
         // ==========================================
         // MOSTRAR SUCESSO
         // ==========================================
-        function showSuccess(code) {
+        function showSuccess(code, autoProcessed = false) {
             document.getElementById('mainScreen').style.display = 'none';
             document.getElementById('successScreen').classList.add('show');
             document.getElementById('successCode').textContent = code;
+
+            // Adicionar mensagem de sucesso adicional se processado automaticamente
+            if (autoProcessed) {
+                const successScreen = document.getElementById('successScreen');
+                const autoMsg = document.createElement('div');
+                autoMsg.style.cssText = 'background: #e8f5e9; color: #2e7d32; padding: 1rem; border-radius: 8px; margin: 1rem 0; font-size: 0.9rem;';
+                autoMsg.innerHTML = '<i class="fas fa-check-circle"></i> <strong>Saldo creditado instantaneamente!</strong><br>O código foi validado e seu saldo já está disponível.';
+                successScreen.insertBefore(autoMsg, successScreen.children[successScreen.children.length - 1]);
+            }
         }
 
         // ==========================================
@@ -880,7 +1231,7 @@
         // ==========================================
         function loadHistory(userId) {
             const list = document.getElementById('historyList');
-            
+
             database.ref('recharges')
                 .orderByChild('userId')
                 .equalTo(userId)
@@ -890,18 +1241,19 @@
                         list.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">Nenhuma recarga encontrada</p>';
                         return;
                     }
-                    
+
                     const recharges = [];
                     snapshot.forEach((child) => {
                         recharges.unshift({ id: child.key, ...child.val() });
                     });
-                    
+
                     list.innerHTML = recharges.map(r => `
                         <div class="history-item ${r.status}">
                             <div>
                                 <strong>${r.amount} MTN</strong>
                                 <div style="font-size: 0.75rem; color: var(--text-light);">
                                     ${formatDate(r.timestamp)} • ${formatMethod(r.method)}
+                                    ${r.autoProcessed ? ' <span style="color: var(--success);">(Auto)</span>' : ''}
                                 </div>
                             </div>
                             <span style="font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 4px; 
@@ -924,6 +1276,11 @@
             const alert = document.getElementById('alertBox');
             alert.className = 'alert alert-' + type + ' show';
             alert.textContent = message;
+
+            // Auto-hide após 5 segundos
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
         }
 
         function formatDate(timestamp) {
@@ -933,7 +1290,13 @@
         }
 
         function formatMethod(method) {
-            const methods = { mpesa: 'M-Pesa', emola: 'e-Mola', mkesh: 'mKesh', vendedor: 'Vendedor' };
+            const methods = { 
+                mpesa: 'M-Pesa', 
+                emola: 'e-Mola', 
+                mkesh: 'mKesh', 
+                vendedor: 'Vendedor',
+                bim: 'BIM'
+            };
             return methods[method] || method;
         }
 
