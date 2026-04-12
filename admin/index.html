@@ -110,6 +110,7 @@
             margin-bottom: 1.5rem;
             border-bottom: 2px solid var(--bg-cream);
             padding-bottom: 0.5rem;
+            overflow-x: auto;
         }
 
         .tab-btn {
@@ -121,6 +122,7 @@
             color: var(--text-light);
             border-radius: var(--radius-sm);
             transition: all 0.3s;
+            white-space: nowrap;
         }
 
         .tab-btn:hover { background: var(--bg-cream); }
@@ -132,7 +134,6 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Tabela */
         .table-container {
             overflow-x: auto;
         }
@@ -163,20 +164,9 @@
             font-weight: 600;
         }
 
-        .badge-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .badge-completed {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .badge-paid {
-            background: #cce5ff;
-            color: #004085;
-        }
+        .badge-pending { background: #fff3cd; color: #856404; }
+        .badge-completed { background: #d4edda; color: #155724; }
+        .badge-paid { background: #cce5ff; color: #004085; }
 
         .btn {
             padding: 0.5rem 1rem;
@@ -194,7 +184,6 @@
             background: var(--success);
             color: white;
         }
-
         .btn-success:hover { background: #229954; }
 
         .btn-danger {
@@ -206,10 +195,8 @@
             background: var(--primary);
             color: white;
         }
-
         .btn-primary:hover { background: var(--primary-dark); }
 
-        /* Formulário de Código */
         .code-form {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -252,14 +239,12 @@
         }
 
         .generated-code.show { display: block; }
-
         .generated-code h3 {
             font-size: 2rem;
             letter-spacing: 3px;
             margin: 0.5rem 0;
         }
 
-        /* Lista de Códigos */
         .codes-list {
             display: grid;
             gap: 0.75rem;
@@ -297,7 +282,6 @@
             color: var(--primary);
         }
 
-        /* Filtros */
         .filters {
             display: flex;
             gap: 1rem;
@@ -320,7 +304,6 @@
             color: white;
         }
 
-        /* Loading */
         .loading {
             display: inline-block;
             width: 20px;
@@ -345,7 +328,6 @@
             color: var(--bg-cream);
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -392,7 +374,6 @@
 
         @media (max-width: 768px) {
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .tabs { overflow-x: auto; }
             table { font-size: 0.85rem; }
             th, td { padding: 0.75rem 0.5rem; }
         }
@@ -401,13 +382,11 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <h1><i class="fas fa-cog"></i> Consola Admin - Moz Coin</h1>
             <p>Gerencie recargas, códigos e pagamentos</p>
         </div>
 
-        <!-- Stats -->
         <div class="stats-grid">
             <div class="stat-card">
                 <i class="fas fa-clock"></i>
@@ -431,7 +410,6 @@
             </div>
         </div>
 
-        <!-- Tabs -->
         <div class="section">
             <div class="tabs">
                 <button class="tab-btn active" onclick="showTab('recharges')">
@@ -445,11 +423,9 @@
                 </button>
             </div>
 
-            <!-- Tab: Recargas -->
             <div id="recharges" class="tab-content active">
                 <h3 class="section-title">
-                    <i class="fas fa-clock"></i> 
-                    Solicitações Pendentes
+                    <i class="fas fa-clock"></i> Solicitações Pendentes
                 </h3>
 
                 <div class="filters">
@@ -485,11 +461,9 @@
                 </div>
             </div>
 
-            <!-- Tab: Gerar Códigos -->
             <div id="codes" class="tab-content">
                 <h3 class="section-title">
-                    <i class="fas fa-plus-circle"></i> 
-                    Gerar Novo Código de Transferência
+                    <i class="fas fa-plus-circle"></i> Gerar Novo Código
                 </h3>
 
                 <div class="code-form">
@@ -498,7 +472,7 @@
                         <input type="number" id="codeAmount" placeholder="Ex: 500" min="10">
                     </div>
                     <div class="form-group">
-                        <label>Método de Pagamento</label>
+                        <label>Método</label>
                         <select id="codeMethod">
                             <option value="mpesa">M-Pesa (Bebane - 1228803)</option>
                             <option value="emola">e-Mola (Anacleto - 860407269)</option>
@@ -516,18 +490,17 @@
                 </button>
 
                 <div class="generated-code" id="generatedCode">
-                    <p>Código Gerado com Sucesso!</p>
+                    <p>Código Gerado!</p>
                     <h3 id="newCodeValue">ABC123</h3>
                     <p>Valor: <strong id="newCodeAmount">500 MTN</strong></p>
                     <p>Válido por <span id="newCodeExpiry">7</span> dias</p>
                     <button class="btn btn-success" onclick="copyCode()" style="margin-top: 1rem;">
-                        <i class="fas fa-copy"></i> Copiar Código
+                        <i class="fas fa-copy"></i> Copiar
                     </button>
                 </div>
 
                 <h3 class="section-title" style="margin-top: 2rem;">
-                    <i class="fas fa-list"></i> 
-                    Códigos Gerados
+                    <i class="fas fa-list"></i> Códigos Gerados
                 </h3>
 
                 <div class="filters">
@@ -539,16 +512,14 @@
                 <div class="codes-list" id="codesList">
                     <div class="empty-state">
                         <i class="fas fa-key"></i>
-                        <p>Nenhum código gerado</p>
+                        <p>Nenhum código</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab: Histórico -->
             <div id="history" class="tab-content">
                 <h3 class="section-title">
-                    <i class="fas fa-history"></i> 
-                    Histórico de Transações
+                    <i class="fas fa-history"></i> Histórico de Transações
                 </h3>
 
                 <div class="table-container">
@@ -577,7 +548,6 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmação -->
     <div class="modal" id="confirmModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -594,7 +564,7 @@
                 <div style="margin-top: 1.5rem; padding: 1rem; background: #e8f5e9; border-radius: 8px;">
                     <p style="color: #155724;">
                         <i class="fas fa-info-circle"></i>
-                        Ao confirmar, o saldo será creditado automaticamente ao usuário.
+                        Ao confirmar, o saldo será creditado automaticamente.
                     </p>
                 </div>
 
@@ -611,9 +581,6 @@
     </div>
 
     <script>
-        // ==========================================
-        // CONFIGURAÇÃO FIREBASE
-        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
             authDomain: "madrassa-online-b851c.firebaseapp.com",
@@ -621,8 +588,7 @@
             projectId: "madrassa-online-b851c",
             storageBucket: "madrassa-online-b851c.firebasestorage.app",
             messagingSenderId: "360782668012",
-            appId: "1:360782668012:web:d501ef187911db632445c9",
-            measurementId: "G-RV9GD4S22T"
+            appId: "1:360782668012:web:d501ef187911db632445c9"
         };
 
         let database;
@@ -630,46 +596,30 @@
         let allRecharges = [];
         let allCodes = [];
 
-        // ==========================================
-        // INICIALIZAÇÃO
-        // ==========================================
         window.onload = function() {
             try {
                 firebase.initializeApp(firebaseConfig);
                 database = firebase.database();
-                console.log('Firebase inicializado');
+                console.log('Firebase OK');
 
                 loadRecharges();
                 loadCodes();
                 loadStats();
-
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao conectar com Firebase');
+                alert('Erro ao conectar: ' + error.message);
             }
         };
 
-        // ==========================================
-        // TABS
-        // ==========================================
         function showTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
 
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
-
-            if (tabName === 'recharges') loadRecharges();
-            if (tabName === 'codes') loadCodes();
-            if (tabName === 'history') loadHistory();
         }
 
-        // ==========================================
-        // CARREGAR RECARGAS
-        // ==========================================
         function loadRecharges() {
-            const tbody = document.getElementById('rechargesBody');
-
             database.ref('recharges')
                 .orderByChild('timestamp')
                 .limitToLast(50)
@@ -678,7 +628,6 @@
                     snapshot.forEach((child) => {
                         allRecharges.unshift({ id: child.key, ...child.val() });
                     });
-
                     renderRecharges(allRecharges.filter(r => r.status === 'pending' || r.status === 'paid'));
                 });
         }
@@ -711,23 +660,20 @@
                     <td>${formatDate(r.timestamp)}</td>
                     <td>
                         <span class="badge badge-${r.status}">
-                            ${r.status === 'pending' ? '⏳ Pendente' : 
-                              r.status === 'paid' ? '💰 Pago' : '✓ Concluído'}
+                            ${r.status === 'pending' ? '⏳ Pendente' : '💰 Pago'}
                         </span>
                     </td>
                     <td>
-                        ${r.status === 'pending' || r.status === 'paid' ? `
-                            <button class="btn btn-success" onclick="openConfirmModal('${r.id}')">
-                                <i class="fas fa-check"></i> Aprovar
-                            </button>
-                        ` : '<i class="fas fa-check-circle" style="color: var(--success);"></i>'}
+                        <button class="btn btn-success" onclick="openConfirmModal('${r.id}')">
+                            <i class="fas fa-check"></i> Aprovar
+                        </button>
                     </td>
                 </tr>
             `).join('');
         }
 
         function filterRecharges(method) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#recharges .filter-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
 
             if (method === 'all') {
@@ -739,9 +685,6 @@
             }
         }
 
-        // ==========================================
-        // GERAR CÓDIGOS
-        // ==========================================
         async function generateCode() {
             const amount = parseInt(document.getElementById('codeAmount').value);
             const method = document.getElementById('codeMethod').value;
@@ -752,9 +695,7 @@
                 return;
             }
 
-            // Gerar código aleatório
             const code = 'MC' + Math.random().toString(36).substring(2, 8).toUpperCase();
-
             const expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + expiry);
 
@@ -772,19 +713,15 @@
             try {
                 await database.ref('console/transactions').push(codeData);
 
-                // Mostrar código gerado
                 document.getElementById('newCodeValue').textContent = code;
                 document.getElementById('newCodeAmount').textContent = amount + ' MTN';
                 document.getElementById('newCodeExpiry').textContent = expiry;
                 document.getElementById('generatedCode').classList.add('show');
 
-                // Limpar formulário
                 document.getElementById('codeAmount').value = '';
-
                 loadCodes();
-
             } catch (error) {
-                alert('Erro ao gerar código: ' + error.message);
+                alert('Erro: ' + error.message);
             }
         }
 
@@ -815,7 +752,7 @@
                 list.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-key"></i>
-                        <p>Nenhum código gerado</p>
+                        <p>Nenhum código</p>
                     </div>
                 `;
                 return;
@@ -828,7 +765,7 @@
                         <p>
                             ${c.amount} MTN • ${formatMethod(c.method)} • 
                             ${c.status === 'used' ? 
-                                `Usado por ${c.usedBy} em ${formatDate(c.usedAt)}` : 
+                                `Usado por ${c.usedBy}` : 
                                 `Válido até ${formatDate(c.expiresAt)}`}
                         </p>
                     </div>
@@ -845,18 +782,11 @@
             document.querySelectorAll('#codes .filter-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
 
-            if (filter === 'all') {
-                renderCodes(allCodes);
-            } else if (filter === 'active') {
-                renderCodes(allCodes.filter(c => c.status === 'active'));
-            } else if (filter === 'used') {
-                renderCodes(allCodes.filter(c => c.status === 'used'));
-            }
+            if (filter === 'all') renderCodes(allCodes);
+            else if (filter === 'active') renderCodes(allCodes.filter(c => c.status === 'active'));
+            else if (filter === 'used') renderCodes(allCodes.filter(c => c.status === 'used'));
         }
 
-        // ==========================================
-        // HISTÓRICO
-        // ==========================================
         function loadHistory() {
             const tbody = document.getElementById('historyBody');
 
@@ -890,8 +820,7 @@
                             <td>${r.processedBy || 'Sistema'}<br><small>${formatDate(r.processedAt)}</small></td>
                             <td>
                                 <span class="badge badge-${r.status}">
-                                    ${r.status === 'completed' ? '✓ Concluído' : 
-                                      r.status === 'paid' ? '💰 Pago' : '⏳ Pendente'}
+                                    ${r.status === 'completed' ? '✓ Concluído' : '⏳ Pendente'}
                                 </span>
                             </td>
                         </tr>
@@ -899,9 +828,6 @@
                 });
         }
 
-        // ==========================================
-        // CONFIRMAR PAGAMENTO
-        // ==========================================
         function openConfirmModal(rechargeId) {
             const recharge = allRecharges.find(r => r.id === rechargeId);
             if (!recharge) return;
@@ -927,14 +853,12 @@
             const recharge = allRecharges.find(r => r.id === currentRechargeId);
 
             try {
-                // Atualizar status da recarga
                 await database.ref('recharges/' + currentRechargeId).update({
                     status: 'completed',
                     processedAt: firebase.database.ServerValue.TIMESTAMP,
                     processedBy: 'admin'
                 });
 
-                // Adicionar saldo ao usuário
                 const userRef = database.ref('users/' + recharge.userId);
                 const userSnap = await userRef.once('value');
                 const currentBalance = userSnap.val()?.balance || 0;
@@ -944,7 +868,6 @@
                     lastRecharge: firebase.database.ServerValue.TIMESTAMP
                 });
 
-                // Notificar usuário
                 await database.ref('notifications/' + recharge.userId).push({
                     type: 'recharge_approved',
                     amount: recharge.amount,
@@ -952,30 +875,24 @@
                     read: false
                 });
 
-                alert('Pagamento confirmado! Saldo creditado ao usuário.');
+                alert('Pagamento confirmado! Saldo creditado.');
                 closeModal();
                 loadRecharges();
                 loadStats();
-
             } catch (error) {
-                alert('Erro ao confirmar: ' + error.message);
+                alert('Erro: ' + error.message);
             }
         }
 
-        // ==========================================
-        // ESTATÍSTICAS
-        // ==========================================
         function loadStats() {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            // Pendentes
             database.ref('recharges').orderByChild('status').equalTo('pending')
                 .on('value', (snap) => {
                     document.getElementById('pendingCount').textContent = snap.numChildren();
                 });
 
-            // Completadas hoje
             database.ref('recharges').orderByChild('processedAt').startAt(today.getTime())
                 .on('value', (snap) => {
                     let count = 0;
@@ -990,35 +907,19 @@
                     document.getElementById('totalAmount').textContent = total;
                 });
 
-            // Códigos ativos
             database.ref('console/transactions').orderByChild('status').equalTo('active')
                 .on('value', (snap) => {
                     document.getElementById('activeCodes').textContent = snap.numChildren();
                 });
         }
 
-        // ==========================================
-        // UTILITÁRIOS
-        // ==========================================
         function formatMethod(method) {
-            const methods = {
-                mpesa: 'M-Pesa',
-                emola: 'e-Mola',
-                mkesh: 'mKesh',
-                bim: 'BIM',
-                vendedor: 'Vendedor'
-            };
+            const methods = { mpesa: 'M-Pesa', emola: 'e-Mola', bim: 'BIM', vendedor: 'Vendedor' };
             return methods[method] || method;
         }
 
         function getMethodColor(method) {
-            const colors = {
-                mpesa: 'danger',
-                emola: 'success',
-                mkesh: 'warning',
-                bim: 'info',
-                vendedor: 'primary'
-            };
+            const colors = { mpesa: 'danger', emola: 'success', bim: 'info', vendedor: 'primary' };
             return colors[method] || 'secondary';
         }
 
