@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recarga Moz Coin - Madrassa Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --primary: #1a5f4a;
+            --primary-light: #2d8b6f;
+            --primary-dark: #0d3d2f;
+            --accent: #d4af37;
+            --accent-light: #f4d03f;
+            --bg-warm: #faf8f5;
+            --bg-cream: #f5f0e8;
+            --text-dark: #2c3e50;
+            --text-light: #5d6d7e;
+            --white: #ffffff;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --shadow: 0 10px 40px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 16px;
+            --radius-sm: 8px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-warm) 0%, var(--bg-cream) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background Pattern */
+        .pattern-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(26, 95, 74, 0.06) 0%, transparent 40%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .coin-decoration {
+            position: fixed;
+            font-size: 200px;
+            opacity: 0.03;
+            color: var(--accent);
+            z-index: -1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .coin-decoration.top-right {
+            top: 5%;
+            right: 5%;
+            animation-delay: 0s;
+        }
+
+        .coin-decoration.bottom-left {
+            bottom: 5%;
+            left: 5%;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        /* Main Container */
+        .recarga-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header */
+        .recarga-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .recarga-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 0 L100 50 L50 100 L0 50 Z' fill='%23ffffff' fill-opacity='0.03'/%3E%3C/svg%3E");
+            background-size: 50px 50px;
+        }
+
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin: 0 auto 1rem;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-subtitle {
+            opacity: 0.9;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Balance Cards */
+        .balance-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(26, 95, 74, 0.02) 0%, rgba(212, 175, 55, 0.02) 100%);
+            border-bottom: 1px solid var(--bg-cream);
+        }
+
+        .balance-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .balance-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .balance-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .balance-card.personal::after {
+            background: var(--primary);
+        }
+
+        .balance-card.seller::after {
+            background: var(--accent);
+        }
+
+        .balance-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .balance-value i {
+            font-size: 1.25rem;
+            color: var(--accent);
+        }
+
+        .balance-card.seller .balance-value {
+            color: var(--accent);
+        }
+
+        /* Main Content */
+        .recarga-body {
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Amount Selection */
+        .amount-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .amount-option {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .amount-option input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .amount-box {
+            padding: 1.25rem;
+            background: var(--bg-cream);
+            border: 2px solid transparent;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .amount-option:hover .amount-box {
+            background: rgba(26, 95, 74, 0.1);
+            transform: scale(1.05);
+        }
+
+        .amount-option input:checked + .amount-box {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+
+        .amount-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .amount-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .amount-option input:checked + .amount-box .amount-value,
+        .amount-option input:checked + .amount-box .amount-label {
+            color: white;
+        }
+
+        /* Custom Amount */
+        .custom-amount {
+            margin-bottom: 2rem;
+        }
+
+        .custom-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .custom-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--bg-cream);
+            border-radius: var(--radius-sm);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+
+        .custom-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .currency-label {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            margin-bottom: 2rem;
+        }
+
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .method-option {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .method-option input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .method-box {
+            padding: 1.5rem 1rem;
+            background: var(--white);
+            border: 2px solid var(--bg-cream);
+            border-radius: var(--radius-sm);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .method-option:hover .method-box {
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .method-option input:checked + .method-box {
+            border-color: var(--primary);
+            background: rgba(26, 95, 74, 0.05);
+        }
+
+        .method-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--primary);
+        }
+
+        .method-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* Vendedor Section */
+        .vendedor-section {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+            border: 2px dashed var(--accent);
+            border-radius: var(--radius-sm);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .vendedor-title {
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .vendedor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .vendedor-card {
+            background: var(--white);
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .vendedor-card:hover {
+            border-color: var(--accent);
+            transform: translateX(5px);
+        }
+
+        .vendedor-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .vendedor-info h4 {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .vendedor-info p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Summary */
+        .summary-box {
+            background: var(--bg-cream);
+            border-radius: var(--radius-sm);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(0,0,0,0.1);
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-submit:hover::before {
+            left: 100%;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-submit:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success State */
+        .success-state {
+            display: none;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .success-state.active {
+            display: block;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--success) 0%, #2ecc71 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            margin: 0 auto 2rem;
+            animation: scaleIn 0.5s ease-out;
+            box-shadow: 0 10px 30px rgba(39, 174, 96, 0.4);
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .success-title {
+            font-size: 1.75rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .success-text {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .transaction-details {
+            background: var(--bg-cream);
+            border-radius: var(--radius-sm);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--text-light);
+        }
+
+        .detail-value {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .btn-close {
+            padding: 1rem 3rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-close:hover {
+            background: var(--primary-dark);
+        }
+
+        /* History Section */
+        .history-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-cream);
+        }
+
+        .history-title {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .history-item.pending {
+            border-left-color: var(--warning);
+        }
+
+        .history-item.completed {
+            border-left-color: var(--success);
+        }
+
+        .history-info h4 {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .history-info p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .history-amount {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .history-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 50px;
+            margin-left: 0.5rem;
+        }
+
+        .history-status.pending {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .history-status.completed {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-hover);
+            transform: translateX(400px);
+            transition: var(--transition);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .recarga-container {
+                border-radius: 0;
+                min-height: 100vh;
+            }
+
+            .balance-section {
+                grid-template-columns: 1fr;
+                padding: 1.5rem;
+            }
+
+            .amount-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .method-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .vendedor-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .recarga-body {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .recarga-container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="pattern-bg"></div>
+    <i class="fas fa-coins coin-decoration top-right"></i>
+    <i class="fas fa-coins coin-decoration bottom-left"></i>
+
+    <div class="recarga-container">
+        <!-- Main State -->
+        <div id="mainState">
+            <div class="recarga-header">
+                <div class="header-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <h1 class="header-title">Recarga Moz Coin</h1>
+                <p class="header-subtitle">Adicione saldo à sua carteira digital</p>
+            </div>
+
+            <!-- Balance Display -->
+            <div class="balance-section">
+                <div class="balance-card personal">
+                    <div class="balance-label">Saldo Pessoal</div>
+                    <div class="balance-value">
+                        <span id="personalBalance">0.00</span>
+                        <i class="fas fa-coins"></i>
+                    </div>
+                </div>
+                <div class="balance-card seller">
+                    <div class="balance-label">Carteira de Vendedor</div>
+                    <div class="balance-value">
+                        <span id="sellerBalance">0.00</span>
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recarga-body">
+                <!-- Amount Selection -->
+                <h3 class="section-title">
+                    <i class="fas fa-coins"></i>
+                    Selecione o Valor
+                </h3>
+                
+                <div class="amount-grid">
+                    <label class="amount-option">
+                        <input type="radio" name="amount" value="50" onchange="selectAmount(50)">
+                        <div class="amount-box">
+                            <span class="amount-value">50</span>
+                            <span class="amount-label">MTN</span>
+                        </div>
+                    </label>
+                    <label class="amount-option">
+                        <input type="radio" name="amount" value="100" onchange="selectAmount(100)">
+                        <div class="amount-box">
+                            <span class="amount-value">100</span>
+                            <span class="amount-label">MTN</span>
+                        </div>
+                    </label>
+                    <label class="amount-option">
+                        <input type="radio" name="amount" value="200" onchange="selectAmount(200)">
+                        <div class="amount-box">
+                            <span class="amount-value">200</span>
+                            <span class="amount-label">MTN</span>
+                        </div>
+                    </label>
+                    <label class="amount-option">
+                        <input type="radio" name="amount" value="500" onchange="selectAmount(500)">
+                        <div class="amount-box">
+                            <span class="amount-value">500</span>
+                            <span class="amount-label">MTN</span>
+                        </div>
+                    </label>
+                    <label class="amount-option">
+                        <input type="radio" name="amount" value="1000" onchange="selectAmount(1000)">
+                        <div class="amount-box">
+                            <span class="amount-value">1000</span>
+                            <span class="amount-label">MTN</span>
+                        </div>
+                    </label>
+                    <label class="amount-option">
+                        <input type="radio" name="amount" value="custom" onchange="selectAmount('custom')">
+                        <div class="amount-box">
+                            <span class="amount-value"><i class="fas fa-edit"></i></span>
+                            <span class="amount-label">Outro</span>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Custom Amount -->
+                <div class="custom-amount" id="customAmountDiv" style="display: none;">
+                    <label class="form-label">Valor Personalizado</label>
+                    <div class="custom-input-wrapper">
+                        <input type="number" class="custom-input" id="customAmount" placeholder="0" min="10" oninput="updateCustomAmount(this.value)">
+                        <span class="currency-label">MTN</span>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <h3 class="section-title">
+                    <i class="fas fa-credit-card"></i>
+                    Método de Pagamento
+                </h3>
+                
+                <div class="method-grid">
+                    <label class="method-option">
+                        <input type="radio" name="payment" value="mpesa" onchange="selectPayment('mpesa')">
+                        <div class="method-box">
+                            <div class="method-icon" style="color: #dc3545;">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="method-name">M-Pesa</div>
+                        </div>
+                    </label>
+                    <label class="method-option">
+                        <input type="radio" name="payment" value="emola" onchange="selectPayment('emola')">
+                        <div class="method-box">
+                            <div class="method-icon" style="color: #28a745;">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="method-name">e-Mola</div>
+                        </div>
+                    </label>
+                    <label class="method-option">
+                        <input type="radio" name="payment" value="mkesh" onchange="selectPayment('mkesh')">
+                        <div class="method-box">
+                            <div class="method-icon" style="color: #ffc107;">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="method-name">mKesh</div>
+                        </div>
+                    </label>
+                    <label class="method-option">
+                        <input type="radio" name="payment" value="vendedor" onchange="selectPayment('vendedor')">
+                        <div class="method-box">
+                            <div class="method-icon">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <div class="method-name">Vendedor</div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Vendedores Section -->
+                <div class="vendedor-section" id="vendedorSection" style="display: none;">
+                    <div class="vendedor-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Vendedores Disponíveis
+                    </div>
+                    <p style="color: var(--text-light); margin-bottom: 1rem; font-size: 0.9rem;">
+                        Selecione um vendedor próximo para fazer a recarga presencialmente.
+                    </p>
+                    <div class="vendedor-grid" id="vendedoresList">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="summary-box" id="summaryBox" style="display: none;">
+                    <div class="summary-row">
+                        <span>Valor da Recarga:</span>
+                        <span id="summaryAmount">0 MTN</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Taxa de Processamento:</span>
+                        <span>0 MTN</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Total a Pagar:</span>
+                        <span id="summaryTotal">0 MTN</span>
+                    </div>
+                </div>
+
+                <button class="btn-submit" id="submitBtn" onclick="processRecharge()" disabled>
+                    <i class="fas fa-check-circle"></i>
+                    Confirmar Recarga
+                </button>
+
+                <!-- History -->
+                <div class="history-section">
+                    <h3 class="history-title">
+                        <i class="fas fa-history"></i>
+                        Histórico de Recargas
+                    </h3>
+                    <div class="history-list" id="historyList">
+                        <p style="text-align: center; color: var(--text-light); padding: 2rem;">
+                            <i class="fas fa-spinner fa-spin"></i> Carregando...
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success State -->
+        <div class="success-state" id="successState">
+            <div class="success-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2 class="success-title">Recarga Solicitada!</h2>
+            <p class="success-text">
+                Sua solicitação de recarga foi registada com sucesso. 
+                O processamento será feito em breve e o saldo será creditado na sua conta.
+            </p>
+            
+            <div class="transaction-details">
+                <div class="detail-row">
+                    <span class="detail-label">Código da Transação:</span>
+                    <span class="detail-value" id="successCode">---</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Valor:</span>
+                    <span class="detail-value" id="successAmount">---</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Método:</span>
+                    <span class="detail-value" id="successMethod">---</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value" style="color: var(--warning);">Pendente</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Data:</span>
+                    <span class="detail-value" id="successDate">---</span>
+                </div>
+            </div>
+
+            <button class="btn-close" onclick="closeWindow()">
+                <i class="fas fa-times"></i>
+                Fechar
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-info-circle"></i>
+        <span id="toastMessage">Mensagem</span>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCW9ZZadm4WJ_FKtOjvkP1czsfImwzl98c",
+            authDomain: "madrassa-online.firebaseapp.com",
+            databaseURL: "https://madrassa-online-default-rtdb.firebaseio.com",
+            projectId: "madrassa-online",
+            storageBucket: "madrassa-online.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // State
+        let currentUser = null;
+        let selectedAmount = 0;
+        let selectedPayment = '';
+        let selectedVendedor = null;
+
+        // Sample Vendedores Data (in production, load from Firebase)
+        const vendedoresData = [
+            { id: 'v1', name: 'Ahmad Musa', phone: '860407269', location: 'Maputo Centro', status: 'online' },
+            { id: 'v2', name: 'Fatima Omar', phone: '841234567', location: 'Matola', status: 'online' },
+            { id: 'v3', name: 'Yusuf Ibrahim', phone: '872345678', location: 'Beira', status: 'offline' }
+        ];
+
+        // Initialize
+        window.onload = function() {
+            // Check for user data from parent or localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('user') || localStorage.getItem('currentUserId');
+            
+            if (userId) {
+                loadUserData(userId);
+            } else {
+                // Demo mode
+                showToast('Modo de demonstração - Faça login na plataforma principal', 'info');
+                loadHistory('demo');
+            }
+            
+            // Listen for messages from parent
+            window.addEventListener('message', function(e) {
+                if (e.data.type === 'USER_DATA') {
+                    loadUserData(e.data.userId);
+                }
+            });
+        };
+
+        // Load User Data
+        function loadUserData(userId) {
+            currentUser = userId;
+            localStorage.setItem('currentUserId', userId);
+            
+            // Real-time balance listener
+            database.ref('users/' + userId).on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    document.getElementById('personalBalance').textContent = (data.balance || 0).toFixed(2);
+                    document.getElementById('sellerBalance').textContent = (data.sellerBalance || 0).toFixed(2);
+                }
+            });
+            
+            // Load history
+            loadHistory(userId);
+        }
+
+        // Load Recharge History
+        function loadHistory(userId) {
+            const historyList = document.getElementById('historyList');
+            
+            if (userId === 'demo') {
+                historyList.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">Faça login para ver o histórico</p>';
+                return;
+            }
+            
+            database.ref('recharges').orderByChild('userId').equalTo(userId).limitToLast(10).on('value', (snapshot) => {
+                if (!snapshot.exists()) {
+                    historyList.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">Nenhuma recarga encontrada</p>';
+                    return;
+                }
+                
+                const recharges = [];
+                snapshot.forEach((child) => {
+                    recharges.unshift({ id: child.key, ...child.val() });
+                });
+                
+                historyList.innerHTML = recharges.map(r => `
+                    <div class="history-item ${r.status}">
+                        <div class="history-info">
+                            <h4>Recarga ${r.amount} MTN</h4>
+                            <p>${formatDate(r.timestamp)} • ${formatPayment(r.method)}</p>
+                        </div>
+                        <div>
+                            <span class="history-amount">+${r.amount}</span>
+                            <span class="history-status ${r.status}">${r.status === 'completed' ? 'Concluído' : 'Pendente'}</span>
+                        </div>
+                    </div>
+                `).join('');
+            });
+        }
+
+        // Select Amount
+        function selectAmount(amount) {
+            if (amount === 'custom') {
+                document.getElementById('customAmountDiv').style.display = 'block';
+                selectedAmount = parseInt(document.getElementById('customAmount').value) || 0;
+            } else {
+                document.getElementById('customAmountDiv').style.display = 'none';
+                selectedAmount = amount;
+            }
+            updateSummary();
+        }
+
+        // Update Custom Amount
+        function updateCustomAmount(value) {
+            selectedAmount = parseInt(value) || 0;
+            updateSummary();
+        }
+
+        // Select Payment Method
+        function selectPayment(method) {
+            selectedPayment = method;
+            
+            if (method === 'vendedor') {
+                document.getElementById('vendedorSection').style.display = 'block';
+                renderVendedores();
+            } else {
+                document.getElementById('vendedorSection').style.display = 'none';
+                selectedVendedor = null;
+            }
+            
+            updateSummary();
+        }
+
+        // Render Vendedores
+        function renderVendedores() {
+            const container = document.getElementById('vendedoresList');
+            container.innerHTML = vendedoresData.map(v => `
+                <div class="vendedor-card ${selectedVendedor === v.id ? 'selected' : ''}" 
+                     onclick="selectVendedor('${v.id}')"
+                     style="${selectedVendedor === v.id ? 'border-color: var(--accent); background: rgba(212, 175, 55, 0.1);' : ''}">
+                    <div class="vendedor-avatar">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="vendedor-info">
+                        <h4>${v.name}</h4>
+                        <p><i class="fas fa-map-marker-alt"></i> ${v.location}</p>
+                        <p><i class="fas fa-phone"></i> ${v.phone}</p>
+                    </div>
+                    <div style="margin-left: auto;">
+                        <span style="display: inline-block; width: 10px; height: 10px; background: ${v.status === 'online' ? '#27ae60' : '#e74c3c'}; border-radius: 50%;"></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Select Vendedor
+        function selectVendedor(vendedorId) {
+            selectedVendedor = vendedorId;
+            renderVendedores();
+            updateSummary();
+        }
+
+        // Update Summary
+        function updateSummary() {
+            const summaryBox = document.getElementById('summaryBox');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (selectedAmount > 0 && selectedPayment) {
+                if (selectedPayment === 'vendedor' && !selectedVendedor) {
+                    submitBtn.disabled = true;
+                    return;
+                }
+                
+                summaryBox.style.display = 'block';
+                document.getElementById('summaryAmount').textContent = selectedAmount + ' MTN';
+                document.getElementById('summaryTotal').textContent = selectedAmount + ' MTN';
+                submitBtn.disabled = false;
+            } else {
+                summaryBox.style.display = 'none';
+                submitBtn.disabled = true;
+            }
+        }
+
+        // Process Recharge
+        async function processRecharge() {
+            if (!currentUser || currentUser === 'demo') {
+                showToast('Faça login na plataforma principal para recarregar', 'error');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span> Processando...';
+            
+            try {
+                // Generate transaction code
+                const txCode = 'TX' + Date.now().toString(36).toUpperCase();
+                
+                // Create recharge record
+                const rechargeData = {
+                    userId: currentUser,
+                    amount: selectedAmount,
+                    method: selectedPayment,
+                    vendedorId: selectedVendedor,
+                    status: 'pending',
+                    timestamp: Date.now(),
+                    transactionCode: txCode,
+                    processedBy: null,
+                    processedAt: null
+                };
+                
+                // Save to Firebase
+                const newRecharge = await database.ref('recharges').push(rechargeData);
+                
+                // If vendedor selected, notify them
+                if (selectedVendedor) {
+                    await database.ref('notifications/' + selectedVendedor).push({
+                        type: 'new_recharge',
+                        rechargeId: newRecharge.key,
+                        amount: selectedAmount,
+                        userId: currentUser,
+                        timestamp: Date.now(),
+                        read: false
+                    });
+                }
+                
+                // Show success
+                showSuccess(txCode, selectedAmount, selectedPayment);
+                
+                // Notify parent
+                if (window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'RECHARGE_SUCCESS',
+                        amount: selectedAmount,
+                        transactionCode: txCode
+                    }, '*');
+                }
+                
+            } catch (error) {
+                console.error(error);
+                showToast('Erro ao processar recarga: ' + error.message, 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Confirmar Recarga';
+            }
+        }
+
+        // Show Success
+        function showSuccess(code, amount, method) {
+            document.getElementById('mainState').style.display = 'none';
+            document.getElementById('successState').classList.add('active');
+            
+            document.getElementById('successCode').textContent = code;
+            document.getElementById('successAmount').textContent = amount + ' MTN';
+            document.getElementById('successMethod').textContent = formatPayment(method);
+            document.getElementById('successDate').textContent = new Date().toLocaleString('pt-MZ');
+        }
+
+        // Close Window
+        function closeWindow() {
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'CLOSE_RECARGA' }, '*');
+            } else {
+                window.location.href = '../index.html';
+            }
+        }
+
+        // Format Helpers
+        function formatPayment(method) {
+            const methods = {
+                'mpesa': 'M-Pesa',
+                'emola': 'e-Mola',
+                'mkesh': 'mKesh',
+                'vendedor': 'Vendedor Presencial'
+            };
+            return methods[method] || method;
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return '-';
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('pt-MZ') + ' ' + date.toLocaleTimeString('pt-MZ', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Toast
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toast.className = 'toast ' + type;
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
