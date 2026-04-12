@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consola Admin - Moz Coin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --primary: #1a5f4a;
+            --primary-light: #2d8b6f;
+            --primary-dark: #0d3d2f;
+            --accent: #d4af37;
+            --bg-warm: #faf8f5;
+            --bg-cream: #f5f0e8;
+            --text-dark: #2c3e50;
+            --text-light: #5d6d7e;
+            --white: #ffffff;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #3498db;
+            --shadow: 0 10px 40px rgba(0,0,0,0.1);
+            --radius: 16px;
+            --radius-sm: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-warm) 0%, var(--bg-cream) 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .header p { opacity: 0.9; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--bg-cream);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover { background: var(--bg-cream); }
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Tabela */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--bg-cream);
+        }
+
+        th {
+            background: var(--bg-cream);
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        tr:hover { background: rgba(26, 95, 74, 0.02); }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-paid {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover { background: #229954; }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover { background: var(--primary-dark); }
+
+        /* Formulário de Código */
+        .code-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select {
+            padding: 0.75rem;
+            border: 2px solid var(--bg-cream);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .generated-code {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .generated-code.show { display: block; }
+
+        .generated-code h3 {
+            font-size: 2rem;
+            letter-spacing: 3px;
+            margin: 0.5rem 0;
+        }
+
+        /* Lista de Códigos */
+        .codes-list {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .code-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-cream);
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--primary);
+        }
+
+        .code-item.used {
+            border-left-color: var(--success);
+            opacity: 0.7;
+        }
+
+        .code-info h4 {
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .code-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .code-value {
+            font-family: monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Filtros */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg-cream);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--bg-cream);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show { display: flex; }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: var(--primary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .tabs { overflow-x: auto; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.75rem 0.5rem; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-cog"></i> Consola Admin - Moz Coin</h1>
+            <p>Gerencie recargas, códigos e pagamentos</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-clock"></i>
+                <div class="stat-value" id="pendingCount">0</div>
+                <div class="stat-label">Pendentes</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle"></i>
+                <div class="stat-value" id="completedCount">0</div>
+                <div class="stat-label">Concluídas Hoje</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-money-bill-wave"></i>
+                <div class="stat-value" id="totalAmount">0</div>
+                <div class="stat-label">MTN Hoje</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-key"></i>
+                <div class="stat-value" id="activeCodes">0</div>
+                <div class="stat-label">Códigos Ativos</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="section">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('recharges')">
+                    <i class="fas fa-list"></i> Recargas
+                </button>
+                <button class="tab-btn" onclick="showTab('codes')">
+                    <i class="fas fa-key"></i> Gerar Códigos
+                </button>
+                <button class="tab-btn" onclick="showTab('history')">
+                    <i class="fas fa-history"></i> Histórico
+                </button>
+            </div>
+
+            <!-- Tab: Recargas -->
+            <div id="recharges" class="tab-content active">
+                <h3 class="section-title">
+                    <i class="fas fa-clock"></i> 
+                    Solicitações Pendentes
+                </h3>
+
+                <div class="filters">
+                    <button class="filter-btn active" onclick="filterRecharges('all')">Todas</button>
+                    <button class="filter-btn" onclick="filterRecharges('mpesa')">M-Pesa</button>
+                    <button class="filter-btn" onclick="filterRecharges('emola')">e-Mola</button>
+                    <button class="filter-btn" onclick="filterRecharges('bim')">BIM</button>
+                    <button class="filter-btn" onclick="filterRecharges('vendedor')">Vendedor</button>
+                </div>
+
+                <div class="table-container">
+                    <table id="rechargesTable">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Usuário</th>
+                                <th>Valor</th>
+                                <th>Método</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rechargesBody">
+                            <tr>
+                                <td colspan="7" class="empty-state">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <p>Carregando...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Gerar Códigos -->
+            <div id="codes" class="tab-content">
+                <h3 class="section-title">
+                    <i class="fas fa-plus-circle"></i> 
+                    Gerar Novo Código de Transferência
+                </h3>
+
+                <div class="code-form">
+                    <div class="form-group">
+                        <label>Valor (MTN)</label>
+                        <input type="number" id="codeAmount" placeholder="Ex: 500" min="10">
+                    </div>
+                    <div class="form-group">
+                        <label>Método de Pagamento</label>
+                        <select id="codeMethod">
+                            <option value="mpesa">M-Pesa (Bebane - 1228803)</option>
+                            <option value="emola">e-Mola (Anacleto - 860407269)</option>
+                            <option value="bim">BIM (NIB: 0001000000124733562)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Validade (dias)</label>
+                        <input type="number" id="codeExpiry" value="7" min="1" max="30">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="generateCode()">
+                    <i class="fas fa-magic"></i> Gerar Código
+                </button>
+
+                <div class="generated-code" id="generatedCode">
+                    <p>Código Gerado com Sucesso!</p>
+                    <h3 id="newCodeValue">ABC123</h3>
+                    <p>Valor: <strong id="newCodeAmount">500 MTN</strong></p>
+                    <p>Válido por <span id="newCodeExpiry">7</span> dias</p>
+                    <button class="btn btn-success" onclick="copyCode()" style="margin-top: 1rem;">
+                        <i class="fas fa-copy"></i> Copiar Código
+                    </button>
+                </div>
+
+                <h3 class="section-title" style="margin-top: 2rem;">
+                    <i class="fas fa-list"></i> 
+                    Códigos Gerados
+                </h3>
+
+                <div class="filters">
+                    <button class="filter-btn active" onclick="filterCodes('all')">Todos</button>
+                    <button class="filter-btn" onclick="filterCodes('active')">Ativos</button>
+                    <button class="filter-btn" onclick="filterCodes('used')">Usados</button>
+                </div>
+
+                <div class="codes-list" id="codesList">
+                    <div class="empty-state">
+                        <i class="fas fa-key"></i>
+                        <p>Nenhum código gerado</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Histórico -->
+            <div id="history" class="tab-content">
+                <h3 class="section-title">
+                    <i class="fas fa-history"></i> 
+                    Histórico de Transações
+                </h3>
+
+                <div class="table-container">
+                    <table id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Usuário</th>
+                                <th>Valor</th>
+                                <th>Método</th>
+                                <th>Processado</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                            <tr>
+                                <td colspan="6" class="empty-state">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <p>Carregando...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-check-circle"></i> Confirmar Pagamento</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+
+            <div id="modalContent">
+                <p><strong>Código:</strong> <span id="modalCode"></span></p>
+                <p><strong>Usuário:</strong> <span id="modalUser"></span></p>
+                <p><strong>Valor:</strong> <span id="modalAmount"></span> MTN</p>
+                <p><strong>Método:</strong> <span id="modalMethod"></span></p>
+
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #e8f5e9; border-radius: 8px;">
+                    <p style="color: #155724;">
+                        <i class="fas fa-info-circle"></i>
+                        Ao confirmar, o saldo será creditado automaticamente ao usuário.
+                    </p>
+                </div>
+
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button class="btn btn-success" onclick="confirmPayment()" style="flex: 1;">
+                        <i class="fas fa-check"></i> Confirmar
+                    </button>
+                    <button class="btn btn-danger" onclick="closeModal()" style="flex: 1;">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURAÇÃO FIREBASE
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
+            authDomain: "madrassa-online-b851c.firebaseapp.com",
+            databaseURL: "https://madrassa-online-b851c-default-rtdb.firebaseio.com",
+            projectId: "madrassa-online-b851c",
+            storageBucket: "madrassa-online-b851c.firebasestorage.app",
+            messagingSenderId: "360782668012",
+            appId: "1:360782668012:web:d501ef187911db632445c9",
+            measurementId: "G-RV9GD4S22T"
+        };
+
+        let database;
+        let currentRechargeId = null;
+        let allRecharges = [];
+        let allCodes = [];
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+        window.onload = function() {
+            try {
+                firebase.initializeApp(firebaseConfig);
+                database = firebase.database();
+                console.log('Firebase inicializado');
+
+                loadRecharges();
+                loadCodes();
+                loadStats();
+
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao conectar com Firebase');
+            }
+        };
+
+        // ==========================================
+        // TABS
+        // ==========================================
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'recharges') loadRecharges();
+            if (tabName === 'codes') loadCodes();
+            if (tabName === 'history') loadHistory();
+        }
+
+        // ==========================================
+        // CARREGAR RECARGAS
+        // ==========================================
+        function loadRecharges() {
+            const tbody = document.getElementById('rechargesBody');
+
+            database.ref('recharges')
+                .orderByChild('timestamp')
+                .limitToLast(50)
+                .on('value', (snapshot) => {
+                    allRecharges = [];
+                    snapshot.forEach((child) => {
+                        allRecharges.unshift({ id: child.key, ...child.val() });
+                    });
+
+                    renderRecharges(allRecharges.filter(r => r.status === 'pending' || r.status === 'paid'));
+                });
+        }
+
+        function renderRecharges(recharges) {
+            const tbody = document.getElementById('rechargesBody');
+
+            if (recharges.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Nenhuma solicitação pendente</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = recharges.map(r => `
+                <tr>
+                    <td><code>${r.transactionCode || r.id}</code></td>
+                    <td>${r.userId}</td>
+                    <td><strong>${r.amount} MTN</strong></td>
+                    <td>
+                        <span class="badge badge-${getMethodColor(r.method)}">
+                            ${formatMethod(r.method)}
+                        </span>
+                    </td>
+                    <td>${formatDate(r.timestamp)}</td>
+                    <td>
+                        <span class="badge badge-${r.status}">
+                            ${r.status === 'pending' ? '⏳ Pendente' : 
+                              r.status === 'paid' ? '💰 Pago' : '✓ Concluído'}
+                        </span>
+                    </td>
+                    <td>
+                        ${r.status === 'pending' || r.status === 'paid' ? `
+                            <button class="btn btn-success" onclick="openConfirmModal('${r.id}')">
+                                <i class="fas fa-check"></i> Aprovar
+                            </button>
+                        ` : '<i class="fas fa-check-circle" style="color: var(--success);"></i>'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterRecharges(method) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (method === 'all') {
+                renderRecharges(allRecharges.filter(r => r.status === 'pending' || r.status === 'paid'));
+            } else {
+                renderRecharges(allRecharges.filter(r => 
+                    r.method === method && (r.status === 'pending' || r.status === 'paid')
+                ));
+            }
+        }
+
+        // ==========================================
+        // GERAR CÓDIGOS
+        // ==========================================
+        async function generateCode() {
+            const amount = parseInt(document.getElementById('codeAmount').value);
+            const method = document.getElementById('codeMethod').value;
+            const expiry = parseInt(document.getElementById('codeExpiry').value);
+
+            if (!amount || amount < 10) {
+                alert('Valor mínimo: 10 MTN');
+                return;
+            }
+
+            // Gerar código aleatório
+            const code = 'MC' + Math.random().toString(36).substring(2, 8).toUpperCase();
+
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + expiry);
+
+            const codeData = {
+                code: code,
+                amount: amount,
+                method: method,
+                status: 'active',
+                createdAt: firebase.database.ServerValue.TIMESTAMP,
+                expiresAt: expiryDate.getTime(),
+                usedBy: null,
+                usedAt: null
+            };
+
+            try {
+                await database.ref('console/transactions').push(codeData);
+
+                // Mostrar código gerado
+                document.getElementById('newCodeValue').textContent = code;
+                document.getElementById('newCodeAmount').textContent = amount + ' MTN';
+                document.getElementById('newCodeExpiry').textContent = expiry;
+                document.getElementById('generatedCode').classList.add('show');
+
+                // Limpar formulário
+                document.getElementById('codeAmount').value = '';
+
+                loadCodes();
+
+            } catch (error) {
+                alert('Erro ao gerar código: ' + error.message);
+            }
+        }
+
+        function copyCode() {
+            const code = document.getElementById('newCodeValue').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Código copiado: ' + code);
+            });
+        }
+
+        function loadCodes() {
+            database.ref('console/transactions')
+                .orderByChild('createdAt')
+                .limitToLast(20)
+                .on('value', (snapshot) => {
+                    allCodes = [];
+                    snapshot.forEach((child) => {
+                        allCodes.unshift({ id: child.key, ...child.val() });
+                    });
+                    renderCodes(allCodes);
+                });
+        }
+
+        function renderCodes(codes) {
+            const list = document.getElementById('codesList');
+
+            if (codes.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-key"></i>
+                        <p>Nenhum código gerado</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = codes.map(c => `
+                <div class="code-item ${c.status === 'used' ? 'used' : ''}">
+                    <div class="code-info">
+                        <h4>${c.code}</h4>
+                        <p>
+                            ${c.amount} MTN • ${formatMethod(c.method)} • 
+                            ${c.status === 'used' ? 
+                                `Usado por ${c.usedBy} em ${formatDate(c.usedAt)}` : 
+                                `Válido até ${formatDate(c.expiresAt)}`}
+                        </p>
+                    </div>
+                    <div class="code-value">
+                        ${c.status === 'used' ? 
+                            '<span style="color: var(--success);"><i class="fas fa-check"></i></span>' : 
+                            '<span style="color: var(--primary);">Ativo</span>'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterCodes(filter) {
+            document.querySelectorAll('#codes .filter-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (filter === 'all') {
+                renderCodes(allCodes);
+            } else if (filter === 'active') {
+                renderCodes(allCodes.filter(c => c.status === 'active'));
+            } else if (filter === 'used') {
+                renderCodes(allCodes.filter(c => c.status === 'used'));
+            }
+        }
+
+        // ==========================================
+        // HISTÓRICO
+        // ==========================================
+        function loadHistory() {
+            const tbody = document.getElementById('historyBody');
+
+            database.ref('recharges')
+                .orderByChild('timestamp')
+                .limitToLast(50)
+                .on('value', (snapshot) => {
+                    const recharges = [];
+                    snapshot.forEach((child) => {
+                        recharges.unshift({ id: child.key, ...child.val() });
+                    });
+
+                    if (recharges.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="6" class="empty-state">
+                                    <i class="fas fa-history"></i>
+                                    <p>Sem transações</p>
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+
+                    tbody.innerHTML = recharges.map(r => `
+                        <tr>
+                            <td><code>${r.transactionCode || r.id}</code></td>
+                            <td>${r.userId}</td>
+                            <td><strong>${r.amount} MTN</strong></td>
+                            <td>${formatMethod(r.method)}</td>
+                            <td>${r.processedBy || 'Sistema'}<br><small>${formatDate(r.processedAt)}</small></td>
+                            <td>
+                                <span class="badge badge-${r.status}">
+                                    ${r.status === 'completed' ? '✓ Concluído' : 
+                                      r.status === 'paid' ? '💰 Pago' : '⏳ Pendente'}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+                });
+        }
+
+        // ==========================================
+        // CONFIRMAR PAGAMENTO
+        // ==========================================
+        function openConfirmModal(rechargeId) {
+            const recharge = allRecharges.find(r => r.id === rechargeId);
+            if (!recharge) return;
+
+            currentRechargeId = rechargeId;
+
+            document.getElementById('modalCode').textContent = recharge.transactionCode || rechargeId;
+            document.getElementById('modalUser').textContent = recharge.userId;
+            document.getElementById('modalAmount').textContent = recharge.amount;
+            document.getElementById('modalMethod').textContent = formatMethod(recharge.method);
+
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').classList.remove('show');
+            currentRechargeId = null;
+        }
+
+        async function confirmPayment() {
+            if (!currentRechargeId) return;
+
+            const recharge = allRecharges.find(r => r.id === currentRechargeId);
+
+            try {
+                // Atualizar status da recarga
+                await database.ref('recharges/' + currentRechargeId).update({
+                    status: 'completed',
+                    processedAt: firebase.database.ServerValue.TIMESTAMP,
+                    processedBy: 'admin'
+                });
+
+                // Adicionar saldo ao usuário
+                const userRef = database.ref('users/' + recharge.userId);
+                const userSnap = await userRef.once('value');
+                const currentBalance = userSnap.val()?.balance || 0;
+
+                await userRef.update({
+                    balance: currentBalance + recharge.amount,
+                    lastRecharge: firebase.database.ServerValue.TIMESTAMP
+                });
+
+                // Notificar usuário
+                await database.ref('notifications/' + recharge.userId).push({
+                    type: 'recharge_approved',
+                    amount: recharge.amount,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    read: false
+                });
+
+                alert('Pagamento confirmado! Saldo creditado ao usuário.');
+                closeModal();
+                loadRecharges();
+                loadStats();
+
+            } catch (error) {
+                alert('Erro ao confirmar: ' + error.message);
+            }
+        }
+
+        // ==========================================
+        // ESTATÍSTICAS
+        // ==========================================
+        function loadStats() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Pendentes
+            database.ref('recharges').orderByChild('status').equalTo('pending')
+                .on('value', (snap) => {
+                    document.getElementById('pendingCount').textContent = snap.numChildren();
+                });
+
+            // Completadas hoje
+            database.ref('recharges').orderByChild('processedAt').startAt(today.getTime())
+                .on('value', (snap) => {
+                    let count = 0;
+                    let total = 0;
+                    snap.forEach((child) => {
+                        if (child.val().status === 'completed') {
+                            count++;
+                            total += child.val().amount || 0;
+                        }
+                    });
+                    document.getElementById('completedCount').textContent = count;
+                    document.getElementById('totalAmount').textContent = total;
+                });
+
+            // Códigos ativos
+            database.ref('console/transactions').orderByChild('status').equalTo('active')
+                .on('value', (snap) => {
+                    document.getElementById('activeCodes').textContent = snap.numChildren();
+                });
+        }
+
+        // ==========================================
+        // UTILITÁRIOS
+        // ==========================================
+        function formatMethod(method) {
+            const methods = {
+                mpesa: 'M-Pesa',
+                emola: 'e-Mola',
+                mkesh: 'mKesh',
+                bim: 'BIM',
+                vendedor: 'Vendedor'
+            };
+            return methods[method] || method;
+        }
+
+        function getMethodColor(method) {
+            const colors = {
+                mpesa: 'danger',
+                emola: 'success',
+                mkesh: 'warning',
+                bim: 'info',
+                vendedor: 'primary'
+            };
+            return colors[method] || 'secondary';
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return '-';
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('pt-MZ') + ' ' + 
+                   date.toLocaleTimeString('pt-MZ', {hour: '2-digit', minute:'2-digit'});
+        }
+    </script>
+</body>
+</html>
