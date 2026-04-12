@@ -6,7 +6,6 @@
     <title>Registo - Aulas Online</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
@@ -70,19 +69,24 @@
 
         .register-body { padding: 2rem; }
 
-        .status-bar {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
+        .alert {
             padding: 1rem;
-            margin-bottom: 1.5rem;
             border-radius: var(--radius-sm);
+            margin-bottom: 1.5rem;
             font-size: 0.9rem;
-            display: none;
         }
 
-        .status-bar.show { display: block; }
-        .status-bar.error { background: #ffebee; border-left-color: #f44336; }
-        .status-bar.success { background: #e8f5e9; border-left-color: #4caf50; }
+        .alert-error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            color: #c62828;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            color: #2e7d32;
+        }
 
         .form-group { margin-bottom: 1.5rem; }
 
@@ -188,7 +192,7 @@
             margin: 0 auto 2rem;
         }
 
-        .log-console {
+        .diagnostic-panel {
             background: #263238;
             color: #aed581;
             padding: 1rem;
@@ -198,13 +202,12 @@
             font-size: 0.75rem;
             max-height: 150px;
             overflow-y: auto;
-            display: none;
         }
 
-        .log-console.show { display: block; }
-        .log-console .error { color: #ef5350; }
-        .log-console .success { color: #69f0ae; }
-        .log-console .info { color: #81d4fa; }
+        .diagnostic-panel .error { color: #ef5350; }
+        .diagnostic-panel .success { color: #69f0ae; }
+        .diagnostic-panel .warning { color: #ffd54f; }
+        .diagnostic-panel .info { color: #81d4fa; }
 
         @media (max-width: 480px) {
             .register-body { padding: 1.5rem; }
@@ -224,11 +227,8 @@
             </div>
 
             <div class="register-body">
-                <!-- Status Bar -->
-                <div class="status-bar" id="statusBar">
-                    <i class="fas fa-info-circle"></i>
-                    <span id="statusText">Aguardando...</span>
-                </div>
+                <!-- Alertas -->
+                <div id="alertBox" class="alert" style="display: none;"></div>
 
                 <form id="registerForm" onsubmit="handleRegister(event)">
                     <div class="form-group">
@@ -292,14 +292,16 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="btn-submit" id="submitBtn">
+                    <button type="submit" class="btn-submit" id="submitBtn" disabled>
                         <i class="fas fa-user-plus"></i>
-                        <span id="btnText">Criar Conta</span>
+                        <span id="btnText">A conectar...</span>
                     </button>
                 </form>
 
-                <!-- Log Console -->
-                <div class="log-console" id="logConsole"></div>
+                <!-- Painel de Diagnóstico -->
+                <div class="diagnostic-panel" id="diagnosticPanel">
+                    <div><strong>Diagnóstico:</strong></div>
+                </div>
             </div>
         </div>
 
@@ -323,96 +325,152 @@
 
     <script>
         // ==========================================
-        // CONFIGURAÇÃO FIREBASE - VERIFIQUE ESTES DADOS!
+        // CONFIGURAÇÃO FIREBASE CORRETA - MADRASSA ONLINE
         // ==========================================
         const firebaseConfig = {
-            apiKey: "AIzaSyCW9ZZadm4WJ_FKtOjvkP1czsfImwzl98c",
-            authDomain: "aulas-online.firebaseapp.com",
-            databaseURL: "https://aulas-online-default-rtdb.firebaseio.com",
-            projectId: "aulas-online",
-            storageBucket: "aulas-online.appspot.com",
-            messagingSenderId: "1097811611947",
-            appId: "1:1097811611947:web:476c4b2e12fc4c6529756e"
+            apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
+            authDomain: "madrassa-online-b851c.firebaseapp.com",
+            databaseURL: "https://madrassa-online-b851c-default-rtdb.firebaseio.com",
+            projectId: "madrassa-online-b851c",
+            storageBucket: "madrassa-online-b851c.firebasestorage.app",
+            messagingSenderId: "360782668012",
+            appId: "1:360782668012:web:d501ef187911db632445c9",
+            measurementId: "G-RV9GD4S22T"
         };
 
         // ==========================================
-        // SISTEMA DE LOG VISÍVEL
+        // SISTEMA DE LOG
         // ==========================================
-        const logConsole = document.getElementById('logConsole');
-        
+        const diagnosticPanel = document.getElementById('diagnosticPanel');
+        const alertBox = document.getElementById('alertBox');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+
         function log(message, type = 'info') {
-            console.log(`[${type.toUpperCase()}] ${message}`);
+            const time = new Date().toLocaleTimeString('pt-PT', {hour12: false});
             const div = document.createElement('div');
             div.className = type;
-            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            logConsole.appendChild(div);
-            logConsole.scrollTop = logConsole.scrollHeight;
-            logConsole.classList.add('show');
+            div.textContent = `[${time}] ${message}`;
+            diagnosticPanel.appendChild(div);
+            diagnosticPanel.scrollTop = diagnosticPanel.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        function showAlert(message, type = 'error') {
+            alertBox.className = 'alert alert-' + type;
+            alertBox.textContent = message;
+            alertBox.style.display = 'block';
+        }
+
+        function hideAlert() {
+            alertBox.style.display = 'none';
         }
 
         // ==========================================
         // INICIALIZAÇÃO DO FIREBASE
         // ==========================================
-        let database;
+        let database = null;
         let isConnected = false;
 
-        try {
-            log('Inicializando Firebase...', 'info');
-            const app = firebase.initializeApp(firebaseConfig);
-            database = firebase.database();
-            log('Firebase App criado: ' + app.name, 'success');
+        async function initializeFirebase() {
+            log('Iniciando Firebase...', 'info');
             
-            // Verificar conexão
-            database.ref('.info/connected').on('value', (snap) => {
-                isConnected = snap.val();
-                if (isConnected) {
-                    log('✅ Conectado ao Firebase Realtime Database', 'success');
-                    updateStatus('Sistema pronto para registo', 'success');
-                } else {
-                    log('⚠️ Desconectado do Firebase', 'error');
-                    updateStatus('Sem conexão com o servidor', 'error');
+            try {
+                // Verificar SDK
+                if (typeof firebase === 'undefined') {
+                    throw new Error('Firebase SDK não carregado');
                 }
-            });
-            
-        } catch (error) {
-            log('❌ Erro fatal ao inicializar: ' + error.message, 'error');
-            updateStatus('Erro de inicialização: ' + error.message, 'error');
+                
+                // Inicializar
+                let app;
+                if (firebase.apps.length === 0) {
+                    app = firebase.initializeApp(firebaseConfig);
+                    log('✅ Firebase inicializado: ' + app.name, 'success');
+                } else {
+                    app = firebase.app();
+                    log('Usando app existente', 'warning');
+                }
+                
+                // Obter database
+                database = firebase.database();
+                log('✅ Database obtido', 'success');
+                
+                // Testar conexão
+                log('Testando conexão...', 'info');
+                const connectedRef = database.ref('.info/connected');
+                
+                connectedRef.on('value', (snap) => {
+                    const connected = snap.val();
+                    
+                    if (connected === true && !isConnected) {
+                        isConnected = true;
+                        log('🎉 CONECTADO!', 'success');
+                        enableForm();
+                    } else if (connected === false && isConnected) {
+                        isConnected = false;
+                        log('⚠️ Desconectado', 'warning');
+                        disableForm();
+                    }
+                });
+                
+                // Timeout de segurança
+                setTimeout(() => {
+                    if (!isConnected) {
+                        log('⚠️ Timeout - verificando status manualmente...', 'warning');
+                        // Tentar operação simples
+                        testConnection();
+                    }
+                }, 5000);
+                
+            } catch (error) {
+                log('❌ ERRO: ' + error.message, 'error');
+                showAlert('Erro ao conectar: ' + error.message, 'error');
+            }
         }
 
-        function updateStatus(text, type) {
-            const bar = document.getElementById('statusBar');
-            const txt = document.getElementById('statusText');
-            bar.className = 'status-bar show ' + type;
-            txt.textContent = text;
+        async function testConnection() {
+            try {
+                // Tentar escrita de teste
+                const testRef = database.ref('_test/connection');
+                await testRef.set({timestamp: Date.now(), test: true});
+                await testRef.remove();
+                
+                log('✅ Teste de escrita OK!', 'success');
+                isConnected = true;
+                enableForm();
+            } catch (e) {
+                log('❌ Teste falhou: ' + e.message, 'error');
+                showAlert('Não foi possível conectar ao Firebase. Verifique as regras de segurança.', 'error');
+            }
+        }
+
+        function enableForm() {
+            submitBtn.disabled = false;
+            btnText.textContent = 'Criar Conta';
+            hideAlert();
+            showAlert('Sistema pronto!', 'success');
+        }
+
+        function disableForm() {
+            submitBtn.disabled = true;
+            btnText.textContent = 'Sem conexão...';
         }
 
         // ==========================================
-        // FUNÇÃO DE REGISTO - COM TIMEOUT E RETRY
+        // FUNÇÃO DE REGISTO
         // ==========================================
         async function handleRegister(e) {
             e.preventDefault();
             
-            const submitBtn = document.getElementById('submitBtn');
-            const btnText = document.getElementById('btnText');
-            
-            // Desabilitar botão
-            submitBtn.disabled = true;
-            btnText.textContent = 'A processar...';
-            
-            // Adicionar spinner
-            const originalContent = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="loading"></span> A processar...';
-            
-            log('Iniciando processo de registo...', 'info');
-            
-            // Verificar conexão primeiro
-            if (!isConnected) {
-                log('❌ Sem conexão com Firebase!', 'error');
-                updateStatus('Sem conexão. Verifique sua internet.', 'error');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalContent;
+            if (!isConnected || !database) {
+                showAlert('Aguarde a conexão...', 'error');
                 return;
             }
+            
+            const originalContent = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span> A processar...';
+            hideAlert();
             
             // Coletar dados
             const fullName = document.getElementById('fullName').value.trim();
@@ -422,66 +480,38 @@
             const confirmPin = document.getElementById('confirmPin').value;
             const referralCode = document.getElementById('referralCode').value.trim().toUpperCase();
             
-            log(`Dados: nome="${fullName}", telefone="${phone}", email="${email}"`, 'info');
+            log(`Registo: ${fullName} (${phone})`, 'info');
             
             // Validações
             if (phone.length < 9) {
-                log('❌ Telefone inválido: ' + phone, 'error');
-                updateStatus('Telefone deve ter pelo menos 9 dígitos', 'error');
+                showAlert('Telefone inválido', 'error');
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalContent;
                 return;
             }
             
             if (pin !== confirmPin) {
-                log('❌ PINs não coincidem', 'error');
-                updateStatus('Os PINs digitados não coincidem', 'error');
+                showAlert('PINs não coincidem', 'error');
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalContent;
                 return;
             }
             
             const userId = phone;
-            log('ID do usuário: ' + userId, 'info');
             
             try {
-                // PASSO 1: Verificar se usuário existe (com timeout)
-                log('Verificando se usuário existe...', 'info');
-                updateStatus('Verificando dados...', 'info');
+                // Verificar se existe
+                log('Verificando usuário...', 'info');
+                const snapshot = await database.ref('users/' + userId).once('value');
                 
-                const userSnapshot = await Promise.race([
-                    database.ref('users/' + userId).once('value'),
-                    new Promise((_, reject) => 
-                        setTimeout(() => reject(new Error('Timeout ao verificar usuário')), 10000)
-                    )
-                ]);
-                
-                if (userSnapshot.exists()) {
-                    log('⚠️ Usuário já existe: ' + userId, 'error');
-                    updateStatus('Este número já está registado', 'error');
+                if (snapshot.exists()) {
+                    showAlert('Número já registado!', 'error');
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalContent;
                     return;
                 }
                 
-                log('✅ Usuário não existe, prosseguindo...', 'success');
-                
-                // PASSO 2: Verificar email (opcional, não bloqueia)
-                log('Verificando email...', 'info');
-                try {
-                    const emailSnapshot = await database.ref('users')
-                        .orderByChild('email')
-                        .equalTo(email)
-                        .once('value');
-                    
-                    if (emailSnapshot.exists()) {
-                        log('⚠️ Email já existe, mas continuando...', 'info');
-                    }
-                } catch (emailErr) {
-                    log('ℹ️ Não foi possível verificar email (não crítico): ' + emailErr.message, 'info');
-                }
-                
-                // PASSO 3: Preparar dados
+                // Criar dados
                 const myRefCode = 'REF-' + Math.random().toString(36).substr(2, 6).toUpperCase();
                 const userData = {
                     name: fullName,
@@ -497,53 +527,21 @@
                     courses: {}
                 };
                 
-                log('Dados preparados. Código de referral: ' + myRefCode, 'info');
-                updateStatus('A guardar dados...', 'info');
+                log('Salvando...', 'info');
+                await database.ref('users/' + userId).set(userData);
+                log('✅ Salvo!', 'success');
                 
-                // PASSO 4: Salvar com timeout e retry
-                log('Tentando salvar no Firebase...', 'info');
-                
-                let saveSuccess = false;
-                let attempts = 0;
-                const maxAttempts = 3;
-                
-                while (!saveSuccess && attempts < maxAttempts) {
-                    attempts++;
-                    log(`Tentativa ${attempts}/${maxAttempts}...`, 'info');
-                    
-                    try {
-                        await Promise.race([
-                            database.ref('users/' + userId).set(userData),
-                            new Promise((_, reject) => 
-                                setTimeout(() => reject(new Error('Timeout ao salvar')), 15000)
-                            )
-                        ]);
-                        saveSuccess = true;
-                        log('✅ Dados salvos com sucesso!', 'success');
-                    } catch (saveError) {
-                        log(`❌ Tentativa ${attempts} falhou: ${saveError.message}`, 'error');
-                        if (attempts >= maxAttempts) {
-                            throw saveError;
-                        }
-                        // Aguardar antes de retry
-                        await new Promise(r => setTimeout(r, 1000));
-                    }
-                }
-                
-                // PASSO 5: Processar referral (não bloqueia o registo)
-                if (referralCode && saveSuccess) {
-                    log('Processando referral...', 'info');
+                // Processar referral
+                if (referralCode) {
                     try {
                         await processReferral(referralCode, phone);
-                        log('✅ Referral processado', 'success');
-                    } catch (refErr) {
-                        log('⚠️ Erro no referral (não crítico): ' + refErr.message, 'info');
+                    } catch (e) {
+                        log('Referral falhou (não crítico)', 'warning');
                     }
                 }
                 
-                // SUCESSO!
+                // Sucesso!
                 log('🎉 REGISTO COMPLETO!', 'success');
-                updateStatus('Registo efectuado com sucesso!', 'success');
                 showSuccess(phone, email, myRefCode);
                 
                 // Notificar parent
@@ -556,26 +554,20 @@
                 }
                 
             } catch (error) {
-                log('❌ ERRO FATAL: ' + error.message, 'error');
-                log('Stack: ' + (error.stack || 'N/A'), 'error');
-                updateStatus('Erro: ' + error.message, 'error');
-                
+                log('❌ ERRO: ' + error.message, 'error');
+                showAlert('Erro: ' + error.message, 'error');
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalContent;
             }
         }
 
-        // Processar Referral
         async function processReferral(refCode, newUserPhone) {
             const snapshot = await database.ref('users')
                 .orderByChild('referralCode')
                 .equalTo(refCode)
                 .once('value');
             
-            if (!snapshot.exists()) {
-                log('Código de referral não encontrado: ' + refCode, 'info');
-                return;
-            }
+            if (!snapshot.exists()) return;
             
             const referrerId = Object.keys(snapshot.val())[0];
             const referrer = snapshot.val()[referrerId];
@@ -593,7 +585,6 @@
             });
         }
 
-        // Mostrar Sucesso
         function showSuccess(phone, email, refCode) {
             document.getElementById('formState').style.display = 'none';
             document.getElementById('successState').classList.add('active');
@@ -602,7 +593,6 @@
             document.getElementById('successRefCode').textContent = refCode;
         }
 
-        // Fechar Janela
         function closeWindow() {
             if (window.parent !== window) {
                 window.parent.postMessage({ type: 'CLOSE_REGISTRATION' }, '*');
@@ -627,6 +617,9 @@
         document.getElementById('referralCode').addEventListener('input', function(e) {
             this.value = this.value.toUpperCase();
         });
+
+        // Iniciar
+        window.onload = initializeFirebase;
     </script>
 </body>
 </html>
