@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recarga Moz Coin - Madrassa Online</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Recarga Moz Coin - Aulas Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -14,7 +14,6 @@
             --primary-light: #2d8b6f;
             --primary-dark: #0d3d2f;
             --accent: #d4af37;
-            --accent-light: #f4d03f;
             --bg-warm: #faf8f5;
             --bg-cream: #f5f0e8;
             --text-dark: #2c3e50;
@@ -24,368 +23,92 @@
             --warning: #f39c12;
             --danger: #e74c3c;
             --shadow: 0 10px 40px rgba(0,0,0,0.1);
-            --shadow-hover: 0 20px 60px rgba(0,0,0,0.15);
             --radius: 16px;
             --radius-sm: 8px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, var(--bg-warm) 0%, var(--bg-cream) 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            position: relative;
-            overflow-x: hidden;
+            padding: 1rem;
         }
 
-        /* Background Pattern */
-        .pattern-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 80% 20%, rgba(26, 95, 74, 0.06) 0%, transparent 40%);
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .coin-decoration {
-            position: fixed;
-            font-size: 200px;
-            opacity: 0.03;
-            color: var(--accent);
-            z-index: -1;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .coin-decoration.top-right {
-            top: 5%;
-            right: 5%;
-            animation-delay: 0s;
-        }
-
-        .coin-decoration.bottom-left {
-            bottom: 5%;
-            left: 5%;
-            animation-delay: 3s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-        }
-
-        /* Main Container */
-        .recarga-container {
-            width: 100%;
-            max-width: 800px;
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
             background: var(--white);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             overflow: hidden;
-            position: relative;
         }
 
-        /* Header */
-        .recarga-header {
+        .header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             padding: 2rem;
             text-align: center;
-            position: relative;
-        }
-
-        .recarga-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 0 L100 50 L50 100 L0 50 Z' fill='%23ffffff' fill-opacity='0.03'/%3E%3C/svg%3E");
-            background-size: 50px 50px;
         }
 
         .header-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            background: var(--accent);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2.5rem;
-            color: var(--primary-dark);
             margin: 0 auto 1rem;
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
-            position: relative;
-            z-index: 1;
+            color: var(--primary-dark);
         }
 
-        .header-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            position: relative;
-            z-index: 1;
-        }
+        .header h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .header p { opacity: 0.9; font-size: 0.9rem; }
 
-        .header-subtitle {
-            opacity: 0.9;
-            font-size: 0.95rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Balance Cards */
+        /* Balance Section */
         .balance-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            padding: 2rem;
-            background: linear-gradient(135deg, rgba(26, 95, 74, 0.02) 0%, rgba(212, 175, 55, 0.02) 100%);
-            border-bottom: 1px solid var(--bg-cream);
+            gap: 1rem;
+            padding: 1.5rem;
+            background: rgba(26, 95, 74, 0.03);
         }
 
         .balance-card {
-            background: var(--white);
-            padding: 1.5rem;
+            background: white;
+            padding: 1.25rem;
             border-radius: var(--radius-sm);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             text-align: center;
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
-        .balance-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-        .balance-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-        }
-
-        .balance-card.personal::after {
-            background: var(--primary);
-        }
-
-        .balance-card.seller::after {
-            background: var(--accent);
-        }
+        .balance-card.personal { border-top: 3px solid var(--primary); }
+        .balance-card.seller { border-top: 3px solid var(--accent); }
 
         .balance-label {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: var(--text-light);
             text-transform: uppercase;
-            letter-spacing: 1px;
             margin-bottom: 0.5rem;
         }
 
         .balance-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .balance-value i {
-            font-size: 1.25rem;
-            color: var(--accent);
-        }
-
-        .balance-card.seller .balance-value {
-            color: var(--accent);
-        }
-
-        /* Main Content */
-        .recarga-body {
-            padding: 2rem;
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            color: var(--primary);
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        /* Amount Selection */
-        .amount-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .amount-option {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .amount-option input {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .amount-box {
-            padding: 1.25rem;
-            background: var(--bg-cream);
-            border: 2px solid transparent;
-            border-radius: var(--radius-sm);
-            text-align: center;
-            transition: var(--transition);
-        }
-
-        .amount-option:hover .amount-box {
-            background: rgba(26, 95, 74, 0.1);
-            transform: scale(1.05);
-        }
-
-        .amount-option input:checked + .amount-box {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary-dark);
-        }
-
-        .amount-value {
             font-size: 1.5rem;
             font-weight: 700;
-            display: block;
-            margin-bottom: 0.25rem;
-        }
-
-        .amount-label {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-
-        .amount-option input:checked + .amount-box .amount-value,
-        .amount-option input:checked + .amount-box .amount-label {
-            color: white;
-        }
-
-        /* Custom Amount */
-        .custom-amount {
-            margin-bottom: 2rem;
-        }
-
-        .custom-input-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .custom-input {
-            flex: 1;
-            padding: 1rem 1.5rem;
-            border: 2px solid var(--bg-cream);
-            border-radius: var(--radius-sm);
-            font-size: 1.25rem;
-            font-weight: 600;
             color: var(--text-dark);
-            transition: var(--transition);
         }
 
-        .custom-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
+        .balance-card.seller .balance-value { color: var(--accent); }
 
-        .currency-label {
-            font-size: 1.25rem;
-            color: var(--text-light);
-            font-weight: 600;
-        }
+        /* Content */
+        .content { padding: 1.5rem; }
 
-        /* Payment Methods */
-        .payment-methods {
-            margin-bottom: 2rem;
-        }
-
-        .method-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem;
-        }
-
-        .method-option {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .method-option input {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .method-box {
-            padding: 1.5rem 1rem;
-            background: var(--white);
-            border: 2px solid var(--bg-cream);
-            border-radius: var(--radius-sm);
-            text-align: center;
-            transition: var(--transition);
-        }
-
-        .method-option:hover .method-box {
-            border-color: var(--primary-light);
-            transform: translateY(-2px);
-        }
-
-        .method-option input:checked + .method-box {
-            border-color: var(--primary);
-            background: rgba(26, 95, 74, 0.05);
-        }
-
-        .method-icon {
-            font-size: 2rem;
-            margin-bottom: 0.75rem;
+        .section-title {
+            font-size: 1rem;
             color: var(--primary);
-        }
-
-        .method-name {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        /* Vendedor Section */
-        .vendedor-section {
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
-            border: 2px dashed var(--accent);
-            border-radius: var(--radius-sm);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .vendedor-title {
-            color: var(--primary-dark);
             font-weight: 600;
             margin-bottom: 1rem;
             display: flex;
@@ -393,74 +116,144 @@
             gap: 0.5rem;
         }
 
+        /* Amount Grid */
+        .amount-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .amount-btn {
+            padding: 1rem;
+            background: var(--bg-cream);
+            border: 2px solid transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .amount-btn:hover { background: rgba(26, 95, 74, 0.1); }
+        .amount-btn.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+
+        .amount-btn .value { font-size: 1.25rem; font-weight: 700; display: block; }
+        .amount-btn .label { font-size: 0.75rem; opacity: 0.8; }
+
+        .custom-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--bg-cream);
+            border-radius: var(--radius-sm);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .custom-input.show { display: block; }
+
+        /* Methods */
+        .methods {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .method-btn {
+            padding: 1rem 0.5rem;
+            background: white;
+            border: 2px solid var(--bg-cream);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .method-btn:hover { border-color: var(--primary-light); }
+        .method-btn.selected {
+            border-color: var(--primary);
+            background: rgba(26, 95, 74, 0.05);
+        }
+
+        .method-btn i { font-size: 1.5rem; margin-bottom: 0.5rem; display: block; }
+        .method-btn.mpesa i { color: #dc3545; }
+        .method-btn.emola i { color: #28a745; }
+        .method-btn.mkesh i { color: #ffc107; }
+        .method-btn.vendedor i { color: var(--primary); }
+
+        /* Vendedores */
+        .vendedores-section {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+            border: 2px dashed var(--accent);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .vendedores-section.show { display: block; }
+
         .vendedor-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
         }
 
         .vendedor-card {
-            background: var(--white);
+            background: white;
             padding: 1rem;
             border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
             cursor: pointer;
-            transition: var(--transition);
             border: 2px solid transparent;
+            transition: all 0.3s;
+            text-align: center;
         }
 
-        .vendedor-card:hover {
+        .vendedor-card:hover { border-color: var(--accent); }
+        .vendedor-card.selected {
             border-color: var(--accent);
-            transform: translateX(5px);
+            background: rgba(212, 175, 55, 0.1);
         }
 
-        .vendedor-avatar {
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
+        .vendedor-card .status {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.25rem;
+            display: inline-block;
+            margin-left: 0.5rem;
         }
 
-        .vendedor-info h4 {
-            font-size: 0.95rem;
-            color: var(--text-dark);
-            margin-bottom: 0.25rem;
-        }
-
-        .vendedor-info p {
-            font-size: 0.8rem;
-            color: var(--text-light);
-        }
+        .vendedor-card .status.online { background: var(--success); }
+        .vendedor-card .status.offline { background: var(--danger); }
 
         /* Summary */
-        .summary-box {
+        .summary {
             background: var(--bg-cream);
+            padding: 1rem;
             border-radius: var(--radius-sm);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .summary-row {
             display: flex;
             justify-content: space-between;
-            padding: 0.75rem 0;
+            padding: 0.5rem 0;
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
         .summary-row:last-child {
             border-bottom: none;
             font-weight: 700;
-            font-size: 1.1rem;
             color: var(--primary);
             margin-top: 0.5rem;
-            padding-top: 1rem;
+            padding-top: 0.5rem;
             border-top: 2px solid rgba(0,0,0,0.1);
         }
 
@@ -475,42 +268,23 @@
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.75rem;
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s;
         }
 
-        .btn-submit::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: 0.5s;
-        }
-
-        .btn-submit:hover::before {
-            left: 100%;
-        }
-
-        .btn-submit:hover {
+        .btn-submit:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
+            box-shadow: 0 10px 20px rgba(26, 95, 74, 0.3);
         }
 
         .btn-submit:disabled {
-            background: var(--text-light);
+            background: #6c757d;
             cursor: not-allowed;
-            transform: none;
         }
 
-        /* Loading */
         .loading {
             display: inline-block;
             width: 20px;
@@ -518,12 +292,22 @@
             border: 3px solid rgba(255,255,255,0.3);
             border-radius: 50%;
             border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
+            animation: spin 1s linear infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1rem;
+            display: none;
         }
+
+        .alert.show { display: block; }
+        .alert-error { background: #ffebee; color: #c62828; border-left: 4px solid #f44336; }
+        .alert-success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #4caf50; }
 
         /* Success State */
         .success-state {
@@ -532,14 +316,12 @@
             padding: 3rem 2rem;
         }
 
-        .success-state.active {
-            display: block;
-        }
+        .success-state.show { display: block; }
 
         .success-icon {
             width: 100px;
             height: 100px;
-            background: linear-gradient(135deg, var(--success) 0%, #2ecc71 100%);
+            background: var(--success);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -547,390 +329,170 @@
             font-size: 3rem;
             color: white;
             margin: 0 auto 2rem;
-            animation: scaleIn 0.5s ease-out;
-            box-shadow: 0 10px 30px rgba(39, 174, 96, 0.4);
         }
 
-        @keyframes scaleIn {
-            from { transform: scale(0); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .success-title {
-            font-size: 1.75rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .success-text {
-            color: var(--text-light);
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-
-        .transaction-details {
-            background: var(--bg-cream);
-            border-radius: var(--radius-sm);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            text-align: left;
-        }
-
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .detail-row:last-child {
-            border-bottom: none;
-        }
-
-        .detail-label {
-            color: var(--text-light);
-        }
-
-        .detail-value {
-            color: var(--text-dark);
-            font-weight: 600;
-        }
-
-        .btn-close {
-            padding: 1rem 3rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: var(--radius-sm);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .btn-close:hover {
-            background: var(--primary-dark);
-        }
-
-        /* History Section */
+        /* History */
         .history-section {
             margin-top: 2rem;
             padding-top: 2rem;
             border-top: 1px solid var(--bg-cream);
         }
 
-        .history-title {
-            font-size: 1.1rem;
-            color: var(--primary);
-            font-weight: 600;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .history-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
         .history-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem;
-            background: var(--white);
+            padding: 0.75rem;
+            background: white;
             border-radius: var(--radius-sm);
-            margin-bottom: 0.75rem;
-            border-left: 4px solid var(--primary);
-            transition: var(--transition);
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--warning);
         }
 
-        .history-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
+        .history-item.completed { border-left-color: var(--success); }
 
-        .history-item.pending {
-            border-left-color: var(--warning);
-        }
-
-        .history-item.completed {
-            border-left-color: var(--success);
-        }
-
-        .history-info h4 {
-            font-size: 0.95rem;
-            color: var(--text-dark);
-            margin-bottom: 0.25rem;
-        }
-
-        .history-info p {
-            font-size: 0.8rem;
-            color: var(--text-light);
-        }
-
-        .history-amount {
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .history-status {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 50px;
-            margin-left: 0.5rem;
-        }
-
-        .history-status.pending {
-            background: rgba(243, 156, 18, 0.1);
-            color: var(--warning);
-        }
-
-        .history-status.completed {
-            background: rgba(39, 174, 96, 0.1);
-            color: var(--success);
-        }
-
-        /* Toast */
-        .toast {
+        /* Back Button */
+        .back-btn {
             position: fixed;
             bottom: 2rem;
-            right: 2rem;
+            left: 2rem;
             background: var(--primary);
             color: white;
             padding: 1rem 2rem;
-            border-radius: var(--radius-sm);
-            box-shadow: var(--shadow-hover);
-            transform: translateX(400px);
-            transition: var(--transition);
-            z-index: 1000;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow);
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
+            font-weight: 600;
+            z-index: 100;
         }
 
-        .toast.show {
-            transform: translateX(0);
+        /* Debug Panel */
+        .debug-panel {
+            background: #263238;
+            color: #aed581;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
         }
 
-        .toast.error {
-            background: var(--danger);
-        }
+        .debug-panel.show { display: block; }
+        .debug-panel .error { color: #ef5350; }
+        .debug-panel .success { color: #69f0ae; }
 
-        .toast.success {
-            background: var(--success);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            body {
-                padding: 0;
-            }
-
-            .recarga-container {
-                border-radius: 0;
-                min-height: 100vh;
-            }
-
-            .balance-section {
-                grid-template-columns: 1fr;
-                padding: 1.5rem;
-            }
-
-            .amount-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .method-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .vendedor-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .recarga-body {
-                padding: 1.5rem;
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .recarga-container {
-            animation: fadeInUp 0.6s ease-out;
+        @media (max-width: 480px) {
+            .amount-grid { grid-template-columns: repeat(3, 1fr); }
+            .methods { grid-template-columns: repeat(2, 1fr); }
+            .balance-section { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="pattern-bg"></div>
-    <i class="fas fa-coins coin-decoration top-right"></i>
-    <i class="fas fa-coins coin-decoration bottom-left"></i>
-
-    <div class="recarga-container">
-        <!-- Main State -->
-        <div id="mainState">
-            <div class="recarga-header">
+    <div class="container">
+        <!-- Main Screen -->
+        <div id="mainScreen">
+            <div class="header">
                 <div class="header-icon">
                     <i class="fas fa-wallet"></i>
                 </div>
-                <h1 class="header-title">Recarga Moz Coin</h1>
-                <p class="header-subtitle">Adicione saldo à sua carteira digital</p>
+                <h1>Recarga Moz Coin</h1>
+                <p>Adicione saldo à sua carteira digital</p>
             </div>
 
-            <!-- Balance Display -->
             <div class="balance-section">
                 <div class="balance-card personal">
                     <div class="balance-label">Saldo Pessoal</div>
-                    <div class="balance-value">
-                        <span id="personalBalance">0.00</span>
-                        <i class="fas fa-coins"></i>
-                    </div>
+                    <div class="balance-value" id="personalBalance">0.00</div>
                 </div>
                 <div class="balance-card seller">
                     <div class="balance-label">Carteira de Vendedor</div>
-                    <div class="balance-value">
-                        <span id="sellerBalance">0.00</span>
-                        <i class="fas fa-hand-holding-usd"></i>
-                    </div>
+                    <div class="balance-value" id="sellerBalance">0.00</div>
                 </div>
             </div>
 
-            <div class="recarga-body">
-                <!-- Amount Selection -->
-                <h3 class="section-title">
-                    <i class="fas fa-coins"></i>
-                    Selecione o Valor
-                </h3>
+            <div class="content">
+                <!-- Alert -->
+                <div class="alert" id="alertBox"></div>
+
+                <h3 class="section-title"><i class="fas fa-coins"></i> Selecione o Valor</h3>
                 
                 <div class="amount-grid">
-                    <label class="amount-option">
-                        <input type="radio" name="amount" value="50" onchange="selectAmount(50)">
-                        <div class="amount-box">
-                            <span class="amount-value">50</span>
-                            <span class="amount-label">MTN</span>
-                        </div>
-                    </label>
-                    <label class="amount-option">
-                        <input type="radio" name="amount" value="100" onchange="selectAmount(100)">
-                        <div class="amount-box">
-                            <span class="amount-value">100</span>
-                            <span class="amount-label">MTN</span>
-                        </div>
-                    </label>
-                    <label class="amount-option">
-                        <input type="radio" name="amount" value="200" onchange="selectAmount(200)">
-                        <div class="amount-box">
-                            <span class="amount-value">200</span>
-                            <span class="amount-label">MTN</span>
-                        </div>
-                    </label>
-                    <label class="amount-option">
-                        <input type="radio" name="amount" value="500" onchange="selectAmount(500)">
-                        <div class="amount-box">
-                            <span class="amount-value">500</span>
-                            <span class="amount-label">MTN</span>
-                        </div>
-                    </label>
-                    <label class="amount-option">
-                        <input type="radio" name="amount" value="1000" onchange="selectAmount(1000)">
-                        <div class="amount-box">
-                            <span class="amount-value">1000</span>
-                            <span class="amount-label">MTN</span>
-                        </div>
-                    </label>
-                    <label class="amount-option">
-                        <input type="radio" name="amount" value="custom" onchange="selectAmount('custom')">
-                        <div class="amount-box">
-                            <span class="amount-value"><i class="fas fa-edit"></i></span>
-                            <span class="amount-label">Outro</span>
-                        </div>
-                    </label>
+                    <button class="amount-btn" onclick="selectAmount(50, this)">
+                        <span class="value">50</span>
+                        <span class="label">MTN</span>
+                    </button>
+                    <button class="amount-btn" onclick="selectAmount(100, this)">
+                        <span class="value">100</span>
+                        <span class="label">MTN</span>
+                    </button>
+                    <button class="amount-btn" onclick="selectAmount(200, this)">
+                        <span class="value">200</span>
+                        <span class="label">MTN</span>
+                    </button>
+                    <button class="amount-btn" onclick="selectAmount(500, this)">
+                        <span class="value">500</span>
+                        <span class="label">MTN</span>
+                    </button>
+                    <button class="amount-btn" onclick="selectAmount(1000, this)">
+                        <span class="value">1000</span>
+                        <span class="label">MTN</span>
+                    </button>
+                    <button class="amount-btn" onclick="showCustomInput(this)">
+                        <span class="value"><i class="fas fa-edit"></i></span>
+                        <span class="label">Outro</span>
+                    </button>
                 </div>
 
-                <!-- Custom Amount -->
-                <div class="custom-amount" id="customAmountDiv" style="display: none;">
-                    <label class="form-label">Valor Personalizado</label>
-                    <div class="custom-input-wrapper">
-                        <input type="number" class="custom-input" id="customAmount" placeholder="0" min="10" oninput="updateCustomAmount(this.value)">
-                        <span class="currency-label">MTN</span>
-                    </div>
-                </div>
+                <input type="number" class="custom-input" id="customAmount" placeholder="Valor personalizado (MTN)" min="10" oninput="setCustomAmount(this.value)">
 
-                <!-- Payment Methods -->
-                <h3 class="section-title">
-                    <i class="fas fa-credit-card"></i>
-                    Método de Pagamento
-                </h3>
+                <h3 class="section-title"><i class="fas fa-credit-card"></i> Método de Pagamento</h3>
                 
-                <div class="method-grid">
-                    <label class="method-option">
-                        <input type="radio" name="payment" value="mpesa" onchange="selectPayment('mpesa')">
-                        <div class="method-box">
-                            <div class="method-icon" style="color: #dc3545;">
-                                <i class="fas fa-mobile-alt"></i>
-                            </div>
-                            <div class="method-name">M-Pesa</div>
-                        </div>
-                    </label>
-                    <label class="method-option">
-                        <input type="radio" name="payment" value="emola" onchange="selectPayment('emola')">
-                        <div class="method-box">
-                            <div class="method-icon" style="color: #28a745;">
-                                <i class="fas fa-mobile-alt"></i>
-                            </div>
-                            <div class="method-name">e-Mola</div>
-                        </div>
-                    </label>
-                    <label class="method-option">
-                        <input type="radio" name="payment" value="mkesh" onchange="selectPayment('mkesh')">
-                        <div class="method-box">
-                            <div class="method-icon" style="color: #ffc107;">
-                                <i class="fas fa-mobile-alt"></i>
-                            </div>
-                            <div class="method-name">mKesh</div>
-                        </div>
-                    </label>
-                    <label class="method-option">
-                        <input type="radio" name="payment" value="vendedor" onchange="selectPayment('vendedor')">
-                        <div class="method-box">
-                            <div class="method-icon">
-                                <i class="fas fa-store"></i>
-                            </div>
-                            <div class="method-name">Vendedor</div>
-                        </div>
-                    </label>
+                <div class="methods">
+                    <button class="method-btn mpesa" onclick="selectMethod('mpesa', this)">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>M-Pesa</span>
+                    </button>
+                    <button class="method-btn emola" onclick="selectMethod('emola', this)">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>e-Mola</span>
+                    </button>
+                    <button class="method-btn mkesh" onclick="selectMethod('mkesh', this)">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>mKesh</span>
+                    </button>
+                    <button class="method-btn vendedor" onclick="selectMethod('vendedor', this)">
+                        <i class="fas fa-store"></i>
+                        <span>Vendedor</span>
+                    </button>
                 </div>
 
                 <!-- Vendedores Section -->
-                <div class="vendedor-section" id="vendedorSection" style="display: none;">
-                    <div class="vendedor-title">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Vendedores Disponíveis
+                <div class="vendedores-section" id="vendedoresSection">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <i class="fas fa-map-marker-alt" style="color: var(--accent);"></i>
+                        <strong>Vendedores Disponíveis</strong>
                     </div>
-                    <p style="color: var(--text-light); margin-bottom: 1rem; font-size: 0.9rem;">
+                    <p style="font-size: 0.85rem; color: var(--text-light);">
                         Selecione um vendedor próximo para fazer a recarga presencialmente.
                     </p>
-                    <div class="vendedor-grid" id="vendedoresList">
-                        <!-- Populated dynamically -->
+                    <div class="vendedor-grid" id="vendedorGrid">
+                        <!-- Populado via JS -->
                     </div>
                 </div>
 
                 <!-- Summary -->
-                <div class="summary-box" id="summaryBox" style="display: none;">
+                <div class="summary" id="summaryBox" style="display: none;">
                     <div class="summary-row">
                         <span>Valor da Recarga:</span>
-                        <span id="summaryAmount">0 MTN</span>
+                        <span id="sumAmount">0 MTN</span>
                     </div>
                     <div class="summary-row">
                         <span>Taxa de Processamento:</span>
@@ -938,22 +500,22 @@
                     </div>
                     <div class="summary-row">
                         <span>Total a Pagar:</span>
-                        <span id="summaryTotal">0 MTN</span>
+                        <span id="sumTotal">0 MTN</span>
                     </div>
                 </div>
 
                 <button class="btn-submit" id="submitBtn" onclick="processRecharge()" disabled>
                     <i class="fas fa-check-circle"></i>
-                    Confirmar Recarga
+                    <span id="btnText">Selecione valor e método</span>
                 </button>
+
+                <!-- Debug Panel -->
+                <div class="debug-panel" id="debugPanel"></div>
 
                 <!-- History -->
                 <div class="history-section">
-                    <h3 class="history-title">
-                        <i class="fas fa-history"></i>
-                        Histórico de Recargas
-                    </h3>
-                    <div class="history-list" id="historyList">
+                    <h3 class="section-title"><i class="fas fa-history"></i> Histórico de Recargas</h3>
+                    <div id="historyList">
                         <p style="text-align: center; color: var(--text-light); padding: 2rem;">
                             <i class="fas fa-spinner fa-spin"></i> Carregando...
                         </p>
@@ -962,352 +524,425 @@
             </div>
         </div>
 
-        <!-- Success State -->
-        <div class="success-state" id="successState">
+        <!-- Success Screen -->
+        <div class="success-state" id="successScreen">
             <div class="success-icon">
                 <i class="fas fa-check"></i>
             </div>
-            <h2 class="success-title">Recarga Solicitada!</h2>
-            <p class="success-text">
-                Sua solicitação de recarga foi registada com sucesso. 
-                O processamento será feito em breve e o saldo será creditado na sua conta.
+            <h2 style="color: var(--primary); margin-bottom: 1rem;">Recarga Solicitada!</h2>
+            <p style="color: var(--text-light); margin-bottom: 0.5rem;">
+                Código: <strong id="successCode" style="color: var(--primary); font-size: 1.2rem;"></strong>
             </p>
-            
-            <div class="transaction-details">
-                <div class="detail-row">
-                    <span class="detail-label">Código da Transação:</span>
-                    <span class="detail-value" id="successCode">---</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Valor:</span>
-                    <span class="detail-value" id="successAmount">---</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Método:</span>
-                    <span class="detail-value" id="successMethod">---</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Status:</span>
-                    <span class="detail-value" style="color: var(--warning);">Pendente</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Data:</span>
-                    <span class="detail-value" id="successDate">---</span>
-                </div>
-            </div>
-
-            <button class="btn-close" onclick="closeWindow()">
-                <i class="fas fa-times"></i>
-                Fechar
+            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 2rem;">
+                Sua solicitação foi enviada para processamento.
+            </p>
+            <button class="btn-submit" onclick="closeWindow()">
+                <i class="fas fa-times"></i> Fechar
             </button>
         </div>
     </div>
 
-    <!-- Toast -->
-    <div class="toast" id="toast">
-        <i class="fas fa-info-circle"></i>
-        <span id="toastMessage">Mensagem</span>
-    </div>
+    <button class="back-btn" onclick="closeWindow()">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </button>
 
     <script>
-        // Firebase Configuration
+        // ==========================================
+        // CONFIGURAÇÃO FIREBASE - MADRASSA ONLINE
+        // ==========================================
         const firebaseConfig = {
-            apiKey: "AIzaSyCW9ZZadm4WJ_FKtOjvkP1czsfImwzl98c",
-            authDomain: "madrassa-online.firebaseapp.com",
-            databaseURL: "https://madrassa-online-default-rtdb.firebaseio.com",
-            projectId: "madrassa-online",
-            storageBucket: "madrassa-online.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef123456"
+            apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
+            authDomain: "madrassa-online-b851c.firebaseapp.com",
+            databaseURL: "https://madrassa-online-b851c-default-rtdb.firebaseio.com",
+            projectId: "madrassa-online-b851c",
+            storageBucket: "madrassa-online-b851c.firebasestorage.app",
+            messagingSenderId: "360782668012",
+            appId: "1:360782668012:web:d501ef187911db632445c9",
+            measurementId: "G-RV9GD4S22T"
         };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        // State
+        // ==========================================
+        // VARIÁVEIS GLOBAIS
+        // ==========================================
+        let database;
         let currentUser = null;
         let selectedAmount = 0;
-        let selectedPayment = '';
+        let selectedMethod = '';
         let selectedVendedor = null;
 
-        // Sample Vendedores Data (in production, load from Firebase)
-        const vendedoresData = [
-            { id: 'v1', name: 'Ahmad Musa', phone: '860407269', location: 'Maputo Centro', status: 'online' },
-            { id: 'v2', name: 'Fatima Omar', phone: '841234567', location: 'Matola', status: 'online' },
-            { id: 'v3', name: 'Yusuf Ibrahim', phone: '872345678', location: 'Beira', status: 'offline' }
+        // Vendedores de exemplo (em produção, carregar do Firebase)
+        const vendedores = [
+            { id: '860407269', name: 'Ahmad Musa', location: 'Maputo Centro', phone: '860407269', status: 'online' },
+            { id: '841234567', name: 'Fatima Omar', location: 'Matola', phone: '841234567', status: 'online' },
+            { id: '872345678', name: 'Yusuf Ibrahim', location: 'Beira', phone: '872345678', status: 'offline' }
         ];
 
-        // Initialize
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+        function log(message, type = 'info') {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            const panel = document.getElementById('debugPanel');
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            panel.appendChild(div);
+            panel.scrollTop = panel.scrollHeight;
+        }
+
         window.onload = function() {
-            // Check for user data from parent or localStorage
-            const urlParams = new URLSearchParams(window.location.search);
-            const userId = urlParams.get('user') || localStorage.getItem('currentUserId');
+            log('Iniciando sistema de recarga...', 'info');
             
-            if (userId) {
-                loadUserData(userId);
-            } else {
-                // Demo mode
-                showToast('Modo de demonstração - Faça login na plataforma principal', 'info');
-                loadHistory('demo');
-            }
-            
-            // Listen for messages from parent
-            window.addEventListener('message', function(e) {
-                if (e.data.type === 'USER_DATA') {
-                    loadUserData(e.data.userId);
+            try {
+                // Inicializar Firebase
+                firebase.initializeApp(firebaseConfig);
+                database = firebase.database();
+                log('Firebase inicializado', 'success');
+                
+                // Obter usuário da URL ou localStorage
+                const params = new URLSearchParams(window.location.search);
+                const userId = params.get('user') || localStorage.getItem('aulasOnlineUserId');
+                
+                if (userId) {
+                    currentUser = userId;
+                    localStorage.setItem('aulasOnlineUserId', userId);
+                    log('Usuário identificado: ' + userId, 'success');
+                    initUser(userId);
+                } else {
+                    log('Nenhum usuário identificado', 'warning');
+                    showAlert('Faça login na plataforma principal', 'error');
+                    document.getElementById('historyList').innerHTML = 
+                        '<p style="text-align: center; color: var(--text-light);">Faça login para ver o histórico</p>';
                 }
-            });
+                
+            } catch (error) {
+                log('ERRO ao inicializar: ' + error.message, 'error');
+                showAlert('Erro de sistema: ' + error.message, 'error');
+                document.getElementById('debugPanel').classList.add('show');
+            }
         };
 
-        // Load User Data
-        function loadUserData(userId) {
-            currentUser = userId;
-            localStorage.setItem('currentUserId', userId);
-            
-            // Real-time balance listener
-            database.ref('users/' + userId).on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    document.getElementById('personalBalance').textContent = (data.balance || 0).toFixed(2);
-                    document.getElementById('sellerBalance').textContent = (data.sellerBalance || 0).toFixed(2);
-                }
-            });
-            
-            // Load history
-            loadHistory(userId);
-        }
-
-        // Load Recharge History
-        function loadHistory(userId) {
-            const historyList = document.getElementById('historyList');
-            
-            if (userId === 'demo') {
-                historyList.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">Faça login para ver o histórico</p>';
-                return;
-            }
-            
-            database.ref('recharges').orderByChild('userId').equalTo(userId).limitToLast(10).on('value', (snapshot) => {
+        // ==========================================
+        // INICIALIZAR USUÁRIO
+        // ==========================================
+        async function initUser(userId) {
+            try {
+                // Verificar/criar usuário
+                const userRef = database.ref('users/' + userId);
+                const snapshot = await userRef.once('value');
+                
                 if (!snapshot.exists()) {
-                    historyList.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">Nenhuma recarga encontrada</p>';
-                    return;
+                    log('Criando novo usuário...', 'info');
+                    await userRef.set({
+                        balance: 0,
+                        sellerBalance: 0,
+                        phone: userId,
+                        createdAt: Date.now()
+                    });
                 }
                 
-                const recharges = [];
-                snapshot.forEach((child) => {
-                    recharges.unshift({ id: child.key, ...child.val() });
+                // Listener do saldo
+                userRef.on('value', (snap) => {
+                    if (snap.exists()) {
+                        const data = snap.val();
+                        document.getElementById('personalBalance').textContent = (data.balance || 0).toFixed(2);
+                        document.getElementById('sellerBalance').textContent = (data.sellerBalance || 0).toFixed(2);
+                    }
                 });
                 
-                historyList.innerHTML = recharges.map(r => `
-                    <div class="history-item ${r.status}">
-                        <div class="history-info">
-                            <h4>Recarga ${r.amount} MTN</h4>
-                            <p>${formatDate(r.timestamp)} • ${formatPayment(r.method)}</p>
-                        </div>
-                        <div>
-                            <span class="history-amount">+${r.amount}</span>
-                            <span class="history-status ${r.status}">${r.status === 'completed' ? 'Concluído' : 'Pendente'}</span>
-                        </div>
-                    </div>
-                `).join('');
-            });
+                // Carregar histórico
+                loadHistory(userId);
+                
+                // Renderizar vendedores
+                renderVendedores();
+                
+            } catch (error) {
+                log('Erro ao inicializar usuário: ' + error.message, 'error');
+                showAlert('Erro ao carregar dados: ' + error.message, 'error');
+            }
         }
 
-        // Select Amount
-        function selectAmount(amount) {
-            if (amount === 'custom') {
-                document.getElementById('customAmountDiv').style.display = 'block';
-                selectedAmount = parseInt(document.getElementById('customAmount').value) || 0;
-            } else {
-                document.getElementById('customAmountDiv').style.display = 'none';
-                selectedAmount = amount;
-            }
+        // ==========================================
+        // SELEÇÃO DE VALOR
+        // ==========================================
+        function selectAmount(amount, btn) {
+            selectedAmount = amount;
+            
+            // Remover seleção anterior
+            document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            
+            // Esconder input custom
+            document.getElementById('customAmount').classList.remove('show');
+            
+            updateSummary();
+            log('Valor selecionado: ' + amount + ' MTN', 'info');
+        }
+
+        function showCustomInput(btn) {
+            document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            
+            const input = document.getElementById('customAmount');
+            input.classList.add('show');
+            input.focus();
+            
+            selectedAmount = 0;
             updateSummary();
         }
 
-        // Update Custom Amount
-        function updateCustomAmount(value) {
+        function setCustomAmount(value) {
             selectedAmount = parseInt(value) || 0;
             updateSummary();
         }
 
-        // Select Payment Method
-        function selectPayment(method) {
-            selectedPayment = method;
+        // ==========================================
+        // SELEÇÃO DE MÉTODO
+        // ==========================================
+        function selectMethod(method, btn) {
+            selectedMethod = method;
             
+            document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            
+            // Mostrar/esconder vendedores
+            const vendedorSection = document.getElementById('vendedoresSection');
             if (method === 'vendedor') {
-                document.getElementById('vendedorSection').style.display = 'block';
-                renderVendedores();
+                vendedorSection.classList.add('show');
             } else {
-                document.getElementById('vendedorSection').style.display = 'none';
+                vendedorSection.classList.remove('show');
                 selectedVendedor = null;
+                document.querySelectorAll('.vendedor-card').forEach(c => c.classList.remove('selected'));
             }
             
             updateSummary();
+            log('Método selecionado: ' + method, 'info');
         }
 
-        // Render Vendedores
+        // ==========================================
+        // RENDERIZAR VENDEDORES
+        // ==========================================
         function renderVendedores() {
-            const container = document.getElementById('vendedoresList');
-            container.innerHTML = vendedoresData.map(v => `
+            const grid = document.getElementById('vendedorGrid');
+            grid.innerHTML = vendedores.map(v => `
                 <div class="vendedor-card ${selectedVendedor === v.id ? 'selected' : ''}" 
-                     onclick="selectVendedor('${v.id}')"
-                     style="${selectedVendedor === v.id ? 'border-color: var(--accent); background: rgba(212, 175, 55, 0.1);' : ''}">
-                    <div class="vendedor-avatar">
-                        <i class="fas fa-store"></i>
+                     onclick="selectVendedor('${v.id}', this)">
+                    <div style="font-weight: 600; margin-bottom: 0.25rem;">
+                        ${v.name}
+                        <span class="status ${v.status}"></span>
                     </div>
-                    <div class="vendedor-info">
-                        <h4>${v.name}</h4>
-                        <p><i class="fas fa-map-marker-alt"></i> ${v.location}</p>
-                        <p><i class="fas fa-phone"></i> ${v.phone}</p>
+                    <div style="font-size: 0.8rem; color: var(--text-light);">
+                        <i class="fas fa-map-marker-alt"></i> ${v.location}
                     </div>
-                    <div style="margin-left: auto;">
-                        <span style="display: inline-block; width: 10px; height: 10px; background: ${v.status === 'online' ? '#27ae60' : '#e74c3c'}; border-radius: 50%;"></span>
+                    <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.5rem;">
+                        <i class="fas fa-phone"></i> ${v.phone}
                     </div>
                 </div>
             `).join('');
         }
 
-        // Select Vendedor
-        function selectVendedor(vendedorId) {
+        function selectVendedor(vendedorId, card) {
             selectedVendedor = vendedorId;
-            renderVendedores();
+            document.querySelectorAll('.vendedor-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
             updateSummary();
+            log('Vendedor selecionado: ' + vendedorId, 'info');
         }
 
-        // Update Summary
+        // ==========================================
+        // ATUALIZAR RESUMO
+        // ==========================================
         function updateSummary() {
-            const summaryBox = document.getElementById('summaryBox');
-            const submitBtn = document.getElementById('submitBtn');
+            const summary = document.getElementById('summaryBox');
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
             
-            if (selectedAmount > 0 && selectedPayment) {
-                if (selectedPayment === 'vendedor' && !selectedVendedor) {
-                    submitBtn.disabled = true;
-                    return;
-                }
-                
-                summaryBox.style.display = 'block';
-                document.getElementById('summaryAmount').textContent = selectedAmount + ' MTN';
-                document.getElementById('summaryTotal').textContent = selectedAmount + ' MTN';
-                submitBtn.disabled = false;
+            const canSubmit = selectedAmount > 0 && selectedMethod && 
+                             (selectedMethod !== 'vendedor' || selectedVendedor);
+            
+            if (canSubmit) {
+                summary.style.display = 'block';
+                document.getElementById('sumAmount').textContent = selectedAmount + ' MTN';
+                document.getElementById('sumTotal').textContent = selectedAmount + ' MTN';
+                btn.disabled = false;
+                btnText.textContent = 'Confirmar Recarga';
             } else {
-                summaryBox.style.display = 'none';
-                submitBtn.disabled = true;
+                summary.style.display = 'none';
+                btn.disabled = true;
+                btnText.textContent = selectedMethod === 'vendedor' && !selectedVendedor 
+                    ? 'Selecione um vendedor' 
+                    : 'Selecione valor e método';
             }
         }
 
-        // Process Recharge
+        // ==========================================
+        // PROCESSAR RECARGA
+        // ==========================================
         async function processRecharge() {
-            if (!currentUser || currentUser === 'demo') {
-                showToast('Faça login na plataforma principal para recarregar', 'error');
+            if (!currentUser) {
+                showAlert('Usuário não identificado', 'error');
                 return;
             }
+
+            const btn = document.getElementById('submitBtn');
+            const originalContent = btn.innerHTML;
             
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="loading"></span> Processando...';
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Processando...';
+            
+            log('Iniciando processamento de recarga...', 'info');
             
             try {
-                // Generate transaction code
+                // Validar
+                if (selectedAmount < 10) {
+                    throw new Error('Valor mínimo: 10 MTN');
+                }
+                
+                // Gerar código único
                 const txCode = 'TX' + Date.now().toString(36).toUpperCase();
                 
-                // Create recharge record
                 const rechargeData = {
                     userId: currentUser,
                     amount: selectedAmount,
-                    method: selectedPayment,
+                    method: selectedMethod,
                     vendedorId: selectedVendedor,
                     status: 'pending',
-                    timestamp: Date.now(),
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
                     transactionCode: txCode,
                     processedBy: null,
                     processedAt: null
                 };
                 
-                // Save to Firebase
-                const newRecharge = await database.ref('recharges').push(rechargeData);
+                log('Salvando recarga...', 'info');
                 
-                // If vendedor selected, notify them
+                // Salvar com timeout
+                const savePromise = database.ref('recharges').push(rechargeData);
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Timeout ao salvar')), 15000)
+                );
+                
+                const newRecharge = await Promise.race([savePromise, timeoutPromise]);
+                
+                log('✅ Recarga salva: ' + newRecharge.key, 'success');
+                
+                // Notificar vendedor se selecionado
                 if (selectedVendedor) {
-                    await database.ref('notifications/' + selectedVendedor).push({
-                        type: 'new_recharge',
-                        rechargeId: newRecharge.key,
-                        amount: selectedAmount,
-                        userId: currentUser,
-                        timestamp: Date.now(),
-                        read: false
-                    });
+                    try {
+                        await database.ref('notifications/' + selectedVendedor).push({
+                            type: 'new_recharge',
+                            rechargeId: newRecharge.key,
+                            userId: currentUser,
+                            amount: selectedAmount,
+                            timestamp: firebase.database.ServerValue.TIMESTAMP,
+                            read: false
+                        });
+                        log('Notificação enviada ao vendedor', 'success');
+                    } catch (notifErr) {
+                        log('Erro ao notificar vendedor (não crítico)', 'warning');
+                    }
                 }
                 
-                // Show success
-                showSuccess(txCode, selectedAmount, selectedPayment);
+                // Mostrar sucesso
+                showSuccess(txCode);
                 
-                // Notify parent
+                // Notificar parent
                 if (window.parent !== window) {
                     window.parent.postMessage({
                         type: 'RECHARGE_SUCCESS',
-                        amount: selectedAmount,
-                        transactionCode: txCode
+                        transactionCode: txCode,
+                        amount: selectedAmount
                     }, '*');
                 }
                 
             } catch (error) {
-                console.error(error);
-                showToast('Erro ao processar recarga: ' + error.message, 'error');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Confirmar Recarga';
+                log('❌ ERRO: ' + error.message, 'error');
+                showAlert('Erro: ' + error.message, 'error');
+                
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+                
+                // Mostrar debug em caso de erro
+                document.getElementById('debugPanel').classList.add('show');
             }
         }
 
-        // Show Success
-        function showSuccess(code, amount, method) {
-            document.getElementById('mainState').style.display = 'none';
-            document.getElementById('successState').classList.add('active');
-            
+        // ==========================================
+        // MOSTRAR SUCESSO
+        // ==========================================
+        function showSuccess(code) {
+            document.getElementById('mainScreen').style.display = 'none';
+            document.getElementById('successScreen').classList.add('show');
             document.getElementById('successCode').textContent = code;
-            document.getElementById('successAmount').textContent = amount + ' MTN';
-            document.getElementById('successMethod').textContent = formatPayment(method);
-            document.getElementById('successDate').textContent = new Date().toLocaleString('pt-MZ');
         }
 
-        // Close Window
+        // ==========================================
+        // CARREGAR HISTÓRICO
+        // ==========================================
+        function loadHistory(userId) {
+            const list = document.getElementById('historyList');
+            
+            database.ref('recharges')
+                .orderByChild('userId')
+                .equalTo(userId)
+                .limitToLast(10)
+                .on('value', (snapshot) => {
+                    if (!snapshot.exists()) {
+                        list.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">Nenhuma recarga encontrada</p>';
+                        return;
+                    }
+                    
+                    const recharges = [];
+                    snapshot.forEach((child) => {
+                        recharges.unshift({ id: child.key, ...child.val() });
+                    });
+                    
+                    list.innerHTML = recharges.map(r => `
+                        <div class="history-item ${r.status}">
+                            <div>
+                                <strong>${r.amount} MTN</strong>
+                                <div style="font-size: 0.75rem; color: var(--text-light);">
+                                    ${formatDate(r.timestamp)} • ${formatMethod(r.method)}
+                                </div>
+                            </div>
+                            <span style="font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 4px; 
+                                background: ${r.status === 'completed' ? '#d4edda' : '#fff3cd'};
+                                color: ${r.status === 'completed' ? '#155724' : '#856404'};">
+                                ${r.status === 'completed' ? '✓' : '⏳'}
+                            </span>
+                        </div>
+                    `).join('');
+                }, (error) => {
+                    log('Erro ao carregar histórico: ' + error.message, 'error');
+                    list.innerHTML = '<p style="text-align: center; color: var(--danger);">Erro ao carregar histórico</p>';
+                });
+        }
+
+        // ==========================================
+        // UTILITÁRIOS
+        // ==========================================
+        function showAlert(message, type) {
+            const alert = document.getElementById('alertBox');
+            alert.className = 'alert alert-' + type + ' show';
+            alert.textContent = message;
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return '-';
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('pt-MZ') + ' ' + date.toLocaleTimeString('pt-MZ', {hour: '2-digit', minute:'2-digit'});
+        }
+
+        function formatMethod(method) {
+            const methods = { mpesa: 'M-Pesa', emola: 'e-Mola', mkesh: 'mKesh', vendedor: 'Vendedor' };
+            return methods[method] || method;
+        }
+
         function closeWindow() {
             if (window.parent !== window) {
                 window.parent.postMessage({ type: 'CLOSE_RECARGA' }, '*');
             } else {
                 window.location.href = '../index.html';
             }
-        }
-
-        // Format Helpers
-        function formatPayment(method) {
-            const methods = {
-                'mpesa': 'M-Pesa',
-                'emola': 'e-Mola',
-                'mkesh': 'mKesh',
-                'vendedor': 'Vendedor Presencial'
-            };
-            return methods[method] || method;
-        }
-
-        function formatDate(timestamp) {
-            if (!timestamp) return '-';
-            const date = new Date(timestamp);
-            return date.toLocaleDateString('pt-MZ') + ' ' + date.toLocaleTimeString('pt-MZ', { hour: '2-digit', minute: '2-digit' });
-        }
-
-        // Toast
-        function showToast(message, type = 'info') {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            
-            toast.className = 'toast ' + type;
-            toastMessage.textContent = message;
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
         }
     </script>
 </body>
