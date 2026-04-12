@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registo - Madrassa Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --primary: #1a5f4a;
+            --primary-light: #2d8b6f;
+            --primary-dark: #0d3d2f;
+            --accent: #d4af37;
+            --accent-light: #f4d03f;
+            --bg-warm: #faf8f5;
+            --bg-cream: #f5f0e8;
+            --text-dark: #2c3e50;
+            --text-light: #5d6d7e;
+            --white: #ffffff;
+            --shadow: 0 10px 40px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 16px;
+            --radius-sm: 8px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-warm) 0%, var(--bg-cream) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Islamic Pattern Background */
+        .pattern-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(26, 95, 74, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 20%),
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(26, 95, 74, 0.02) 35px, rgba(26, 95, 74, 0.02) 70px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .geometric-ornament {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border: 2px solid rgba(26, 95, 74, 0.1);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .geometric-ornament.top-right {
+            top: -100px;
+            right: -100px;
+        }
+
+        .geometric-ornament.bottom-left {
+            bottom: -100px;
+            left: -100px;
+        }
+
+        /* Container */
+        .register-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header */
+        .register-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .register-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--accent-light);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-text {
+            text-align: left;
+        }
+
+        .logo-arabic {
+            font-family: 'Noto Naskh Arabic', serif;
+            font-size: 1.5rem;
+            color: var(--accent-light);
+            display: block;
+        }
+
+        .logo-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header-subtitle {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+
+        /* Form Body */
+        .register-body {
+            padding: 2.5rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--bg-cream);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-label .required {
+            color: #e74c3c;
+            margin-left: 2px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--bg-cream);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            background: var(--white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(26, 95, 74, 0.1);
+        }
+
+        .form-input:invalid:not(:placeholder-shown) {
+            border-color: #e74c3c;
+        }
+
+        .form-input:valid:not(:placeholder-shown) {
+            border-color: #27ae60;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus + .input-icon {
+            color: var(--primary);
+        }
+
+        .input-hint {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .password-strength {
+            height: 4px;
+            background: var(--bg-cream);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+            display: none;
+        }
+
+        .password-strength.show {
+            display: block;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0;
+            transition: var(--transition);
+            border-radius: 2px;
+        }
+
+        .strength-bar.weak { width: 33%; background: #e74c3c; }
+        .strength-bar.medium { width: 66%; background: #f39c12; }
+        .strength-bar.strong { width: 100%; background: #27ae60; }
+
+        /* Referral Section */
+        .referral-section {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+            border: 2px dashed var(--accent);
+            border-radius: var(--radius-sm);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .referral-title {
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .referral-text {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .referral-input {
+            background: var(--white) !important;
+        }
+
+        /* Terms */
+        .terms-section {
+            margin-bottom: 2rem;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            margin-top: 2px;
+        }
+
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        .checkbox-label a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .checkbox-label a:hover {
+            text-decoration: underline;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-submit:hover::before {
+            left: 100%;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-submit:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success State */
+        .success-state {
+            display: none;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .success-state.active {
+            display: block;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            margin: 0 auto 2rem;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .success-title {
+            font-size: 1.75rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .success-text {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .success-details {
+            background: var(--bg-cream);
+            border-radius: var(--radius-sm);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .detail-value {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .btn-close {
+            padding: 1rem 3rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-close:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Error Message */
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-hover);
+            transform: translateX(400px);
+            transition: var(--transition);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #e74c3c;
+        }
+
+        .toast.success {
+            background: #27ae60;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .register-container {
+                border-radius: 0;
+                min-height: 100vh;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .register-header {
+                padding: 2rem 1.5rem;
+            }
+
+            .register-body {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .form-group {
+            animation: fadeInUp 0.5s ease-out backwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.15s; }
+        .form-group:nth-child(3) { animation-delay: 0.2s; }
+        .form-group:nth-child(4) { animation-delay: 0.25s; }
+        .form-group:nth-child(5) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="pattern-bg"></div>
+    <div class="geometric-ornament top-right"></div>
+    <div class="geometric-ornament bottom-left"></div>
+
+    <div class="register-container">
+        <!-- Form State -->
+        <div id="formState">
+            <div class="register-header">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="logo-text">
+                        <span class="logo-arabic">تسجيل</span>
+                        <span class="logo-title">Novo Aluno</span>
+                    </div>
+                </div>
+                <p class="header-subtitle">Preencha os dados abaixo para criar sua conta na Madrassa Online</p>
+            </div>
+
+            <div class="register-body">
+                <div class="error-message" id="errorMessage">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="errorText"></span>
+                </div>
+
+                <form id="registerForm" onsubmit="handleRegister(event)">
+                    <!-- Dados Pessoais -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-user"></i>
+                            Dados Pessoais
+                        </h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label class="form-label">Nome Completo <span class="required">*</span></label>
+                                <div class="input-wrapper">
+                                    <input type="text" class="form-input" id="fullName" placeholder="Ex: Ahmad Musa" required>
+                                    <i class="fas fa-user input-icon"></i>
+                                </div>
+                                <div class="input-hint">
+                                    <i class="fas fa-info-circle"></i>
+                                    Nome completo conforme documento de identificação
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Número de Telefone <span class="required">*</span></label>
+                                <div class="input-wrapper">
+                                    <input type="tel" class="form-input" id="phoneNumber" placeholder="860407269" required pattern="[0-9]{9,}" maxlength="12">
+                                    <i class="fas fa-phone input-icon"></i>
+                                </div>
+                                <div class="input-hint">
+                                    <i class="fas fa-lock"></i>
+                                    Será usado para login
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Email <span class="required">*</span></label>
+                                <div class="input-wrapper">
+                                    <input type="email" class="form-input" id="email" placeholder="seu@email.com" required>
+                                    <i class="fas fa-envelope input-icon"></i>
+                                </div>
+                                <div class="input-hint">
+                                    <i class="fas fa-shield-alt"></i>
+                                    PIN será enviado para este email
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Segurança -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-lock"></i>
+                            Segurança da Conta
+                        </h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">PIN (4 dígitos) <span class="required">*</span></label>
+                                <div class="input-wrapper">
+                                    <input type="password" class="form-input" id="pin" placeholder="****" required pattern="[0-9]{4}" maxlength="4" oninput="checkPinStrength(this.value)">
+                                    <i class="fas fa-key input-icon"></i>
+                                </div>
+                                <div class="password-strength" id="pinStrength">
+                                    <div class="strength-bar" id="strengthBar"></div>
+                                </div>
+                                <div class="input-hint">
+                                    <i class="fas fa-lightbulb"></i>
+                                    Use 4 números difíceis de adivinhar
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Confirmar PIN <span class="required">*</span></label>
+                                <div class="input-wrapper">
+                                    <input type="password" class="form-input" id="confirmPin" placeholder="****" required pattern="[0-9]{4}" maxlength="4">
+                                    <i class="fas fa-check-circle input-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Código de Convite -->
+                    <div class="referral-section">
+                        <div class="referral-title">
+                            <i class="fas fa-gift"></i>
+                            Tem um código de convite?
+                        </div>
+                        <p class="referral-text">
+                            Se foi convidado por um amigo, insira o código dele aqui. 
+                            Ambos ganham <strong>0.02 Moz Coin</strong> no registo!
+                        </p>
+                        <div class="input-wrapper">
+                            <input type="text" class="form-input referral-input" id="referralCode" placeholder="Ex: REF-ABC123 (opcional)">
+                            <i class="fas fa-ticket-alt input-icon"></i>
+                        </div>
+                    </div>
+
+                    <!-- Termos -->
+                    <div class="terms-section">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="acceptTerms" required>
+                            <span class="checkbox-label">
+                                Aceito os <a href="#" onclick="showTerms()">Termos de Uso</a> e 
+                                <a href="#" onclick="showPrivacy()">Política de Privacidade</a> da Madrassa Online. 
+                                Confirmo que tenho pelo menos 13 anos de idade.
+                            </span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fas fa-user-plus"></i>
+                        Criar Conta
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Success State -->
+        <div class="success-state" id="successState">
+            <div class="success-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2 class="success-title">Registo Efectuado com Sucesso!</h2>
+            <p class="success-text">
+                Bem-vindo à Madrassa Online! Sua conta foi criada e está pendente de aprovação.
+                Você receberá um email de confirmação em breve.
+            </p>
+            
+            <div class="success-details">
+                <div class="detail-row">
+                    <span class="detail-label">Número de Registo:</span>
+                    <span class="detail-value" id="successPhone">---</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value" id="successEmail">---</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Código de Partilha:</span>
+                    <span class="detail-value" id="successRefCode">---</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value" style="color: #f39c12;">Pendente de Aprovação</span>
+                </div>
+            </div>
+
+            <button class="btn-close" onclick="closeWindow()">
+                <i class="fas fa-times"></i>
+                Fechar
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-info-circle"></i>
+        <span id="toastMessage">Mensagem</span>
+    </div>
+
+    <script>
+        // Firebase Configuration - Must match parent window
+        const firebaseConfig = {
+            apiKey: "AIzaSyCW9ZZadm4WJ_FKtOjvkP1czsfImwzl98c",
+            authDomain: "madrassa-online.firebaseapp.com",
+            databaseURL: "https://madrassa-online-default-rtdb.firebaseio.com",
+            projectId: "madrassa-online",
+            storageBucket: "madrassa-online.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // PIN Strength Checker
+        function checkPinStrength(pin) {
+            const strengthDiv = document.getElementById('pinStrength');
+            const strengthBar = document.getElementById('strengthBar');
+            
+            if (pin.length === 0) {
+                strengthDiv.classList.remove('show');
+                return;
+            }
+            
+            strengthDiv.classList.add('show');
+            
+            // Simple strength logic
+            let strength = 'weak';
+            if (pin.length === 4) {
+                const uniqueDigits = new Set(pin).size;
+                if (uniqueDigits === 4) strength = 'strong';
+                else if (uniqueDigits >= 2) strength = 'medium';
+            }
+            
+            strengthBar.className = 'strength-bar ' + strength;
+        }
+
+        // Form Handler
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            // Reset error
+            errorDiv.classList.remove('show');
+            
+            // Get values
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phoneNumber').value.trim().replace(/\D/g, '');
+            const email = document.getElementById('email').value.trim();
+            const pin = document.getElementById('pin').value;
+            const confirmPin = document.getElementById('confirmPin').value;
+            const referralCode = document.getElementById('referralCode').value.trim().toUpperCase();
+            
+            // Validations
+            if (phone.length < 9) {
+                showError('Número de telefone inválido. Deve ter pelo menos 9 dígitos.');
+                return;
+            }
+            
+            if (!email.includes('@') || !email.includes('.')) {
+                showError('Email inválido. Deve conter @ e domínio válido.');
+                return;
+            }
+            
+            if (pin.length !== 4) {
+                showError('PIN deve ter exatamente 4 dígitos.');
+                return;
+            }
+            
+            if (pin !== confirmPin) {
+                showError('Os PINs não coincidem.');
+                return;
+            }
+            
+            // Loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span> Processando...';
+            
+            try {
+                const userId = phone;
+                
+                // Check if user exists
+                const snapshot = await database.ref('users/' + userId).once('value');
+                if (snapshot.exists()) {
+                    showError('Este número já está registado. Use a opção de login.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Criar Conta';
+                    return;
+                }
+                
+                // Check if email exists
+                const emailSnapshot = await database.ref('users').orderByChild('email').equalTo(email).once('value');
+                if (emailSnapshot.exists()) {
+                    showError('Este email já está registado.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Criar Conta';
+                    return;
+                }
+                
+                // Generate referral code
+                const myRefCode = 'REF-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                
+                // Create user data
+                const userData = {
+                    name: fullName,
+                    phone: phone,
+                    email: email,
+                    pin: pin,
+                    balance: 0,
+                    sellerBalance: 0,
+                    referralCode: myRefCode,
+                    referredBy: referralCode || null,
+                    createdAt: Date.now(),
+                    approved: false,
+                    courses: {},
+                    lastLogin: null
+                };
+                
+                // Save to Firebase
+                await database.ref('users/' + userId).set(userData);
+                
+                // Process referral if exists
+                if (referralCode) {
+                    await processReferral(referralCode, phone);
+                }
+                
+                // Show success
+                showSuccess(phone, email, myRefCode);
+                
+                // Notify parent window (if in iframe)
+                if (window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'REGISTRATION_SUCCESS',
+                        userId: phone,
+                        email: email
+                    }, '*');
+                }
+                
+            } catch (error) {
+                console.error(error);
+                showError('Erro ao criar conta: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Criar Conta';
+            }
+        }
+        
+        // Process Referral
+        async function processReferral(refCode, newUserPhone) {
+            try {
+                // Find referrer
+                const snapshot = await database.ref('users').orderByChild('referralCode').equalTo(refCode).once('value');
+                
+                if (snapshot.exists()) {
+                    const referrerId = Object.keys(snapshot.val())[0];
+                    const referrer = snapshot.val()[referrerId];
+                    
+                    // Add 0.02 to referrer seller balance
+                    const newBalance = (referrer.sellerBalance || 0) + 0.02;
+                    await database.ref('users/' + referrerId + '/sellerBalance').set(newBalance);
+                    
+                    // Log transaction
+                    await database.ref('transactions').push({
+                        type: 'referral_registration',
+                        from: newUserPhone,
+                        to: referrerId,
+                        amount: 0.02,
+                        timestamp: Date.now(),
+                        status: 'completed'
+                    });
+                    
+                    console.log('Referral processed:', refCode, '->', referrerId);
+                }
+            } catch (error) {
+                console.error('Referral processing error:', error);
+            }
+        }
+        
+        // Show Error
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.classList.add('show');
+            
+            // Scroll to error
+            errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Show Success
+        function showSuccess(phone, email, refCode) {
+            document.getElementById('formState').style.display = 'none';
+            document.getElementById('successState').classList.add('active');
+            
+            document.getElementById('successPhone').textContent = phone;
+            document.getElementById('successEmail').textContent = email;
+            document.getElementById('successRefCode').textContent = refCode;
+        }
+        
+        // Close Window
+        function closeWindow() {
+            if (window.parent !== window) {
+                // If in iframe, tell parent to close
+                window.parent.postMessage({ type: 'CLOSE_REGISTRATION' }, '*');
+            } else {
+                // If standalone, redirect to main page
+                window.location.href = '../index.html';
+            }
+        }
+        
+        // Show Terms
+        function showTerms() {
+            showToast('Termos de Uso: Comprometemo-nos a fornecer educação de qualidade...', 'info');
+        }
+        
+        // Show Privacy
+        function showPrivacy() {
+            showToast('Política de Privacidade: Seus dados estão protegidos...', 'info');
+        }
+        
+        // Toast
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toast.className = 'toast ' + type;
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Listen for messages from parent
+        window.addEventListener('message', function(e) {
+            if (e.data.type === 'FIREBASE_CONFIG') {
+                // Re-initialize with parent config if provided
+                console.log('Received config from parent');
+            }
+        });
+        
+        // Input formatting
+        document.getElementById('phoneNumber').addEventListener('input', function(e) {
+            // Allow only numbers
+            this.value = this.value.replace(/\D/g, '');
+        });
+        
+        document.getElementById('pin').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+        
+        document.getElementById('confirmPin').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+        
+        document.getElementById('referralCode').addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase();
+        });
+    </script>
+</body>
+</html>
