@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 2: Entrada e Saída de Dados | FB Aulas Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .code-font { font-family: 'Fira Code', monospace; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+        }
+        
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-slideIn { animation: slideIn 0.6s ease-out forwards; }
+        .animate-shake { animation: shake 0.5s ease-in-out; }
+        .animate-pulse-red { animation: pulse-red 2s infinite; }
+        
+        .glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .code-editor {
+            background: #1e1e1e;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .code-header {
+            background: #2d2d2d;
+            border-radius: 12px 12px 0 0;
+            padding: 12px 16px;
+        }
+        .code-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; }
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+        
+        .progress-fill {
+            transition: width 0.5s ease;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+        }
+        
+        .quiz-option {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .quiz-option:hover {
+            transform: translateX(10px);
+            border-color: #3b82f6;
+        }
+        .quiz-option.correct {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: #22c55e;
+        }
+        .quiz-option.wrong {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+        }
+        
+        .error-card {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(153, 27, 27, 0.1));
+            border: 2px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .success-card {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(21, 128, 61, 0.1));
+            border: 2px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            animation: confetti 3s ease-out forwards;
+            z-index: 9999;
+        }
+        
+        .input-simulation {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #e6edf3;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen overflow-x-hidden">
+    
+    <!-- Background Effects -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-float" style="animation-delay: 1s;"></div>
+        <div class="absolute top-1/3 right-1/4 w-64 h-64 bg-red-500/10 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-code text-white text-lg"></i>
+                    </div>
+                    <span class="font-bold text-xl gradient-text">FB Aulas Online</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="text-sm text-slate-400 hover:text-white transition">
+                        <i class="fas fa-arrow-left mr-2"></i>Aula 1
+                    </a>
+                    <div class="hidden md:flex items-center space-x-2 text-sm text-slate-400">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Aluno</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Progress Header -->
+    <div class="fixed top-16 w-full z-40 bg-slate-800/50 backdrop-blur-sm border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-xs font-semibold">Aula 2</span>
+                    <h1 class="text-lg font-semibold">Entrada e Saída de Dados</h1>
+                </div>
+                <span class="text-sm text-slate-400" id="progress-text">0% Concluído</span>
+            </div>
+            <div class="w-full bg-slate-700 rounded-full h-2">
+                <div class="progress-fill h-2 rounded-full" id="progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-36 pb-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+        
+        <!-- Hero Section -->
+        <section class="text-center mb-16 animate-slideIn">
+            <div class="inline-flex items-center space-x-2 bg-purple-500/10 border border-purple-500/30 rounded-full px-4 py-2 mb-6">
+                <i class="fas fa-graduation-cap text-purple-400"></i>
+                <span class="text-purple-400 text-sm font-medium">Segunda Aula</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                Entrada e Saída<br>
+                <span class="gradient-text">de Dados</span> 🚀
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto">
+                Aprenda a criar programas que conversam com o usuário
+            </p>
+        </section>
+
+        <!-- Professor Card -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.1s">
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700">
+                <div class="flex items-start space-x-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-chalkboard-teacher text-2xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <h3 class="text-lg font-semibold text-green-400">Professor</h3>
+                            <span class="text-slate-500">•</span>
+                            <span class="text-slate-400 text-sm">Agora</span>
+                        </div>
+                        <p class="text-lg leading-relaxed">
+                            Assalamu alaikum wa rahmatullah 😊<br><br>
+                            Na aula anterior aprendemos o que é programação.<br>
+                            Hoje vamos dar um passo importante:<br>
+                            <span class="text-purple-400 font-semibold">👉 Criar programas que falam com o usuário</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Objetivos -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.15s" data-section="0">
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700 bg-gradient-to-br from-blue-500/5 to-purple-500/5">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-bullseye text-blue-400 text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">🎯 Objetivo da Aula</h2>
+                </div>
+                <p class="text-slate-300 mb-4">No final desta aula, você será capaz de:</p>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="flex items-center space-x-3 bg-slate-800/50 rounded-lg p-4">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span>Mostrar mensagens na tela</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-slate-800/50 rounded-lg p-4">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span>Receber respostas do usuário</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-slate-800/50 rounded-lg p-4">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span>Criar programa interativo simples</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 1: print() -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.2s" data-section="1">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                    <span class="text-2xl">💻</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">1. Mostrar mensagem com print()</h2>
+            </div>
+            
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700">
+                <p class="text-lg text-slate-300 mb-6">
+                    O comando <code class="bg-green-500/20 text-green-400 px-2 py-1 rounded">print()</code> serve para mostrar algo na tela.
+                </p>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-blue-400 font-semibold mb-3 flex items-center">
+                            <i class="fas fa-code mr-2"></i> Código:
+                        </h4>
+                        <div class="code-editor">
+                            <div class="code-header flex items-center">
+                                <div class="code-dot dot-red"></div>
+                                <div class="code-dot dot-yellow"></div>
+                                <div class="code-dot dot-green"></div>
+                                <span class="ml-3 text-xs text-slate-400">exemplo.py</span>
+                            </div>
+                            <div class="p-4 code-font text-sm">
+                                <span class="text-purple-400">print</span>(<span class="text-green-400">"Assalamu alaikum"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-green-400 font-semibold mb-3 flex items-center">
+                            <i class="fas fa-terminal mr-2"></i> Saída:
+                        </h4>
+                        <div class="bg-black rounded-lg p-4 code-font text-sm text-green-400 border border-slate-800">
+                            Assalamu alaikum
+                        </div>
+                        <div class="mt-4 p-3 bg-blue-500/10 rounded-lg border border-blue-500/30">
+                            <p class="text-sm text-blue-400">
+                                <i class="fas fa-lightbulb mr-2"></i>
+                                O texto aparece exatamente como foi escrito.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: input() -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.3s" data-section="2">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                    <span class="text-2xl">🧠</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">2. Receber dados com input()</h2>
+            </div>
+            
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700">
+                <p class="text-lg text-slate-300 mb-6">
+                    Agora vamos permitir que o usuário responda:
+                </p>
+                
+                <div class="code-editor mb-6">
+                    <div class="code-header flex items-center">
+                        <div class="code-dot dot-red"></div>
+                        <div class="code-dot dot-yellow"></div>
+                        <div class="code-dot dot-green"></div>
+                        <span class="ml-3 text-xs text-slate-400">input_exemplo.py</span>
+                    </div>
+                    <div class="p-4 code-font text-sm">
+                        <span class="text-blue-400">nome</span> = <span class="text-purple-400">input</span>(<span class="text-green-400">"Qual é o seu nome? "</span>)
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                    <h4 class="text-yellow-400 font-semibold mb-4">
+                        <i class="fas fa-lightbulb mr-2"></i>O que acontece:
+                    </h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400 font-bold">1</span>
+                            <span>O programa mostra a pergunta na tela</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400 font-bold">2</span>
+                            <span>O usuário digita a resposta</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400 font-bold">3</span>
+                            <span>A resposta é guardada na variável <code class="text-blue-400">nome</code></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Programa Completo -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.4s" data-section="3">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                    <span class="text-2xl">🔗</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">3. Juntando Tudo</h2>
+            </div>
+            
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700">
+                <h3 class="text-xl font-semibold mb-6 text-purple-400">Programa Completo:</h3>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="code-editor">
+                        <div class="code-header flex items-center">
+                            <div class="code-dot dot-red"></div>
+                            <div class="code-dot dot-yellow"></div>
+                            <div class="code-dot dot-green"></div>
+                            <span class="ml-3 text-xs text-slate-400">programa.py</span>
+                        </div>
+                        <div class="p-4 code-font text-sm">
+                            <span class="text-gray-500"># Pergunta o nome</span><br>
+                            <span class="text-blue-400">nome</span> = <span class="text-purple-400">input</span>(<span class="text-green-400">"Qual é o seu nome? "</span>)<br><br>
+                            <span class="text-gray-500"># Mostra a resposta</span><br>
+                            <span class="text-purple-400">print</span>(<span class="text-green-400">"Prazer em te conhecer, "</span> + <span class="text-blue-400">nome</span>)
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <h4 class="text-green-400 font-semibold">Exemplo de execução:</h4>
+                        <div class="bg-black rounded-lg p-4 code-font text-sm border border-slate-800">
+                            <div class="text-slate-400">Qual é o seu nome? <span class="text-white">Ali</span></div>
+                            <div class="text-green-400 mt-2">Prazer em te conhecer, Ali</div>
+                        </div>
+                        
+                        <div class="bg-purple-500/10 rounded-lg p-4 border border-purple-500/30">
+                            <p class="text-sm text-purple-400">
+                                <i class="fas fa-magic mr-2"></i>
+                                O símbolo <code class="bg-purple-500/20 px-1 rounded">+</code> junta (concatena) texto com variável!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Playground -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.45s" data-section="4">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-play-circle text-yellow-400 text-2xl"></i>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">🧪 Experimente Agora!</h2>
+            </div>
+            
+            <div class="glass rounded-2xl border border-slate-700 overflow-hidden">
+                <div class="bg-slate-800 px-6 py-4 border-b border-slate-700 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-laptop-code text-yellow-400"></i>
+                        <span class="font-semibold">Playground Interativo</span>
+                    </div>
+                    <span class="text-xs text-slate-400 bg-slate-900 px-3 py-1 rounded-full">Python</span>
+                </div>
+                
+                <div class="grid md:grid-cols-2">
+                    <!-- Editor -->
+                    <div class="p-6 border-b md:border-b-0 md:border-r border-slate-700">
+                        <label class="text-sm text-slate-400 mb-2 block">Escreva seu código:</label>
+                        <textarea id="code-input" class="w-full h-56 bg-slate-900 rounded-lg p-4 code-font text-sm text-slate-300 border border-slate-700 focus:border-blue-500 focus:outline-none resize-none" spellcheck="false"># Exemplo: Pergunte o nome e mostre na tela
+nome = input("Qual é o seu nome? ")
+print("Olá, " + nome + "!")
+print("Bem-vindo ao curso!")</textarea>
+                        
+                        <div class="flex space-x-3 mt-4">
+                            <button id="run-btn" class="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-lg transition transform hover:scale-105 flex items-center justify-center space-x-2">
+                                <i class="fas fa-play"></i>
+                                <span>Executar</span>
+                            </button>
+                            <button id="reset-btn" class="px-4 py-3 bg-slate-700 hover:bg-slate-600 rounded-lg transition">
+                                <i class="fas fa-undo text-slate-300"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <button onclick="insertCode('nome = input(\"Seu nome: \")')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-full transition">input()</button>
+                            <button onclick="insertCode('print(\"Olá \" + nome)')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-full transition">print() + var</button>
+                            <button onclick="insertCode('idade = input(\"Idade: \")')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-full transition">input número</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Output -->
+                    <div class="p-6 bg-slate-950">
+                        <label class="text-sm text-slate-400 mb-2 block">Resultado:</label>
+                        <div id="code-output" class="w-full h-56 bg-black rounded-lg p-4 code-font text-sm overflow-y-auto border border-slate-800">
+                            <div class="text-slate-600 mb-4"># Clique em Executar para ver o resultado...</div>
+                        </div>
+                        
+                        <div class="mt-4 p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
+                            <p class="text-xs text-yellow-400">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Simulação: O input aparecerá como caixa de texto no resultado
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Mais Exemplos -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.5s" data-section="5">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center">
+                    <span class="text-2xl">📚</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">4. Mais Exemplos</h2>
+            </div>
+            
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700">
+                <div class="code-editor mb-6">
+                    <div class="code-header flex items-center">
+                        <div class="code-dot dot-red"></div>
+                        <div class="code-dot dot-yellow"></div>
+                        <div class="code-dot dot-green"></div>
+                        <span class="ml-3 text-xs text-slate-400">exemplo_completo.py</span>
+                    </div>
+                    <div class="p-4 code-font text-sm">
+                        <span class="text-blue-400">nome</span> = <span class="text-purple-400">input</span>(<span class="text-green-400">"Nome: "</span>)<br>
+                        <span class="text-blue-400">idade</span> = <span class="text-purple-400">input</span>(<span class="text-green-400">"Idade: "</span>)<br><br>
+                        <span class="text-purple-400">print</span>(<span class="text-blue-400">nome</span> + <span class="text-green-400">" tem "</span> + <span class="text-blue-400">idade</span> + <span class="text-green-400">" anos"</span>)
+                    </div>
+                </div>
+                
+                <div class="bg-black rounded-lg p-4 code-font text-sm border border-slate-800">
+                    <div class="text-slate-400 mb-1">Nome: <span class="text-white">Ali</span></div>
+                    <div class="text-slate-400 mb-2">Idade: <span class="text-white">20</span></div>
+                    <div class="text-green-400">Ali tem 20 anos</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: ERROS COMUNS (Pontos Negativos) -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.6s" data-section="6">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center animate-pulse-red rounded-xl">
+                    <span class="text-2xl">⚠️</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold text-red-400">5. Erros Comuns (Cuidado!)</h2>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Erro 1 -->
+                <div class="error-card rounded-2xl p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-times text-red-400 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-red-400 font-semibold mb-3">❌ ERRO 1: Esquecer o +</h4>
+                            <div class="code-editor mb-4 opacity-75">
+                                <div class="code-header bg-red-900/30">
+                                    <span class="text-xs text-red-400">❌ Código Errado</span>
+                                </div>
+                                <div class="p-4 code-font text-sm text-red-300">
+                                    <span class="text-purple-400">print</span>(<span class="text-green-400">"Olá "</span> <span class="text-red-400 font-bold animate-shake">nome</span>)
+                                </div>
+                            </div>
+                            
+                            <div class="success-card rounded-xl p-4">
+                                <h4 class="text-green-400 font-semibold mb-2">✔️ Correto:</h4>
+                                <div class="code-font text-sm">
+                                    <span class="text-purple-400">print</span>(<span class="text-green-400">"Olá "</span> <span class="text-yellow-400">+</span> <span class="text-blue-400">nome</span>)
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 p-3 bg-red-500/10 rounded-lg border border-red-500/30">
+                                <p class="text-sm text-red-400">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    <strong>Sempre use o +</strong> para juntar texto com variável!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Erro 2 -->
+                <div class="error-card rounded-2xl p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-times text-red-400 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-red-400 font-semibold mb-3">❌ ERRO 2: Juntar texto com número</h4>
+                            <div class="code-editor mb-4 opacity-75">
+                                <div class="code-header bg-red-900/30">
+                                    <span class="text-xs text-red-400">❌ Código Errado</span>
+                                </div>
+                                <div class="p-4 code-font text-sm text-red-300">
+                                    <span class="text-purple-400">print</span>(<span class="text-green-400">"Idade: "</span> <span class="text-yellow-400">+</span> <span class="text-red-400 font-bold animate-shake">20</span>)
+                                </div>
+                            </div>
+                            
+                            <div class="success-card rounded-xl p-4">
+                                <h4 class="text-green-400 font-semibold mb-2">✔️ Correto:</h4>
+                                <div class="code-font text-sm mb-2">
+                                    <span class="text-purple-400">print</span>(<span class="text-green-400">"Idade: "</span> + <span class="text-yellow-400">str</span>(<span class="text-blue-400">20</span>))
+                                </div>
+                                <p class="text-xs text-slate-400">Ou use input() que já retorna texto:</p>
+                                <div class="code-font text-sm mt-2">
+                                    <span class="text-blue-400">idade</span> = <span class="text-purple-400">input</span>(<span class="text-green-400">"Idade: "</span>)<br>
+                                    <span class="text-purple-400">print</span>(<span class="text-green-400">"Idade: "</span> + <span class="text-blue-400">idade</span>)
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
+                                <p class="text-sm text-yellow-400">
+                                    <i class="fas fa-lightbulb mr-2"></i>
+                                    <strong>Dica:</strong> input() sempre retorna texto, então pode usar + direto!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Erro 3 -->
+                <div class="error-card rounded-2xl p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-times text-red-400 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-red-400 font-semibold mb-3">❌ ERRO 3: Aspas não fechadas</h4>
+                            <div class="code-editor mb-4 opacity-75">
+                                <div class="code-header bg-red-900/30">
+                                    <span class="text-xs text-red-400">❌ Código Errado</span>
+                                </div>
+                                <div class="p-4 code-font text-sm text-red-300">
+                                    <span class="text-purple-400">print</span>(<span class="text-green-400">"Olá Mundo</span>)
+                                </div>
+                            </div>
+                            
+                            <div class="success-card rounded-xl p-4">
+                                <h4 class="text-green-400 font-semibold mb-2">✔️ Correto:</h4>
+                                <div class="code-font text-sm">
+                                    <span class="text-purple-400">print</span>(<span class="text-green-400">"Olá Mundo"</span>)
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 p-3 bg-red-500/10 rounded-lg border border-red-500/30">
+                                <p class="text-sm text-red-400">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    Sempre feche as aspas! "texto" ou 'texto'
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Desafio -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.7s" data-section="7">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                    <span class="text-2xl">🎯</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">6. Desafio</h2>
+            </div>
+            
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700 bg-gradient-to-br from-orange-500/5 to-red-500/5">
+                <div class="flex items-center space-x-3 mb-4">
+                    <i class="fas fa-trophy text-yellow-400 text-2xl"></i>
+                    <h3 class="text-xl font-bold">Crie um programa que:</h3>
+                </div>
+                
+                <div class="space-y-3 mb-6">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-check-circle text-orange-400"></i>
+                        <span>Pergunte o nome</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-check-circle text-orange-400"></i>
+                        <span>Pergunte a idade</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-check-circle text-orange-400"></i>
+                        <span>Mostre: <code class="bg-slate-800 px-2 py-1 rounded">Olá [nome], você tem [idade] anos</code></span>
+                    </div>
+                </div>
+                
+                <div class="bg-black rounded-lg p-4 code-font text-sm border border-slate-800 mb-4">
+                    <div class="text-slate-400">Qual é o seu nome? <span class="text-white">Maria</span></div>
+                    <div class="text-slate-400">Qual é a sua idade? <span class="text-white">25</span></div>
+                    <div class="text-green-400 mt-2">Olá Maria, você tem 25 anos</div>
+                </div>
+                
+                <div class="p-4 bg-orange-500/10 rounded-lg border border-orange-500/30">
+                    <p class="text-orange-400">
+                        <i class="fas fa-rocket mr-2"></i>
+                        <strong>Dica:</strong> Use o playground acima para testar sua solução!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.8s" id="quiz-section" data-section="8">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-question-circle text-green-400 text-2xl"></i>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">📝 Quiz de Avaliação</h2>
+            </div>
+            
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700">
+                <p class="text-slate-400 mb-6">Teste seus conhecimentos:</p>
+                
+                <div id="quiz-container" class="space-y-6">
+                    <!-- Question 1 -->
+                    <div class="quiz-question" data-question="1">
+                        <h4 class="font-semibold text-lg mb-4">1. Qual comando recebe dados do usuário?</h4>
+                        <div class="space-y-3">
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>print()</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="true">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>input()</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>receive()</span>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="feedback mt-3 hidden"></div>
+                    </div>
+                    
+                    <!-- Question 2 -->
+                    <div class="quiz-question" data-question="2">
+                        <h4 class="font-semibold text-lg mb-4">2. Como juntar texto com variável?</h4>
+                        <div class="space-y-3">
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>print("Olá" nome)</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="true">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>print("Olá" + nome)</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>print("Olá" , nome)</span>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="feedback mt-3 hidden"></div>
+                    </div>
+                    
+                    <!-- Question 3 -->
+                    <div class="quiz-question" data-question="3">
+                        <h4 class="font-semibold text-lg mb-4">3. O que guarda a resposta do input()?</h4>
+                        <div class="space-y-3">
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="true">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>Uma variável</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>O print()</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>Nada, some</span>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="feedback mt-3 hidden"></div>
+                    </div>
+                    
+                    <!-- Question 4 -->
+                    <div class="quiz-question" data-question="4">
+                        <h4 class="font-semibold text-lg mb-4">4. Qual está CORRETO?</h4>
+                        <div class="space-y-3">
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>nome = input["Qual seu nome? "]</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="true">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>nome = input("Qual seu nome? ")</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>nome = input{Qual seu nome?}</span>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="feedback mt-3 hidden"></div>
+                    </div>
+                </div>
+                
+                <div id="quiz-results" class="hidden mt-8 p-6 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-xl border border-green-500/30 text-center">
+                    <i class="fas fa-trophy text-5xl text-yellow-400 mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-2">Parabéns!</h3>
+                    <p class="text-lg mb-4">Você completou o quiz!</p>
+                    <div class="text-4xl font-bold gradient-text mb-4">
+                        <span id="score-correct">0</span>/4
+                    </div>
+                    <p id="score-message" class="text-slate-400"></p>
+                    <button onclick="resetQuiz()" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition">
+                        Tentar Novamente
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resumo -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.9s" data-section="9">
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700 bg-gradient-to-br from-slate-800/50 to-slate-900/50">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-clipboard-check text-white text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">📌 Resumo da Aula</h2>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="flex items-start space-x-3">
+                        <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                        <p class="text-slate-300"><code class="text-green-400">print()</code> → mostrar na tela</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                        <p class="text-slate-300"><code class="text-blue-400">input()</code> → receber dados</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                        <p class="text-slate-300">Variáveis guardam informações</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                        <p class="text-slate-300">Use <code class="text-yellow-400">+</code> para juntar texto</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Next Lesson Preview -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 1s">
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700 bg-gradient-to-br from-purple-500/10 to-pink-500/10">
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <div>
+                        <p class="text-sm text-purple-400 font-semibold mb-2">PRÓXIMA AULA</p>
+                        <h3 class="text-xl font-bold mb-2">Aula 3: Variáveis e Tipos de Dados</h3>
+                        <p class="text-slate-400">Entenda como o computador armazena diferentes tipos de informação</p>
+                    </div>
+                    <button class="bg-slate-700/50 text-slate-400 px-6 py-3 rounded-lg cursor-not-allowed" disabled>
+                        <i class="fas fa-lock mr-2"></i>
+                        Em breve
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-900/50 py-8">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-code text-white text-sm"></i>
+                </div>
+                <span class="font-bold gradient-text">FB Aulas Online</span>
+            </div>
+            <p class="text-slate-500 text-sm">© 2026 FB Aulas Online. Todos os direitos reservados.</p>
+            <div class="mt-4 flex items-center justify-center space-x-4 text-sm text-slate-400">
+                <span><i class="fab fa-whatsapp mr-2"></i>860407269</span>
+                <span>|</span>
+                <span>Islammocambique@gmail.com</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+
+    <script>
+        // Playground Functions
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('run-btn').addEventListener('click', runCode);
+            document.getElementById('reset-btn').addEventListener('click', resetCode);
+        });
+
+        let inputCount = 0;
+        let inputs = {};
+
+        function runCode() {
+            const code = document.getElementById('code-input').value;
+            const output = document.getElementById('code-output');
+            
+            output.innerHTML = '';
+            inputCount = 0;
+            inputs = {};
+            
+            const lines = code.split('\\n');
+            let currentLine = 0;
+            
+            function processNextLine() {
+                if (currentLine >= lines.length) return;
+                
+                const line = lines[currentLine].trim();
+                currentLine++;
+                
+                if (line === '' || line.startsWith('#')) {
+                    if (line.startsWith('#')) {
+                        output.innerHTML += '<span class="text-slate-600">' + line + '</span><br>';
+                    }
+                    processNextLine();
+                    return;
+                }
+                
+                // Process input
+                const inputMatch = line.match(/(\\w+)\\s*=\\s*input\\s*\\(\\s*["\'](.+?)["\']\\s*\\)/);
+                if (inputMatch) {
+                    const varName = inputMatch[1];
+                    const promptText = inputMatch[2];
+                    inputCount++;
+                    
+                    const inputId = 'input-' + inputCount;
+                    output.innerHTML += '<div class="mb-2"><span class="text-slate-400">' + promptText + '</span>' +
+                        '<input type="text" id="' + inputId + '" class="input-simulation ml-2" placeholder="...">' +
+                        '<button onclick="submitInput(\'' + varName + '\', \'' + inputId + '\')" class="ml-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs">OK</button></div>';
+                    return;
+                }
+                
+                // Process print with variables
+                const printMatch = line.match(/print\\s*\\((.+)\\)/);
+                if (printMatch) {
+                    let content = printMatch[1];
+                    
+                    // Replace variables with their values
+                    Object.keys(inputs).forEach(function(key) {
+                        content = content.replace(new RegExp('\\b' + key + '\\b', 'g'), '"' + inputs[key] + '"');
+                    });
+                    
+                    // Evaluate string concatenation
+                    try {
+                        content = content.replace(/"/g, '');
+                        content = content.replace(/\\+\\s*/g, '');
+                        output.innerHTML += '<span class="text-green-400">' + content + '</span><br>';
+                    } catch (e) {
+                        output.innerHTML += '<span class="text-red-400">Erro</span><br>';
+                    }
+                }
+                
+                processNextLine();
+            }
+            
+            processNextLine();
+        }
+        
+        function submitInput(varName, inputId) {
+            const value = document.getElementById(inputId).value;
+            inputs[varName] = value;
+            
+            // Disable input and button
+            document.getElementById(inputId).disabled = true;
+            document.getElementById(inputId).nextElementSibling.remove();
+            
+            // Continue processing
+            const code = document.getElementById('code-input').value;
+            const lines = code.split('\\n');
+            let foundInput = false;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.match(/\\w+\\s*=\\s*input/)) {
+                    if (foundInput && inputs[Object.keys(inputs).pop()] === value) {
+                        // Continue with remaining lines
+                        for (let j = i; j < lines.length; j++) {
+                            const remainingLine = lines[j].trim();
+                            if (remainingLine.startsWith('print')) {
+                                let content = remainingLine.match(/print\\s*\\((.+)\\)/)[1];
+                                Object.keys(inputs).forEach(function(key) {
+                                    content = content.replace(new RegExp('\\b' + key + '\\b', 'g'), '"' + inputs[key] + '"');
+                                });
+                                content = content.replace(/"/g, '').replace(/\\+\\s*/g, '');
+                                document.getElementById('code-output').innerHTML += '<span class="text-green-400">' + content + '</span><br>';
+                            }
+                        }
+                        break;
+                    }
+                    foundInput = true;
+                }
+            }
+        }
+        
+        function resetCode() {
+            document.getElementById('code-input').value = '# Exemplo: Pergunte o nome e mostre na tela\\nnome = input("Qual é o seu nome? ")\\nprint("Olá, " + nome + "!")\\nprint("Bem-vindo ao curso!")';
+            document.getElementById('code-output').innerHTML = '<div class="text-slate-600 mb-4"># Clique em Executar para ver o resultado...</div>';
+            inputCount = 0;
+            inputs = {};
+        }
+        
+        function insertCode(code) {
+            const textarea = document.getElementById('code-input');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+            const before = text.substring(0, start);
+            const after = text.substring(end, text.length);
+            
+            textarea.value = before + code + after;
+            textarea.focus();
+            textarea.selectionStart = textarea.selectionEnd = start + code.length;
+        }
+
+        // Quiz Functions
+        let correctAnswers = 0;
+        let answeredQuestions = 0;
+        const totalQuestions = 4;
+
+        document.querySelectorAll('.quiz-option').forEach(function(option) {
+            option.addEventListener('click', function() {
+                const question = this.closest('.quiz-question');
+                
+                if (question.classList.contains('answered')) return;
+                
+                question.classList.add('answered');
+                answeredQuestions++;
+                
+                const isCorrect = this.dataset.correct === 'true';
+                const feedback = question.querySelector('.feedback');
+                const allOptions = question.querySelectorAll('.quiz-option');
+                
+                allOptions.forEach(function(opt) {
+                    opt.style.pointerEvents = 'none';
+                    if (opt.dataset.correct === 'true') {
+                        opt.classList.add('correct');
+                        opt.querySelector('.option-circle').innerHTML = '<i class="fas fa-check text-xs"></i>';
+                        opt.querySelector('.option-circle').classList.add('border-green-500', 'text-green-500');
+                    }
+                });
+                
+                if (isCorrect) {
+                    correctAnswers++;
+                    this.classList.add('correct');
+                    feedback.innerHTML = '<span class="text-green-400"><i class="fas fa-check-circle mr-2"></i>Correto! Muito bem!</span>';
+                } else {
+                    this.classList.add('wrong');
+                    this.querySelector('.option-circle').innerHTML = '<i class="fas fa-times text-xs"></i>';
+                    this.querySelector('.option-circle').classList.add('border-red-500', 'text-red-500');
+                    feedback.innerHTML = '<span class="text-red-400"><i class="fas fa-times-circle mr-2"></i>Incorreto. A resposta correta está marcada.</span>';
+                }
+                
+                feedback.classList.remove('hidden');
+                
+                if (answeredQuestions === totalQuestions) {
+                    showResults();
+                }
+                
+                updateProgress();
+            });
+        });
+
+        function showResults() {
+            const resultsDiv = document.getElementById('quiz-results');
+            const scoreCorrect = document.getElementById('score-correct');
+            const scoreMessage = document.getElementById('score-message');
+            
+            scoreCorrect.textContent = correctAnswers;
+            resultsDiv.classList.remove('hidden');
+            
+            if (correctAnswers === totalQuestions) {
+                scoreMessage.textContent = 'Excelente! Você domina o conteúdo da aula!';
+                createConfetti();
+            } else if (correctAnswers >= totalQuestions / 2) {
+                scoreMessage.textContent = 'Bom trabalho! Continue estudando para melhorar.';
+            } else {
+                scoreMessage.textContent = 'Revise a aula e tente novamente. Você consegue!';
+            }
+            
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function resetQuiz() {
+            correctAnswers = 0;
+            answeredQuestions = 0;
+            
+            document.querySelectorAll('.quiz-question').forEach(function(q) {
+                q.classList.remove('answered');
+                q.querySelector('.feedback').classList.add('hidden');
+                
+                q.querySelectorAll('.quiz-option').forEach(function(opt) {
+                    opt.classList.remove('correct', 'wrong');
+                    opt.style.pointerEvents = 'auto';
+                    const circle = opt.querySelector('.option-circle');
+                    circle.innerHTML = '';
+                    circle.classList.remove('border-green-500', 'text-green-500', 'border-red-500', 'text-red-500');
+                    circle.classList.add('border-slate-600');
+                });
+            });
+            
+            document.getElementById('quiz-results').classList.add('hidden');
+            updateProgress();
+        }
+
+        function createConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#60a5fa', '#a78bfa', '#f472b6', '#34d399', '#fbbf24'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(confetti);
+                
+                setTimeout(function() { confetti.remove(); }, 4000);
+            }
+        }
+
+        // Progress Tracking
+        let viewedSections = new Set();
+        
+        function updateProgress() {
+            const totalSections = 10;
+            const progress = Math.round((viewedSections.size / totalSections) * 100);
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = progress + '% Concluído';
+        }
+
+        // Intersection Observer
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    viewedSections.add(entry.target.dataset.section);
+                    updateProgress();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('[data-section]').forEach(function(section) {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
