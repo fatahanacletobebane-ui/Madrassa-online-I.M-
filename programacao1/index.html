@@ -792,12 +792,10 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // GitHub Pages base URL for lessons
-        const GITHUB_BASE_URL = 'https://seu-usuario.github.io/fb-aulas-online';
-        // Substitua 'seu-usuario' pelo seu nome de usuário do GitHub
-        // e 'fb-aulas-online' pelo nome do repositório
+        // GitHub Pages base URL - ATUALIZADO COM O SEU REPOSITÓRIO
+        const GITHUB_BASE_URL = 'https://fatahanacletobebane-ui.github.io/fb-aulas-online';
 
-        // Lessons data
+        // Lessons data - cada pasta deve conter um index.html
         const lessons = [
             { id: 1, folder: 'prog_licao1_introducao', title: 'Introdução à Programação', desc: 'Conceitos básicos e ambiente de desenvolvimento' },
             { id: 2, folder: 'prog_licao2_entrada_saida_dados', title: 'Entrada e Saída de Dados', desc: 'Input, output e interação com utilizador' },
@@ -988,9 +986,10 @@
             lockedMessage.classList.remove('show');
             lessonFrame.style.display = 'block';
 
-            // Load content from GitHub Pages
-            // Ajuste o URL conforme a estrutura do seu repositório GitHub
+            // Load content from GitHub Pages - COM /index.html NO FINAL
             const lessonUrl = `${GITHUB_BASE_URL}/${lesson.folder}/index.html`;
+
+            console.log('Carregando lição:', lessonUrl); // Para debug
             lessonFrame.src = lessonUrl;
         }
 
