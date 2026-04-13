@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 1: Introdução à Programação | FB Aulas Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .code-font { font-family: 'Fira Code', monospace; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-slideIn { animation: slideIn 0.6s ease-out forwards; }
+
+        .glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .code-editor {
+            background: #1e1e1e;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .code-header {
+            background: #2d2d2d;
+            border-radius: 12px 12px 0 0;
+            padding: 12px 16px;
+        }
+        .code-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; }
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .progress-fill {
+            transition: width 0.5s ease;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+        }
+
+        .quiz-option {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .quiz-option:hover {
+            transform: translateX(10px);
+            border-color: #3b82f6;
+        }
+        .quiz-option.correct {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: #22c55e;
+        }
+        .quiz-option.wrong {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+        }
+
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            animation: confetti 3s ease-out forwards;
+            z-index: 9999;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body class="bg-slate-900 text-white min-h-screen overflow-x-hidden">
+
+    <!-- Background Effects -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-float" style="animation-delay: 1s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-code text-white text-lg"></i>
+                    </div>
+                    <span class="font-bold text-xl gradient-text">FB Aulas Online</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex items-center space-x-2 text-sm text-slate-400">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Aluno</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Progress Header -->
+    <div class="fixed top-16 w-full z-40 bg-slate-800/50 backdrop-blur-sm border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-xs font-semibold">Aula 1</span>
+                    <h1 class="text-lg font-semibold">Introdução à Programação</h1>
+                </div>
+                <span class="text-sm text-slate-400" id="progress-text">0% Concluído</span>
+            </div>
+            <div class="w-full bg-slate-700 rounded-full h-2">
+                <div class="progress-fill h-2 rounded-full" id="progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-36 pb-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+
+        <!-- Hero Section -->
+        <section class="text-center mb-16 animate-slideIn">
+            <div class="inline-flex items-center space-x-2 bg-blue-500/10 border border-blue-500/30 rounded-full px-4 py-2 mb-6">
+                <i class="fas fa-graduation-cap text-blue-400"></i>
+                <span class="text-blue-400 text-sm font-medium">Primeira Aula</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                Bem-vindo ao Mundo da <br>
+                <span class="gradient-text">Programação</span> 🚀
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto">
+                Hoje vamos descobrir como dar instruções aos computadores e criar coisas incríveis!
+            </p>
+        </section>
+
+        <!-- Professor Card -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.1s">
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700">
+                <div class="flex items-start space-x-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-chalkboard-teacher text-2xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <h3 class="text-lg font-semibold text-green-400">Professor</h3>
+                            <span class="text-slate-500">•</span>
+                            <span class="text-slate-400 text-sm">Agora</span>
+                        </div>
+                        <p class="text-lg leading-relaxed">
+                            Saudações turma! 😊<br>
+                            Sejam todos bem-vindos à nossa primeira aula de programação!<br><br>
+                            Hoje vamos entender algo muito importante:<br>
+                            <span class="text-blue-400 font-semibold">👉 O que é programação e como ela funciona</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 1: O que é Programação? -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.2s" data-section="1">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                    <span class="text-2xl">🧠</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">1. O que é Programação?</h2>
+            </div>
+
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700 mb-6">
+                <p class="text-lg text-slate-300 mb-6">
+                    Programar é simplesmente: <span class="text-white font-semibold">Dar instruções ao computador para ele fazer algo</span>
+                </p>
+
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                    <h4 class="text-blue-400 font-semibold mb-4 flex items-center">
+                        <i class="fas fa-lightbulb mr-2"></i> Exemplo simples:
+                    </h4>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-slate-900 rounded-lg p-4 text-center hover:bg-slate-800 transition">
+                            <i class="fab fa-whatsapp text-4xl text-green-500 mb-3"></i>
+                            <p class="text-sm text-slate-400">Quando você abre o WhatsApp</p>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-4 text-center hover:bg-slate-800 transition">
+                            <i class="fas fa-credit-card text-4xl text-blue-500 mb-3"></i>
+                            <p class="text-sm text-slate-400">Quando faz um pagamento</p>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-4 text-center hover:bg-slate-800 transition">
+                            <i class="fas fa-play-circle text-4xl text-red-500 mb-3"></i>
+                            <p class="text-sm text-slate-400">Quando vê um vídeo</p>
+                        </div>
+                    </div>
+                    <p class="text-center mt-4 text-slate-300">
+                        👉 Tudo isso existe porque alguém <span class="text-blue-400 font-semibold">programou</span>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: O que é um Programa? -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.3s" data-section="2">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                    <span class="text-2xl">🤖</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">2. O que é um Programa?</h2>
+            </div>
+
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700">
+                <p class="text-lg text-slate-300 mb-6">
+                    Um programa é um <span class="text-purple-400 font-semibold">conjunto de instruções</span>.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-orange-500/10 to-red-500/10 rounded-xl p-6 border border-orange-500/30">
+                        <h4 class="text-orange-400 font-semibold mb-4 flex items-center">
+                            <i class="fas fa-walking mr-2"></i> Exemplo na vida real:
+                        </h4>
+                        <ol class="space-y-3 text-slate-300">
+                            <li class="flex items-center space-x-3">
+                                <span class="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center text-orange-400 font-bold">1</span>
+                                <span>Acordar</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <span class="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center text-orange-400 font-bold">2</span>
+                                <span>Escovar os dentes</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <span class="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center text-orange-400 font-bold">3</span>
+                                <span>Comer</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <span class="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center text-orange-400 font-bold">4</span>
+                                <span>Ir trabalhar</span>
+                            </li>
+                        </ol>
+                        <p class="mt-4 text-orange-400 font-medium">👉 Isso é um "programa humano" 😄</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-xl p-6 border border-blue-500/30">
+                        <h4 class="text-blue-400 font-semibold mb-4 flex items-center">
+                            <i class="fas fa-laptop-code mr-2"></i> No computador:
+                        </h4>
+                        <p class="text-slate-300 mb-4">É igual, mas usando código!</p>
+                        <div class="code-editor">
+                            <div class="code-header flex items-center">
+                                <div class="code-dot dot-red"></div>
+                                <div class="code-dot dot-yellow"></div>
+                                <div class="code-dot dot-green"></div>
+                                <span class="ml-3 text-xs text-slate-400">programa.py</span>
+                            </div>
+                            <div class="p-4 code-font text-sm">
+                                <span class="text-purple-400">print</span>(<span class="text-green-400">"Bom dia!"</span>)<br>
+                                <span class="text-purple-400">print</span>(<span class="text-green-400">"Vamos programar"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Code Playground - CORRIGIDO -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.4s" data-section="3">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                    <span class="text-2xl">💻</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">3. Experimente o Código!</h2>
+            </div>
+
+            <div class="glass rounded-2xl border border-slate-700 overflow-hidden">
+                <div class="bg-slate-800 px-6 py-4 border-b border-slate-700 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-play-circle text-green-400"></i>
+                        <span class="font-semibold">Playground Interativo</span>
+                    </div>
+                    <span class="text-xs text-slate-400 bg-slate-900 px-3 py-1 rounded-full">Python</span>
+                </div>
+
+                <div class="grid md:grid-cols-2">
+                    <!-- Editor -->
+                    <div class="p-6 border-b md:border-b-0 md:border-r border-slate-700">
+                        <label class="text-sm text-slate-400 mb-2 block">Escreva seu código aqui:</label>
+                        <textarea id="code-input" class="w-full h-48 bg-slate-900 rounded-lg p-4 code-font text-sm text-slate-300 border border-slate-700 focus:border-blue-500 focus:outline-none resize-none" spellcheck="false"># Escreva seu código Python aqui
+print("Assalamu alaikum!")
+print("Estou aprendendo a programar")
+print(5 + 3)</textarea>
+
+                        <div class="flex space-x-3 mt-4">
+                            <button id="run-btn" class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition transform hover:scale-105 flex items-center justify-center space-x-2">
+                                <i class="fas fa-play"></i>
+                                <span>Executar Código</span>
+                            </button>
+                            <button id="reset-btn" class="px-4 py-3 bg-slate-700 hover:bg-slate-600 rounded-lg transition">
+                                <i class="fas fa-undo text-slate-300"></i>
+                            </button>
+                        </div>
+
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <button onclick="insertCode('print("Olá Mundo!")')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-full transition">print()</button>
+                            <button onclick="insertCode('# Isto é um comentário')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-full transition"># Comentário</button>
+                            <button onclick="insertCode('print(10 + 5)')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-full transition">Matemática</button>
+                        </div>
+                    </div>
+
+                    <!-- Output -->
+                    <div class="p-6 bg-slate-950">
+                        <label class="text-sm text-slate-400 mb-2 block flex items-center justify-between">
+                            <span>Resultado:</span>
+                            <button id="clear-btn" class="text-xs text-slate-500 hover:text-slate-300">Limpar</button>
+                        </label>
+                        <div id="code-output" class="w-full h-48 bg-black rounded-lg p-4 code-font text-sm text-green-400 overflow-y-auto border border-slate-800">
+                            <span class="text-slate-600"># Clique em "Executar Código" para ver o resultado...</span>
+                        </div>
+
+                        <div class="mt-4 p-4 bg-blue-500/10 rounded-lg border border-blue-500/30">
+                            <p class="text-sm text-blue-400">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                O <code class="bg-blue-500/20 px-2 py-1 rounded">print()</code> mostra texto na tela!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Onde é usada? -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.5s" data-section="4">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+                    <span class="text-2xl">🌍</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">4. Onde a Programação é Usada?</h2>
+            </div>
+
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700">
+                <p class="text-lg text-slate-300 mb-6">
+                    Programação está em <span class="text-yellow-400 font-semibold">tudo</span> ao nosso redor:
+                </p>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800/50 rounded-xl p-6 text-center hover:bg-slate-800 transition group cursor-pointer">
+                        <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                            <i class="fas fa-mobile-alt text-3xl text-green-400"></i>
+                        </div>
+                        <h4 class="font-semibold mb-1">Apps</h4>
+                        <p class="text-xs text-slate-400">WhatsApp, Facebook</p>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-xl p-6 text-center hover:bg-slate-800 transition group cursor-pointer">
+                        <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                            <i class="fas fa-globe text-3xl text-blue-400"></i>
+                        </div>
+                        <h4 class="font-semibold mb-1">Sites</h4>
+                        <p class="text-xs text-slate-400">Google, YouTube</p>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-xl p-6 text-center hover:bg-slate-800 transition group cursor-pointer">
+                        <div class="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                            <i class="fas fa-university text-3xl text-purple-400"></i>
+                        </div>
+                        <h4 class="font-semibold mb-1">Bancos</h4>
+                        <p class="text-xs text-slate-400">Transferências</p>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-xl p-6 text-center hover:bg-slate-800 transition group cursor-pointer">
+                        <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                            <i class="fas fa-gamepad text-3xl text-red-400"></i>
+                        </div>
+                        <h4 class="font-semibold mb-1">Jogos</h4>
+                        <p class="text-xs text-slate-400">PlayStation, PC</p>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-xl p-6 text-center hover:bg-slate-800 transition group cursor-pointer">
+                        <div class="w-16 h-16 bg-cyan-500/20 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                            <i class="fas fa-plane text-3xl text-cyan-400"></i>
+                        </div>
+                        <h4 class="font-semibold mb-1">Viagens</h4>
+                        <p class="text-xs text-slate-400">Aviões, GPS</p>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-xl p-6 text-center hover:bg-slate-800 transition group cursor-pointer">
+                        <div class="w-16 h-16 bg-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                            <i class="fas fa-heartbeat text-3xl text-pink-400"></i>
+                        </div>
+                        <h4 class="font-semibold mb-1">Saúde</h4>
+                        <p class="text-xs text-slate-400">Hospitais</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-xl border border-yellow-500/30 text-center">
+                    <p class="text-lg font-semibold text-yellow-400">
+                        👉 Ou seja: é uma habilidade muito poderosa!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Tipos de Linguagens -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.6s" data-section="5">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center">
+                    <span class="text-2xl">🔥</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">5. Tipos de Linguagens</h2>
+            </div>
+
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700">
+                <p class="text-lg text-slate-300 mb-6">Algumas linguagens populares:</p>
+
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4 bg-slate-800/50 rounded-xl p-4 hover:bg-slate-800 transition cursor-pointer group">
+                        <div class="w-14 h-14 bg-yellow-500/20 rounded-xl flex items-center justify-center text-3xl group-hover:scale-110 transition">🐍</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-lg text-yellow-400">Python</h4>
+                            <p class="text-slate-400 text-sm">Fácil para iniciantes • Usada em IA e dados</p>
+                        </div>
+                        <div class="hidden md:block">
+                            <code class="bg-slate-900 px-3 py-1 rounded text-xs code-font text-yellow-400">print("Hello")</code>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4 bg-slate-800/50 rounded-xl p-4 hover:bg-slate-800 transition cursor-pointer group">
+                        <div class="w-14 h-14 bg-yellow-400/20 rounded-xl flex items-center justify-center text-3xl group-hover:scale-110 transition">🌐</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-lg text-yellow-400">JavaScript</h4>
+                            <p class="text-slate-400 text-sm">Web • Sites interativos</p>
+                        </div>
+                        <div class="hidden md:block">
+                            <code class="bg-slate-900 px-3 py-1 rounded text-xs code-font text-yellow-400">alert("Hello")</code>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4 bg-slate-800/50 rounded-xl p-4 hover:bg-slate-800 transition cursor-pointer group">
+                        <div class="w-14 h-14 bg-orange-500/20 rounded-xl flex items-center justify-center text-3xl group-hover:scale-110 transition">☕</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-lg text-orange-400">Java</h4>
+                            <p class="text-slate-400 text-sm">Apps Android • Sistemas grandes</p>
+                        </div>
+                        <div class="hidden md:block">
+                            <code class="bg-slate-900 px-3 py-1 rounded text-xs code-font text-orange-400">System.out.print()</code>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4 bg-slate-800/50 rounded-xl p-4 hover:bg-slate-800 transition cursor-pointer group">
+                        <div class="w-14 h-14 bg-blue-500/20 rounded-xl flex items-center justify-center text-3xl group-hover:scale-110 transition">⚙️</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-lg text-blue-400">C++</h4>
+                            <p class="text-slate-400 text-sm">Mais avançado • Jogos e sistemas</p>
+                        </div>
+                        <div class="hidden md:block">
+                            <code class="bg-slate-900 px-3 py-1 rounded text-xs code-font text-blue-400">cout << "Hello";</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Lógica -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.7s" data-section="6">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center">
+                    <span class="text-2xl">🧩</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">6. Lógica (O Mais Importante!)</h2>
+            </div>
+
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700">
+                <p class="text-lg text-slate-300 mb-6">
+                    Antes de programar, você precisa aprender a <span class="text-pink-400 font-semibold">pensar logicamente</span>.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-800/50 rounded-xl p-6">
+                        <h4 class="text-pink-400 font-semibold mb-4">Exemplo do dia a dia:</h4>
+                        <div class="space-y-3 text-slate-300">
+                            <p>👉 "Se chover, fico em casa.</p>
+                            <p>Se não chover, saio."</p>
+                        </div>
+                        <div class="mt-4 flex items-center space-x-2">
+                            <i class="fas fa-cloud-rain text-blue-400"></i>
+                            <span class="text-sm text-slate-400">Tomada de decisão</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-xl p-6 border border-pink-500/30">
+                        <h4 class="text-pink-400 font-semibold mb-4">Em programação:</h4>
+                        <div class="code-font text-sm">
+                            <span class="text-purple-400">if</span> <span class="text-blue-400">chuva</span>:<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-yellow-400">ficar_em_casa</span>()<br>
+                            <span class="text-purple-400">else</span>:<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-yellow-400">sair</span>()
+                        </div>
+                        <p class="mt-4 text-sm text-slate-400">
+                            <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>
+                            Isso é um "condicional"
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary Card -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.8s" data-section="7">
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700 bg-gradient-to-br from-slate-800/50 to-slate-900/50">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-clipboard-check text-white text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">📌 Resumo da Aula</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="flex items-start space-x-3">
+                        <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                        <p class="text-slate-300">Programação = dar ordens ao computador</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                        <p class="text-slate-300">Código = linguagem usada</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                        <p class="text-slate-300">Tudo funciona com lógica</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                        <p class="text-slate-300">Está presente em quase tudo hoje</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 0.9s" id="quiz-section" data-section="8">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-question-circle text-green-400 text-2xl"></i>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">📝 Quiz de Avaliação</h2>
+            </div>
+
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700">
+                <p class="text-slate-400 mb-6">Teste seus conhecimentos com estas perguntas de múltipla escolha:</p>
+
+                <div id="quiz-container" class="space-y-6">
+                    <!-- Question 1 -->
+                    <div class="quiz-question" data-question="1">
+                        <h4 class="font-semibold text-lg mb-4">1. O que é programação?</h4>
+                        <div class="space-y-3">
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="true">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>Dar instruções ao computador para ele fazer algo</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>Consertar computadores quebrados</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>Desenhar telas de computador</span>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="feedback mt-3 hidden"></div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="quiz-question" data-question="2">
+                        <h4 class="font-semibold text-lg mb-4">2. O que faz o comando print()?</h4>
+                        <div class="space-y-3">
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>Imprimir no papel</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="true">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>Mostrar mensagem na tela</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>Salvar arquivo</span>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="feedback mt-3 hidden"></div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="quiz-question" data-question="3">
+                        <h4 class="font-semibold text-lg mb-4">3. Qual linguagem é mais fácil para iniciantes?</h4>
+                        <div class="space-y-3">
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="true">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>Python 🐍</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>C++ ⚙️</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>Assembly</span>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="feedback mt-3 hidden"></div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="quiz-question" data-question="4">
+                        <h4 class="font-semibold text-lg mb-4">4. Onde podemos escrever código Python?</h4>
+                        <div class="space-y-3">
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>Apenas no computador</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="false">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>Apenas no celular</span>
+                                </span>
+                            </button>
+                            <button class="quiz-option w-full text-left p-4 rounded-xl bg-slate-800/50 hover:bg-slate-800" data-correct="true">
+                                <span class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full border-2 border-slate-600 mr-3 flex items-center justify-center option-circle"></span>
+                                    <span>No celular, computador ou online</span>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="feedback mt-3 hidden"></div>
+                    </div>
+                </div>
+
+                <div id="quiz-results" class="hidden mt-8 p-6 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-xl border border-green-500/30 text-center">
+                    <i class="fas fa-trophy text-5xl text-yellow-400 mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-2">Parabéns!</h3>
+                    <p class="text-lg mb-4">Você completou o quiz!</p>
+                    <div class="text-4xl font-bold gradient-text mb-4">
+                        <span id="score-correct">0</span>/4
+                    </div>
+                    <p id="score-message" class="text-slate-400"></p>
+                    <button onclick="resetQuiz()" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition">
+                        Tentar Novamente
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Next Lesson Preview -->
+        <section class="mb-12 animate-slideIn" style="animation-delay: 1s">
+            <div class="glass rounded-2xl p-6 md:p-8 border border-slate-700 bg-gradient-to-br from-blue-500/10 to-purple-500/10">
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <div>
+                        <p class="text-sm text-blue-400 font-semibold mb-2">PRÓXIMA AULA</p>
+                        <h3 class="text-xl font-bold mb-2">Aula 2: Variáveis e Dados</h3>
+                        <p class="text-slate-400">Aprenda a armazenar informações no computador</p>
+                    </div>
+                    <button class="bg-slate-700/50 text-slate-400 px-6 py-3 rounded-lg cursor-not-allowed" disabled>
+                        <i class="fas fa-lock mr-2"></i>
+                        Bloqueado
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-900/50 py-8">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-code text-white text-sm"></i>
+                </div>
+                <span class="font-bold gradient-text">FB Aulas Online</span>
+            </div>
+            <p class="text-slate-500 text-sm">© 2026 FB Aulas Online. Todos os direitos reservados.</p>
+            <div class="mt-4 flex items-center justify-center space-x-4 text-sm text-slate-400">
+                <span><i class="fab fa-whatsapp mr-2"></i>860407269</span>
+                <span>|</span>
+                <span>Islammocambique@gmail.com</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+
+    <script>
+        // CORREÇÃO: Event listeners para os botões do playground
+        document.addEventListener('DOMContentLoaded', function() {
+            // Botão Executar
+            document.getElementById('run-btn').addEventListener('click', runCode);
+
+            // Botão Reset
+            document.getElementById('reset-btn').addEventListener('click', resetCode);
+
+            // Botão Limpar
+            document.getElementById('clear-btn').addEventListener('click', clearOutput);
+        });
+
+        // Função para executar código - CORRIGIDA
+        function runCode() {
+            const code = document.getElementById('code-input').value;
+            const output = document.getElementById('code-output');
+
+            output.innerHTML = '';
+            let hasOutput = false;
+
+            const lines = code.split('\n');
+
+            lines.forEach(function(line) {
+                line = line.trim();
+
+                // Pular linhas vazias
+                if (line === '') return;
+
+                // Comentários
+                if (line.startsWith('#')) {
+                    output.innerHTML += '<span class="text-slate-600">' + line + '</span><br>';
+                    return;
+                }
+
+                // print com texto entre aspas
+                const printTextMatch = line.match(/print\s*\(\s*["'](.+?)["']\s*\)/);
+                if (printTextMatch) {
+                    output.innerHTML += '<span class="text-green-400">' + printTextMatch[1] + '</span><br>';
+                    hasOutput = true;
+                    return;
+                }
+
+                // print com números ou operações matemáticas simples
+                const printMathMatch = line.match(/print\s*\(\s*(\d+\s*[+\-*/]\s*\d+)\s*\)/);
+                if (printMathMatch) {
+                    try {
+                        // Avaliação segura apenas de números e operadores
+                        const expr = printMathMatch[1].replace(/[^0-9+\-*/\s]/g, '');
+                        const result = Function('"use strict"; return (' + expr + ')')();
+                        output.innerHTML += '<span class="text-green-400">' + result + '</span><br>';
+                        hasOutput = true;
+                    } catch (e) {
+                        output.innerHTML += '<span class="text-red-400">Erro na operação</span><br>';
+                    }
+                    return;
+                }
+
+                // print com número simples
+                const printNumMatch = line.match(/print\s*\(\s*(\d+)\s*\)/);
+                if (printNumMatch) {
+                    output.innerHTML += '<span class="text-green-400">' + printNumMatch[1] + '</span><br>';
+                    hasOutput = true;
+                    return;
+                }
+            });
+
+            if (!hasOutput && output.innerHTML === '') {
+                output.innerHTML = '<span class="text-yellow-400"># Use print() para ver resultados</span>';
+            }
+        }
+
+        function resetCode() {
+            document.getElementById('code-input').value = '# Escreva seu código Python aqui\nprint("Assalamu alaikum!")\nprint("Estou aprendendo a programar")\nprint(5 + 3)';
+            document.getElementById('code-output').innerHTML = '<span class="text-slate-600"># Clique em "Executar Código" para ver o resultado...</span>';
+        }
+
+        function clearOutput() {
+            document.getElementById('code-output').innerHTML = '';
+        }
+
+        function insertCode(code) {
+            const textarea = document.getElementById('code-input');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+            const before = text.substring(0, start);
+            const after = text.substring(end, text.length);
+
+            textarea.value = before + code + after;
+            textarea.focus();
+            textarea.selectionStart = textarea.selectionEnd = start + code.length;
+        }
+
+        // Quiz Functions
+        let correctAnswers = 0;
+        let answeredQuestions = 0;
+        const totalQuestions = 4;
+
+        document.querySelectorAll('.quiz-option').forEach(function(option) {
+            option.addEventListener('click', function() {
+                const question = this.closest('.quiz-question');
+
+                if (question.classList.contains('answered')) return;
+
+                question.classList.add('answered');
+                answeredQuestions++;
+
+                const isCorrect = this.dataset.correct === 'true';
+                const feedback = question.querySelector('.feedback');
+                const allOptions = question.querySelectorAll('.quiz-option');
+
+                allOptions.forEach(function(opt) {
+                    opt.style.pointerEvents = 'none';
+                    if (opt.dataset.correct === 'true') {
+                        opt.classList.add('correct');
+                        opt.querySelector('.option-circle').innerHTML = '<i class="fas fa-check text-xs"></i>';
+                        opt.querySelector('.option-circle').classList.add('border-green-500', 'text-green-500');
+                    }
+                });
+
+                if (isCorrect) {
+                    correctAnswers++;
+                    this.classList.add('correct');
+                    feedback.innerHTML = '<span class="text-green-400"><i class="fas fa-check-circle mr-2"></i>Correto! Muito bem!</span>';
+                } else {
+                    this.classList.add('wrong');
+                    this.querySelector('.option-circle').innerHTML = '<i class="fas fa-times text-xs"></i>';
+                    this.querySelector('.option-circle').classList.add('border-red-500', 'text-red-500');
+                    feedback.innerHTML = '<span class="text-red-400"><i class="fas fa-times-circle mr-2"></i>Incorreto. A resposta correta está marcada.</span>';
+                }
+
+                feedback.classList.remove('hidden');
+
+                if (answeredQuestions === totalQuestions) {
+                    showResults();
+                }
+
+                updateProgress();
+            });
+        });
+
+        function showResults() {
+            const resultsDiv = document.getElementById('quiz-results');
+            const scoreCorrect = document.getElementById('score-correct');
+            const scoreMessage = document.getElementById('score-message');
+
+            scoreCorrect.textContent = correctAnswers;
+            resultsDiv.classList.remove('hidden');
+
+            if (correctAnswers === totalQuestions) {
+                scoreMessage.textContent = 'Excelente! Você domina o conteúdo da aula!';
+                createConfetti();
+            } else if (correctAnswers >= totalQuestions / 2) {
+                scoreMessage.textContent = 'Bom trabalho! Continue estudando para melhorar.';
+            } else {
+                scoreMessage.textContent = 'Revise a aula e tente novamente. Você consegue!';
+            }
+
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function resetQuiz() {
+            correctAnswers = 0;
+            answeredQuestions = 0;
+
+            document.querySelectorAll('.quiz-question').forEach(function(q) {
+                q.classList.remove('answered');
+                q.querySelector('.feedback').classList.add('hidden');
+
+                q.querySelectorAll('.quiz-option').forEach(function(opt) {
+                    opt.classList.remove('correct', 'wrong');
+                    opt.style.pointerEvents = 'auto';
+                    const circle = opt.querySelector('.option-circle');
+                    circle.innerHTML = '';
+                    circle.classList.remove('border-green-500', 'text-green-500', 'border-red-500', 'text-red-500');
+                    circle.classList.add('border-slate-600');
+                });
+            });
+
+            document.getElementById('quiz-results').classList.add('hidden');
+            updateProgress();
+        }
+
+        function createConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#60a5fa', '#a78bfa', '#f472b6', '#34d399', '#fbbf24'];
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(confetti);
+
+                setTimeout(function() { confetti.remove(); }, 4000);
+            }
+        }
+
+        // Progress Tracking
+        let viewedSections = new Set();
+
+        function updateProgress() {
+            const totalSections = 8;
+            const progress = Math.round((viewedSections.size / totalSections) * 100);
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = progress + '% Concluído';
+        }
+
+        // Intersection Observer
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    viewedSections.add(entry.target.dataset.section);
+                    updateProgress();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('[data-section]').forEach(function(section) {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
