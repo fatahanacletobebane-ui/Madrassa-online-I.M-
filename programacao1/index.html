@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FB Aulas Online - Cursos de Programação</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #22d3ee;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --gray: #64748b;
+            --light: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark) 0%, var(--dark-light) 100%);
+            min-height: 100vh;
+            color: var(--light);
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo p {
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--light);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            color: var(--light);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(30, 41, 59, 0.95);
+            border-right: 1px solid rgba(99, 102, 241, 0.2);
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .user-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .user-details p {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .balance-card {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .balance-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .balance-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--success);
+            margin-top: 4px;
+        }
+
+        .payment-status {
+            margin-top: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .payment-status.paid {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .payment-status.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .payment-status.locked {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .lessons-nav {
+            padding: 20px;
+        }
+
+        .nav-title {
+            font-size: 12px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            padding-left: 12px;
+        }
+
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .lesson-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .lesson-item.active {
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid var(--primary);
+        }
+
+        .lesson-item.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .lesson-number {
+            width: 32px;
+            height: 32px;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .lesson-item.completed .lesson-number {
+            background: var(--success);
+            color: white;
+        }
+
+        .lesson-item.locked .lesson-number {
+            background: rgba(100, 116, 139, 0.3);
+        }
+
+        .lesson-info {
+            flex: 1;
+        }
+
+        .lesson-info h4 {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .lesson-info p {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+
+        .lesson-status {
+            font-size: 16px;
+        }
+
+        .logout-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .content-header {
+            margin-bottom: 30px;
+        }
+
+        .content-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .content-header p {
+            color: var(--gray);
+            font-size: 16px;
+        }
+
+        /* Lesson Content Container */
+        .lesson-container {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 20px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        .lesson-iframe {
+            width: 100%;
+            height: 700px;
+            border: none;
+            background: white;
+        }
+
+        /* Payment Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--dark-light);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid var(--warning);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 40px;
+        }
+
+        .modal h3 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .modal p {
+            text-align: center;
+            color: var(--gray);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .price-tag {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+
+        .price-note {
+            text-align: center;
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .installments {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .installment-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .installment-item:last-child {
+            border-bottom: none;
+        }
+
+        .installment-item span:first-child {
+            color: var(--gray);
+        }
+
+        .installment-item span:last-child {
+            font-weight: 600;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Locked Content Message */
+        .locked-message {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .locked-message.show {
+            display: flex;
+        }
+
+        .locked-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid var(--danger);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            margin-bottom: 24px;
+        }
+
+        .locked-message h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .locked-message p {
+            color: var(--gray);
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 101;
+                width: 48px;
+                height: 48px;
+                background: var(--dark-light);
+                border: 1px solid rgba(99, 102, 241, 0.3);
+                border-radius: 12px;
+                color: var(--light);
+                font-size: 24px;
+                cursor: pointer;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+
+        /* Success/Error Toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 2000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="logo">
+                <div class="logo-icon">FB</div>
+                <h1>FB Aulas Online</h1>
+                <p>Aprenda programação de forma profissional</p>
+            </div>
+
+            <div class="error-message" id="loginError"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="phone">Número de Telefone</label>
+                    <input type="tel" id="phone" placeholder="Ex: 860407269" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pin">PIN (4 dígitos)</label>
+                    <input type="password" id="pin" placeholder="****" maxlength="4" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <span>Entrar</span>
+                </button>
+            </form>
+
+            <p style="text-align: center; margin-top: 24px; font-size: 14px; color: var(--gray);">
+                Não tem conta? <a href="#" style="color: var(--primary); text-decoration: none;">Contacte o suporte</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <button class="menu-toggle" id="menuToggle">☰</button>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-details">
+                        <h3 id="userName">Utilizador</h3>
+                        <p id="userPhone">+258 ...</p>
+                    </div>
+                </div>
+
+                <div class="balance-card">
+                    <div class="balance-label">Saldo Disponível</div>
+                    <div class="balance-value" id="userBalance">0 MTN</div>
+                    <div class="payment-status pending" id="paymentStatus">
+                        <span>⏳</span> Aguardando pagamento
+                    </div>
+                </div>
+            </div>
+
+            <nav class="lessons-nav">
+                <div class="nav-title">Lições do Curso</div>
+                <div id="lessonsList">
+                    <!-- Lessons will be generated by JS -->
+                </div>
+            </nav>
+
+            <button class="logout-btn" id="logoutBtn">🚪 Sair</button>
+        </aside>
+
+        <main class="main-content">
+            <div class="content-header">
+                <h2 id="currentLessonTitle">Bem-vindo ao FB Aulas Online</h2>
+                <p id="currentLessonDesc">Selecione uma lição para começar a aprender</p>
+            </div>
+
+            <div class="lesson-container">
+                <div class="locked-message" id="lockedMessage">
+                    <div class="locked-icon">🔒</div>
+                    <h3>Conteúdo Bloqueado</h3>
+                    <p>Para aceder às lições, é necessário efetuar o pagamento de 500 MTN. O valor será debitado do seu saldo disponível.</p>
+                    <button class="btn btn-success" style="margin-top: 24px; max-width: 300px;" onclick="showPaymentModal()">
+                        💳 Efectuar Pagamento
+                    </button>
+                </div>
+                <iframe class="lesson-iframe" id="lessonFrame" style="display: none;"></iframe>
+            </div>
+        </main>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal">
+            <div class="modal-icon">💳</div>
+            <h3>Ativar Acesso ao Curso</h3>
+            <p>Para desbloquear todas as lições e funcionalidades, efectue o pagamento do curso.</p>
+
+            <div class="price-tag">500 MTN</div>
+            <div class="price-note">Pagamento único - Acesso vitalício</div>
+
+            <div class="installments">
+                <div class="installment-item">
+                    <span>💰 Opção 1:</span>
+                    <span>Pagamento único (500 MTN)</span>
+                </div>
+                <div class="installment-item">
+                    <span>📅 Opção 2:</span>
+                    <span>3 prestações (200+150+150)</span>
+                </div>
+            </div>
+
+            <p style="font-size: 13px; color: var(--gray); margin-bottom: 20px;">
+                Será debitado 500 MTN do seu saldo actual. Saldo disponível: <strong id="modalBalance">0 MTN</strong>
+            </p>
+
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="hidePaymentModal()">Cancelar</button>
+                <button class="btn btn-success" id="confirmPaymentBtn" onclick="processPayment()">
+                    Confirmar Pagamento
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
+            authDomain: "madrassa-online-b851c.firebaseapp.com",
+            databaseURL: "https://madrassa-online-b851c-default-rtdb.firebaseio.com",
+            projectId: "madrassa-online-b851c",
+            storageBucket: "madrassa-online-b851c.firebasestorage.app",
+            messagingSenderId: "360782668012",
+            appId: "1:360782668012:web:d501ef187911db632445c9",
+            measurementId: "G-RV9GD4S22T"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // GitHub Pages base URL for lessons
+        const GITHUB_BASE_URL = 'https://seu-usuario.github.io/fb-aulas-online';
+        // Substitua 'seu-usuario' pelo seu nome de usuário do GitHub
+        // e 'fb-aulas-online' pelo nome do repositório
+
+        // Lessons data
+        const lessons = [
+            { id: 1, folder: 'prog_licao1_introducao', title: 'Introdução à Programação', desc: 'Conceitos básicos e ambiente de desenvolvimento' },
+            { id: 2, folder: 'prog_licao2_entrada_saida_dados', title: 'Entrada e Saída de Dados', desc: 'Input, output e interação com utilizador' },
+            { id: 3, folder: 'prog_licao3_variaveis_tipo_dados', title: 'Variáveis e Tipos de Dados', desc: 'Declaração, atribuição e tipos primitivos' },
+            { id: 4, folder: 'prog_licao4_logica_real', title: 'Lógica Real', desc: 'Operadores lógicos e aritméticos' },
+            { id: 5, folder: 'prog_licao5_condicoes_if_else', title: 'Condições (If/Else)', desc: 'Estruturas condicionais e tomada de decisão' },
+            { id: 6, folder: 'prog_licao6_repeticoes_loops', title: 'Repetições (Loops)', desc: 'For, while e estruturas de iteração' },
+            { id: 7, folder: 'prog_licao7_funcoes', title: 'Funções', desc: 'Definição, chamada e parâmetros' },
+            { id: 8, folder: 'prog_licao8_listas_arrays', title: 'Listas e Arrays', desc: 'Coleções de dados e manipulação' },
+            { id: 9, folder: 'prog_licao9_projeto_simples', title: 'Projeto Simples', desc: 'Aplicação prática dos conhecimentos' },
+            { id: 10, folder: 'prog_licao10_implentacao_toda_materia', title: 'Implementação Completa', desc: 'Revisão e projeto final integrado' }
+        ];
+
+        // Global variables
+        let currentUser = null;
+        let userData = null;
+        let currentLesson = 0;
+        let hasPaid = false;
+
+        // DOM Elements
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+        const lessonsList = document.getElementById('lessonsList');
+        const lessonFrame = document.getElementById('lessonFrame');
+        const lockedMessage = document.getElementById('lockedMessage');
+        const paymentModal = document.getElementById('paymentModal');
+        const toast = document.getElementById('toast');
+
+        // Login handler
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const phone = document.getElementById('phone').value.trim();
+            const pin = document.getElementById('pin').value.trim();
+
+            // Show loading
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<div class="spinner"></div>';
+            loginError.classList.remove('show');
+
+            try {
+                // Check if user exists
+                const userRef = database.ref('users/' + phone);
+                const snapshot = await userRef.once('value');
+
+                if (!snapshot.exists()) {
+                    throw new Error('Número não registado. Contacte o suporte.');
+                }
+
+                userData = snapshot.val();
+
+                // Verify PIN
+                if (userData.pin !== pin) {
+                    throw new Error('PIN incorrecto. Tente novamente.');
+                }
+
+                // Check if approved
+                if (!userData.approved) {
+                    throw new Error('Conta pendente de aprovação pelo administrador.');
+                }
+
+                currentUser = phone;
+
+                // Check payment status
+                await checkPaymentStatus();
+
+                // Show dashboard
+                showDashboard();
+
+            } catch (error) {
+                loginError.textContent = error.message;
+                loginError.classList.add('show');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<span>Entrar</span>';
+            }
+        });
+
+        // Check payment status
+        async function checkPaymentStatus() {
+            try {
+                const paymentRef = database.ref('payments/' + currentUser);
+                const snapshot = await paymentRef.once('value');
+
+                if (snapshot.exists()) {
+                    const payment = snapshot.val();
+                    hasPaid = payment.status === 'completed' && payment.amount >= 500;
+                } else {
+                    hasPaid = false;
+                }
+
+                // Also check if balance was deducted for course
+                const transactionsRef = database.ref('transactions');
+                const transSnapshot = await transactionsRef.orderByChild('from').equalTo(currentUser).once('value');
+
+                transSnapshot.forEach(child => {
+                    const trans = child.val();
+                    if (trans.type === 'course_payment' && trans.status === 'completed') {
+                        hasPaid = true;
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error checking payment:', error);
+                hasPaid = false;
+            }
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            loginScreen.style.display = 'none';
+            dashboard.style.display = 'block';
+
+            // Update user info
+            document.getElementById('userName').textContent = userData.name || 'Utilizador';
+            document.getElementById('userPhone').textContent = '+258 ' + currentUser;
+            document.getElementById('userAvatar').textContent = (userData.name || 'U').charAt(0).toUpperCase();
+            document.getElementById('userBalance').textContent = (userData.balance || 0) + ' MTN';
+            document.getElementById('modalBalance').textContent = (userData.balance || 0) + ' MTN';
+
+            // Update payment status
+            const statusEl = document.getElementById('paymentStatus');
+            if (hasPaid) {
+                statusEl.className = 'payment-status paid';
+                statusEl.innerHTML = '<span>✓</span> Curso pago';
+            } else {
+                statusEl.className = 'payment-status pending';
+                statusEl.innerHTML = '<span>⏳</span> Aguardando pagamento (500 MTN)';
+            }
+
+            // Render lessons
+            renderLessons();
+
+            // Load first lesson or show locked message
+            if (hasPaid) {
+                loadLesson(0);
+            } else {
+                showLockedMessage();
+            }
+        }
+
+        // Render lessons list
+        function renderLessons() {
+            lessonsList.innerHTML = '';
+
+            lessons.forEach((lesson, index) => {
+                const item = document.createElement('div');
+                item.className = 'lesson-item' + (hasPaid ? '' : ' locked');
+                item.innerHTML = `
+                    <div class="lesson-number">${index + 1}</div>
+                    <div class="lesson-info">
+                        <h4>${lesson.title}</h4>
+                        <p>${lesson.desc}</p>
+                    </div>
+                    <div class="lesson-status">${hasPaid ? '▶' : '🔒'}</div>
+                `;
+
+                if (hasPaid) {
+                    item.addEventListener('click', () => loadLesson(index));
+                }
+
+                lessonsList.appendChild(item);
+            });
+        }
+
+        // Load lesson
+        function loadLesson(index) {
+            if (!hasPaid) {
+                showLockedMessage();
+                return;
+            }
+
+            currentLesson = index;
+            const lesson = lessons[index];
+
+            // Update active state
+            document.querySelectorAll('.lesson-item').forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+
+            // Update header
+            document.getElementById('currentLessonTitle').textContent = lesson.title;
+            document.getElementById('currentLessonDesc').textContent = lesson.desc;
+
+            // Show iframe, hide locked message
+            lockedMessage.classList.remove('show');
+            lessonFrame.style.display = 'block';
+
+            // Load content from GitHub Pages
+            // Ajuste o URL conforme a estrutura do seu repositório GitHub
+            const lessonUrl = `${GITHUB_BASE_URL}/${lesson.folder}/index.html`;
+            lessonFrame.src = lessonUrl;
+        }
+
+        // Show locked message
+        function showLockedMessage() {
+            lessonFrame.style.display = 'none';
+            lockedMessage.classList.add('show');
+            document.getElementById('currentLessonTitle').textContent = 'Acesso Restrito';
+            document.getElementById('currentLessonDesc').textContent = 'Pagamento necessário para continuar';
+        }
+
+        // Payment modal
+        function showPaymentModal() {
+            paymentModal.classList.add('show');
+        }
+
+        function hidePaymentModal() {
+            paymentModal.classList.remove('show');
+        }
+
+        // Process payment
+        async function processPayment() {
+            const btn = document.getElementById('confirmPaymentBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div> Processando...';
+
+            try {
+                const balance = userData.balance || 0;
+
+                if (balance < 500) {
+                    throw new Error('Saldo insuficiente. Recarregue sua conta.');
+                }
+
+                const now = Date.now();
+                const transactionId = 'TX' + Math.random().toString(36).substr(2, 9).toUpperCase();
+
+                // Deduct balance
+                await database.ref('users/' + currentUser + '/balance').set(balance - 500);
+
+                // Create payment record
+                await database.ref('payments/' + currentUser).set({
+                    amount: 500,
+                    status: 'completed',
+                    type: 'course_access',
+                    transactionId: transactionId,
+                    timestamp: now,
+                    method: 'balance_deduction'
+                });
+
+                // Create transaction record
+                await database.ref('transactions/' + transactionId).set({
+                    from: currentUser,
+                    to: 'system',
+                    amount: 500,
+                    type: 'course_payment',
+                    status: 'completed',
+                    timestamp: now,
+                    description: 'Pagamento curso FB Aulas Online'
+                });
+
+                // Update local data
+                userData.balance = balance - 500;
+                hasPaid = true;
+
+                // Update UI
+                document.getElementById('userBalance').textContent = userData.balance + ' MTN';
+                document.getElementById('paymentStatus').className = 'payment-status paid';
+                document.getElementById('paymentStatus').innerHTML = '<span>✓</span> Curso pago';
+
+                hidePaymentModal();
+                showToast('Pagamento efectuado com sucesso! Bem-vindo ao curso.', 'success');
+
+                // Refresh lessons
+                renderLessons();
+                loadLesson(0);
+
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Confirmar Pagamento';
+            }
+        }
+
+        // Toast notification
+        function showToast(message, type) {
+            toast.textContent = message;
+            toast.className = 'toast ' + type + ' show';
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            currentUser = null;
+            userData = null;
+            hasPaid = false;
+
+            loginScreen.style.display = 'flex';
+            dashboard.style.display = 'none';
+            loginForm.reset();
+
+            // Clear iframe
+            lessonFrame.src = '';
+        });
+
+        // Mobile menu toggle
+        document.getElementById('menuToggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // Close modal on overlay click
+        paymentModal.addEventListener('click', (e) => {
+            if (e.target === paymentModal) {
+                hidePaymentModal();
+            }
+        });
+
+        // Check for existing session
+        window.addEventListener('load', () => {
+            // Optional: Implement session persistence with localStorage
+        });
+    </script>
+</body>
+</html>
