@@ -1,0 +1,2295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FB Aulas Online - Lição 3: Variáveis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+
+        .logo-text h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-label {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        @media (min-width: 640px) {
+            .progress-label {
+                display: flex;
+            }
+        }
+
+        .progress-bar {
+            width: 128px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        @media (min-width: 640px) {
+            .progress-bar {
+                width: 192px;
+            }
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 1rem 2.5rem;
+            position: relative;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .hero-bg::before,
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+        }
+
+        .hero-bg::before {
+            width: 256px;
+            height: 256px;
+            background: rgba(99, 102, 241, 0.1);
+            top: 25%;
+            left: 25%;
+        }
+
+        .hero-bg::after {
+            width: 384px;
+            height: 384px;
+            background: rgba(139, 92, 246, 0.1);
+            bottom: 25%;
+            right: 25%;
+        }
+
+        .hero-content {
+            max-width: 896px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #a5b4fc;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        @media (min-width: 640px) {
+            .hero h2 {
+                font-size: 3.5rem;
+            }
+        }
+
+        .hero h2 .white {
+            color: white;
+        }
+
+        .hero h2 .gradient {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero > .hero-content > p {
+            font-size: 1.125rem;
+            color: #94a3b8;
+            max-width: 672px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.75;
+        }
+
+        @media (min-width: 640px) {
+            .hero > .hero-content > p {
+                font-size: 1.25rem;
+            }
+        }
+
+        .feature-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (min-width: 640px) {
+            .feature-cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .feature-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-card .icon {
+            font-size: 1.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card h3 {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-card p {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.625rem;
+            color: white;
+            font-weight: 600;
+            font-size: 1.125rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator::before {
+            content: '';
+            display: block;
+            width: 24px;
+            height: 40px;
+            border: 2px solid #64748b;
+            border-radius: 12px;
+        }
+
+        .scroll-indicator::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 8px;
+            background: #64748b;
+            border-radius: 2px;
+            animation: scroll-dot 2s infinite;
+        }
+
+        /* ===== THEORY SECTION ===== */
+        .section {
+            padding: 5rem 1rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-badge.indigo {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+        }
+
+        .section-badge.cyan {
+            background: rgba(6, 182, 212, 0.2);
+            color: #67e8f9;
+        }
+
+        .section-badge.purple {
+            background: rgba(139, 92, 246, 0.2);
+            color: #c4b5fd;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .section h2 {
+                font-size: 2.5rem;
+            }
+        }
+
+        .section h2 .gradient {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-description {
+            color: #94a3b8;
+            font-size: 1.125rem;
+            max-width: 672px;
+            margin: 0 auto;
+            line-height: 1.75;
+        }
+
+        .analogy-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto 2.5rem;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.15);
+        }
+
+        .analogy-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .analogy-content {
+                flex-direction: row;
+            }
+        }
+
+        .analogy-text {
+            flex: 1;
+        }
+
+        .analogy-text h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .analogy-text ul {
+            list-style: none;
+            space-y: 0.75rem;
+        }
+
+        .analogy-text li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 0.75rem;
+        }
+
+        .analogy-text li::before {
+            content: '›';
+            color: #818cf8;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .analogy-visual {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .drawer {
+            width: 256px;
+            height: 160px;
+            background: linear-gradient(180deg, #334155, #1e293b);
+            border-radius: 0.5rem;
+            border: 2px solid #475569;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drawer-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 32px;
+            background: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            color: #cbd5e1;
+        }
+
+        .drawer-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 32px;
+            font-size: 3.75rem;
+        }
+
+        .drawer-caption {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        /* Data Types */
+        .data-types-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .data-types-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .data-types-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .data-types-grid {
+                grid-template-columns: 1fr 2fr;
+            }
+        }
+
+        .type-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .type-btn {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 2px solid #334155;
+            background: rgba(30, 41, 59, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .type-btn:hover {
+            border-color: #475569;
+        }
+
+        .type-btn.active {
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .type-btn-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .type-btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .type-btn-icon.string {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .type-btn-icon.number {
+            background: rgba(6, 182, 212, 0.2);
+            color: #22d3ee;
+        }
+
+        .type-btn-icon.boolean {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .type-btn-title {
+            font-weight: 600;
+            color: white;
+        }
+
+        .type-btn-examples {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .type-details {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 2px solid;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .type-badge.string {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .type-badge.number {
+            background: rgba(6, 182, 212, 0.2);
+            color: #22d3ee;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .type-badge.boolean {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .type-description {
+            color: #cbd5e1;
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .type-info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .type-info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .type-info-section h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .type-examples {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .type-example {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            background: rgba(15, 23, 42, 0.5);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+        }
+
+        .type-example.string {
+            color: #fbbf24;
+        }
+
+        .type-example.number {
+            color: #22d3ee;
+        }
+
+        .type-example.boolean {
+            color: #34d399;
+        }
+
+        .type-use-cases {
+            list-style: none;
+        }
+
+        .type-use-cases li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #cbd5e1;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .type-use-cases li::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .type-use-cases.string li::before {
+            background: #fbbf24;
+        }
+
+        .type-use-cases.number li::before {
+            background: #22d3ee;
+        }
+
+        .type-use-cases.boolean li::before {
+            background: #34d399;
+        }
+
+        /* ===== PRACTICE SECTION ===== */
+        .practice-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 1024px) {
+            .practice-grid {
+                grid-template-columns: 1fr 2fr;
+            }
+        }
+
+        .example-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .example-btn {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 2px solid #334155;
+            background: rgba(30, 41, 59, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .example-btn:hover {
+            border-color: #475569;
+        }
+
+        .example-btn.active {
+            border-color: #06b6d4;
+            background: rgba(6, 182, 212, 0.2);
+        }
+
+        .example-btn-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        .example-btn-desc {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .tips-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .tips-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #fbbf24;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .tips-list {
+            list-style: none;
+        }
+
+        .tips-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            color: #cbd5e1;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tips-list li::before {
+            content: '✓';
+            color: #34d399;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .code-block {
+            background: linear-gradient(145deg, #1e1e2e, #252536);
+            border-radius: 0.75rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.15);
+        }
+
+        .code-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .code-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dot.red {
+            background: #ef4444;
+        }
+
+        .code-dot.yellow {
+            background: #f59e0b;
+        }
+
+        .code-dot.green {
+            background: #10b981;
+        }
+
+        .code-filename {
+            margin-left: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-copy-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .code-copy-btn:hover {
+            color: white;
+        }
+
+        .code-content {
+            padding: 1.25rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+
+        .code-line {
+            min-height: 1.5em;
+        }
+
+        .syntax-keyword {
+            color: #c792ea;
+        }
+
+        .syntax-string {
+            color: #c3e88d;
+        }
+
+        .syntax-number {
+            color: #f78c6c;
+        }
+
+        .syntax-comment {
+            color: #676e95;
+            font-style: italic;
+        }
+
+        .syntax-variable {
+            color: #82aaff;
+        }
+
+        .explanation-card {
+            margin-top: 1.5rem;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+        }
+
+        .explanation-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .explanation-list {
+            list-style: none;
+        }
+
+        .explanation-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #cbd5e1;
+            margin-bottom: 0.75rem;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .explanation-list li:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .explanation-list li:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .explanation-list li:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .explanation-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        /* ===== QUIZ SECTION ===== */
+        .quiz-container {
+            max-width: 768px;
+            margin: 0 auto;
+        }
+
+        .quiz-progress {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .quiz-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+        }
+
+        .quiz-question-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            flex: 1;
+        }
+
+        .question-text h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-code {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(15, 23, 42, 0.8);
+            color: #22d3ee;
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.25rem;
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            width: 100%;
+        }
+
+        .quiz-option:hover:not(:disabled) {
+            border-color: rgba(99, 102, 241, 0.5);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .quiz-option:disabled {
+            cursor: default;
+        }
+
+        .quiz-option.correct {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .quiz-option.incorrect {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .quiz-option.selected {
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #94a3b8;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            border-color: #10b981;
+            color: #34d399;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            border-color: #ef4444;
+            color: #f87171;
+        }
+
+        .quiz-option.selected .option-letter {
+            border-color: #6366f1;
+            color: #818cf8;
+        }
+
+        .option-text {
+            flex: 1;
+            color: #e2e8f0;
+        }
+
+        .option-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .option-icon.correct {
+            color: #34d399;
+        }
+
+        .option-icon.incorrect {
+            color: #f87171;
+        }
+
+        .quiz-feedback {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .quiz-feedback.correct {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .quiz-feedback.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .feedback-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .feedback-icon.correct {
+            color: #34d399;
+        }
+
+        .feedback-icon.incorrect {
+            color: #f87171;
+        }
+
+        .feedback-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .feedback-title.correct {
+            color: #34d399;
+        }
+
+        .feedback-title.incorrect {
+            color: #f87171;
+        }
+
+        .feedback-text {
+            color: #cbd5e1;
+            font-size: 0.875rem;
+        }
+
+        .quiz-next-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 0.625rem;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .quiz-next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Result Screen */
+        .result-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.15);
+        }
+
+        .result-icon {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-icon.excellent {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .result-icon.good {
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .result-icon.needs-practice {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .result-icon svg {
+            width: 48px;
+            height: 48px;
+        }
+
+        .result-icon.excellent svg {
+            color: #34d399;
+        }
+
+        .result-icon.good svg {
+            color: #fbbf24;
+        }
+
+        .result-icon.needs-practice svg {
+            color: #f87171;
+        }
+
+        .result-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-subtitle {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .star {
+            width: 32px;
+            height: 32px;
+        }
+
+        .star.filled {
+            color: #fbbf24;
+            fill: #fbbf24;
+        }
+
+        .star.empty {
+            color: #475569;
+        }
+
+        .result-score {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 0.625rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .result-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            z-index: 1000;
+            pointer-events: none;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            padding: 3rem 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 0.5rem;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-logo-icon svg {
+            width: 16px;
+            height: 16px;
+            color: white;
+        }
+
+        .footer-logo-text {
+            font-weight: 700;
+            color: white;
+        }
+
+        .footer-copyright {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .footer-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: white;
+        }
+
+        .footer-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 2rem auto 0;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            font-size: 0.875rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .footer-bottom svg {
+            width: 16px;
+            height: 16px;
+            color: #ef4444;
+            fill: #ef4444;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        @keyframes scroll-dot {
+            0% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(12px);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100%) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #6366f1, #8b5cf6);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #818cf8, #a78bfa);
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>FB Aulas Online</h1>
+                    <p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        Lição 3: Variáveis
+                    </p>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-label">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #fbbf24;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg>
+                    <span>Seu progresso</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="globalProgress"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <div class="badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                Lição Número 3
+            </div>
+            <h2>
+                <span class="white">Aprenda </span>
+                <span class="gradient">Variáveis</span>
+                <br>
+                <span class="white">em JavaScript</span>
+            </h2>
+            <p>Descubra como armazenar e manipular dados como um programador profissional. Domine os conceitos fundamentais de forma interativa e divertida!</p>
+            
+            <div class="feature-cards">
+                <div class="feature-card">
+                    <div class="icon">📦</div>
+                    <h3>3 Tipos de Dados</h3>
+                    <p>String, Number, Boolean</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">⚡</div>
+                    <h3>const & let</h3>
+                    <p>Declaração moderna</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🎯</div>
+                    <h3>Quiz Interativo</h3>
+                    <p>Teste seus conhecimentos</p>
+                </div>
+            </div>
+
+            <a href="#theory" class="btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+                Começar Aprendizado
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+            </a>
+        </div>
+        <div class="scroll-indicator"></div>
+    </section>
+
+    <!-- Theory Section -->
+    <section id="theory" class="section">
+        <div class="section-header">
+            <div class="section-badge indigo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                </svg>
+                Parte 1: Fundamentos
+            </div>
+            <h2>
+                O que são <span class="gradient">Variáveis</span>?
+            </h2>
+            <p class="section-description">
+                Variáveis são como <strong style="color: white;">"caixas" na memória</strong> do computador. 
+                Cada caixa tem um <span style="color: #818cf8;">nome</span> (etiqueta) e um <span style="color: #a78bfa;">valor</span> (conteúdo).
+            </p>
+        </div>
+
+        <div class="analogy-card">
+            <div class="analogy-content">
+                <div class="analogy-text">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #fbbf24;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                        Analogia Simples
+                    </h3>
+                    <p style="color: #cbd5e1; margin-bottom: 1rem;">Imagine uma variável como uma <strong style="color: white;">gaveta etiquetada</strong>:</p>
+                    <ul>
+                        <li>A etiqueta é o nome da variável</li>
+                        <li>O conteúdo da gaveta é o valor</li>
+                        <li>Você pode olhar o conteúdo ou trocá-lo</li>
+                    </ul>
+                </div>
+                <div class="analogy-visual">
+                    <div>
+                        <div class="drawer">
+                            <div class="drawer-label">let nome = "João"</div>
+                            <div class="drawer-content">👤</div>
+                        </div>
+                        <div class="drawer-caption">Variável "nome" contém "João"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="data-types-container">
+            <h3 class="data-types-title">Os 3 Tipos de Dados Principais</h3>
+            
+            <div class="data-types-grid">
+                <div class="type-buttons">
+                    <button class="type-btn active" onclick="selectType('string')" data-type="string">
+                        <div class="type-btn-header">
+                            <div class="type-btn-icon string">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="type-btn-title">String (Texto)</div>
+                                <div class="type-btn-examples">"FB Online", "Olá"</div>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="type-btn" onclick="selectType('number')" data-type="number">
+                        <div class="type-btn-header">
+                            <div class="type-btn-icon number">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="type-btn-title">Number (Número)</div>
+                                <div class="type-btn-examples">2500, 10.5, -42</div>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="type-btn" onclick="selectType('boolean')" data-type="boolean">
+                        <div class="type-btn-header">
+                            <div class="type-btn-icon boolean">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="type-btn-title">Boolean (Lógico)</div>
+                                <div class="type-btn-examples">true, false</div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="type-details" id="typeDetails" style="border-color: rgba(251, 191, 36, 0.25);">
+                    <div class="type-badge string">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                        </svg>
+                        String (Texto)
+                    </div>
+                    <p class="type-description">Representa texto - qualquer sequência de caracteres entre aspas.</p>
+                    
+                    <div class="type-info-grid">
+                        <div class="type-info-section">
+                            <h4>Exemplos</h4>
+                            <div class="type-examples">
+                                <code class="type-example string">"FB Online"</code>
+                                <code class="type-example string">"Olá, Mundo!"</code>
+                                <code class="type-example string">"idade = 25"</code>
+                            </div>
+                        </div>
+                        <div class="type-info-section">
+                            <h4>Quando Usar</h4>
+                            <ul class="type-use-cases string">
+                                <li>Nomes de usuários</li>
+                                <li>Mensagens</li>
+                                <li>Endereços</li>
+                                <li>Emails</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Practice Section -->
+    <section id="practice" class="section">
+        <div class="section-header">
+            <div class="section-badge cyan">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+                Parte 2: Prática
+            </div>
+            <h2>
+                Declarando no <span class="gradient">Código</span>
+            </h2>
+            <p class="section-description">
+                Veja como usar <code style="color: #22d3ee; background: rgba(15, 23, 42, 0.8); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">const</code> e 
+                <code style="color: #a78bfa; background: rgba(15, 23, 42, 0.8); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">let</code> na prática!
+            </p>
+        </div>
+
+        <div class="practice-grid">
+            <div class="example-buttons">
+                <button class="example-btn active" onclick="selectExample('const')" data-example="const">
+                    <div class="example-btn-title">const - Valores Fixos</div>
+                    <div class="example-btn-desc">Use const para valores que não mudam</div>
+                </button>
+                <button class="example-btn" onclick="selectExample('let')" data-example="let">
+                    <div class="example-btn-title">let - Valores Mutáveis</div>
+                    <div class="example-btn-desc">Use let para valores que podem mudar</div>
+                </button>
+                <button class="example-btn" onclick="selectExample('camelcase')" data-example="camelcase">
+                    <div class="example-btn-title">camelCase - Padrão de Nomes</div>
+                    <div class="example-btn-desc">Como nomear variáveis corretamente</div>
+                </button>
+
+                <div class="tips-card">
+                    <div class="tips-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        Dicas Importantes
+                    </div>
+                    <ul class="tips-list">
+                        <li>Use const por padrão</li>
+                        <li>Mude para let se precisar atualizar</li>
+                        <li>Nomes devem ser descritivos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <div class="code-dot red"></div>
+                            <div class="code-dot yellow"></div>
+                            <div class="code-dot green"></div>
+                            <span class="code-filename">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                exemplo.js
+                            </span>
+                        </div>
+                        <button class="code-copy-btn" onclick="copyCode()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="copyIcon">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            <span id="copyText">Copiar</span>
+                        </button>
+                    </div>
+                    <div class="code-content" id="codeContent">
+                        <div class="code-line"><span class="syntax-comment">// Exemplo com const</span></div>
+                        <div class="code-line"><span class="syntax-keyword">const</span> <span class="syntax-variable">empresa</span> = <span class="syntax-string">"FB Aulas"</span>;</div>
+                        <div class="code-line"><span class="syntax-keyword">const</span> <span class="syntax-variable">anoFundacao</span> = <span class="syntax-number">2020</span>;</div>
+                        <div class="code-line"><span class="syntax-keyword">const</span> <span class="syntax-variable">ativa</span> = <span class="syntax-number">true</span>;</div>
+                        <div class="code-line">&nbsp;</div>
+                        <div class="code-line"><span class="syntax-comment">// Tentar mudar causa erro!</span></div>
+                        <div class="code-line"><span class="syntax-comment">// empresa = "Outra"; ❌</span></div>
+                    </div>
+                </div>
+
+                <div class="explanation-card">
+                    <div class="explanation-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #34d399;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        O que você aprendeu:
+                    </div>
+                    <ul class="explanation-list" id="explanationList">
+                        <li>
+                            <span class="explanation-number">1</span>
+                            const declara uma constante
+                        </li>
+                        <li>
+                            <span class="explanation-number">2</span>
+                            O valor não pode ser alterado depois
+                        </li>
+                        <li>
+                            <span class="explanation-number">3</span>
+                            Tentar reatribuir causa erro
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section id="quiz" class="section">
+        <div class="section-header">
+            <div class="section-badge purple">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Parte 3: Avaliação
+            </div>
+            <h2>
+                Teste seus <span class="gradient">Conhecimentos</span>
+            </h2>
+            <p class="section-description" id="quizProgressText">Questão 1 de 4</p>
+        </div>
+
+        <div class="quiz-container">
+            <div class="quiz-progress">
+                <div class="quiz-progress-bar" id="quizProgressBar" style="width: 0%;"></div>
+            </div>
+
+            <div id="quizContent">
+                <!-- Quiz content will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div>
+                <div class="footer-logo">
+                    <div class="footer-logo-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                        </svg>
+                    </div>
+                    <span class="footer-logo-text">FB Aulas Online</span>
+                </div>
+                <p class="footer-copyright">&copy; 2026 FB Aulas Online - Educação Digital</p>
+            </div>
+            <div class="footer-links">
+                <a href="#" class="footer-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                    GitHub
+                </a>
+                <a href="#" class="footer-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                    </svg>
+                    Twitter
+                </a>
+                <a href="#" class="footer-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Contato
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>
+                Feito com 
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+                </svg>
+                para aprender JavaScript
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== DATA TYPES =====
+        const typeData = {
+            string: {
+                name: 'String (Texto)',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" /></svg>',
+                description: 'Representa texto - qualquer sequência de caracteres entre aspas.',
+                examples: ['"FB Online"', '"Olá, Mundo!"', '"idade = 25"'],
+                useCases: ['Nomes de usuários', 'Mensagens', 'Endereços', 'Emails'],
+                color: '#fbbf24',
+                borderColor: 'rgba(251, 191, 36, 0.25)'
+            },
+            number: {
+                name: 'Number (Número)',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" /></svg>',
+                description: 'Representa valores numéricos para cálculos matemáticos.',
+                examples: ['2500', '10.5', '-42', '3.14159'],
+                useCases: ['Preços', 'Idades', 'Quantidades', 'Coordenadas'],
+                color: '#22d3ee',
+                borderColor: 'rgba(6, 182, 212, 0.25)'
+            },
+            boolean: {
+                name: 'Boolean (Lógico)',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>',
+                description: 'Representa valores de verdade: sim ou não, ligado ou desligado.',
+                examples: ['true', 'false'],
+                useCases: ['Está logado?', 'Curso ativo?', 'Pagamento confirmado?', 'Maior de idade?'],
+                color: '#34d399',
+                borderColor: 'rgba(16, 185, 129, 0.25)'
+            }
+        };
+
+        function selectType(type) {
+            // Update buttons
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-type="${type}"]`).classList.add('active');
+
+            // Update details
+            const data = typeData[type];
+            const details = document.getElementById('typeDetails');
+            details.style.borderColor = data.borderColor;
+            
+            details.innerHTML = `
+                <div class="type-badge ${type}">
+                    ${data.icon}
+                    ${data.name}
+                </div>
+                <p class="type-description">${data.description}</p>
+                
+                <div class="type-info-grid">
+                    <div class="type-info-section">
+                        <h4>Exemplos</h4>
+                        <div class="type-examples">
+                            ${data.examples.map(ex => `<code class="type-example ${type}">${ex}</code>`).join('')}
+                        </div>
+                    </div>
+                    <div class="type-info-section">
+                        <h4>Quando Usar</h4>
+                        <ul class="type-use-cases ${type}">
+                            ${data.useCases.map(uc => `<li>${uc}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ===== CODE EXAMPLES =====
+        const codeExamples = {
+            const: {
+                code: `<span class="syntax-comment">// Exemplo com const</span>
+<span class="syntax-keyword">const</span> <span class="syntax-variable">empresa</span> = <span class="syntax-string">"FB Aulas"</span>;
+<span class="syntax-keyword">const</span> <span class="syntax-variable">anoFundacao</span> = <span class="syntax-number">2020</span>;
+<span class="syntax-keyword">const</span> <span class="syntax-variable">ativa</span> = <span class="syntax-number">true</span>;
+&nbsp;
+<span class="syntax-comment">// Tentar mudar causa erro!</span>
+<span class="syntax-comment">// empresa = "Outra"; ❌</span>`,
+                explanation: [
+                    'const declara uma constante',
+                    'O valor não pode ser alterado depois',
+                    'Tentar reatribuir causa erro'
+                ]
+            },
+            let: {
+                code: `<span class="syntax-comment">// Exemplo com let</span>
+<span class="syntax-keyword">let</span> <span class="syntax-variable">alunosInscritos</span> = <span class="syntax-number">150</span>;
+<span class="syntax-keyword">let</span> <span class="syntax-variable">precoCurso</span> = <span class="syntax-number">199.90</span>;
+&nbsp;
+<span class="syntax-comment">// Podemos atualizar os valores</span>
+<span class="syntax-variable">alunosInscritos</span> = <span class="syntax-number">151</span>;
+<span class="syntax-variable">precoCurso</span> = <span class="syntax-number">149.90</span>; <span class="syntax-comment">// promoção! ✅</span>`,
+                explanation: [
+                    'let declara uma variável mutável',
+                    'O valor pode ser alterado quantas vezes quiser',
+                    'Use para contadores, preços, estados'
+                ]
+            },
+            camelcase: {
+                code: `<span class="syntax-comment">// ✅ Correto (camelCase)</span>
+<span class="syntax-keyword">const</span> <span class="syntax-variable">nomeDoAluno</span> = <span class="syntax-string">"Maria"</span>;
+<span class="syntax-keyword">let</span> <span class="syntax-variable">precoDoProduto</span> = <span class="syntax-number">49.90</span>;
+<span class="syntax-keyword">const</span> <span class="syntax-variable">estaLogado</span> = <span class="syntax-number">true</span>;
+&nbsp;
+<span class="syntax-comment">// ❌ Evite</span>
+<span class="syntax-comment">// const nome do aluno = "Maria";</span>
+<span class="syntax-comment">// let 1preco = 49.90;</span>
+<span class="syntax-comment">// const Preço = 49.90;</span>`,
+                explanation: [
+                    'Primeira palavra: minúscula',
+                    'Próximas palavras: maiúscula',
+                    'Sem espaços, sem começar com número'
+                ]
+            }
+        };
+
+        function selectExample(example) {
+            // Update buttons
+            document.querySelectorAll('.example-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-example="${example}"]`).classList.add('active');
+
+            // Update code
+            const data = codeExamples[example];
+            document.getElementById('codeContent').innerHTML = data.code;
+
+            // Update explanation
+            const list = document.getElementById('explanationList');
+            list.innerHTML = data.explanation.map((item, i) => `
+                <li style="animation-delay: ${(i + 1) * 0.1}s">
+                    <span class="explanation-number">${i + 1}</span>
+                    ${item}
+                </li>
+            `).join('');
+        }
+
+        function copyCode() {
+            const codeText = document.getElementById('codeContent').innerText;
+            navigator.clipboard.writeText(codeText).then(() => {
+                const copyText = document.getElementById('copyText');
+                const originalText = copyText.textContent;
+                copyText.textContent = 'Copiado!';
+                setTimeout(() => {
+                    copyText.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // ===== QUIZ =====
+        const questions = [
+            {
+                id: 1,
+                question: 'Qual o tipo de dado de:',
+                code: 'let preco = 450.50;',
+                options: [
+                    { id: 'A', text: 'String', correct: false, feedback: 'Strings precisam de aspas ("texto"). Números não usam aspas!' },
+                    { id: 'B', text: 'Number', correct: true, feedback: 'Correto! É um valor numérico decimal (ponto flutuante).' },
+                    { id: 'C', text: 'Boolean', correct: false, feedback: 'Booleans são apenas true ou false, sem números.' }
+                ]
+            },
+            {
+                id: 2,
+                question: 'Para que serve o comando const?',
+                code: 'const PI = 3.14159;',
+                options: [
+                    { id: 'A', text: 'Guardar valores fixos que não mudam.', correct: true, feedback: 'Correto! Constantes não permitem alteração após definidas.' },
+                    { id: 'B', text: 'Guardar valores que mudam toda hora.', correct: false, feedback: 'Para valores que mudam, usamos let, não const.' },
+                    { id: 'C', text: 'Criar funções no código.', correct: false, feedback: 'const pode guardar funções, mas seu propósito principal é imutabilidade.' }
+                ]
+            },
+            {
+                id: 3,
+                question: 'Como o sistema lê o código:',
+                code: '"10" + "10"',
+                options: [
+                    { id: 'A', text: 'Faz uma soma e resulta em 20.', correct: false, feedback: 'As aspas indicam texto, não número. Não há soma!' },
+                    { id: 'B', text: 'Junta os textos e resulta em "1010".', correct: true, feedback: 'Correto! Ele concatena (junta) os textos, resultando em "1010".' },
+                    { id: 'C', text: 'Dá erro de sintaxe.', correct: false, feedback: 'O código é válido! Ele apenas concatena strings.' }
+                ]
+            },
+            {
+                id: 4,
+                question: 'Qual nome segue o padrão camelCase?',
+                code: '',
+                options: [
+                    { id: 'A', text: 'nome_do_aluno', correct: false, feedback: 'Isso é snake_case (usado em Python), não camelCase.' },
+                    { id: 'B', text: 'NomeDoAluno', correct: false, feedback: 'Isso é PascalCase (primeira letra maiúscula). camelCase começa com minúscula.' },
+                    { id: 'C', text: 'nomeDoAluno', correct: true, feedback: 'Correto! camelCase: primeira palavra minúscula, próximas com maiúscula.' }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let selectedOption = null;
+        let showFeedback = false;
+        let score = 0;
+        let answers = [];
+
+        function renderQuiz() {
+            const quizContent = document.getElementById('quizContent');
+            const q = questions[currentQuestion];
+            
+            // Update progress
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('quizProgressBar').style.width = `${progress}%`;
+            document.getElementById('quizProgressText').textContent = `Questão ${currentQuestion + 1} de ${questions.length}`;
+            document.getElementById('globalProgress').style.width = `${progress}%`;
+
+            let optionsHtml = '';
+            for (const option of q.options) {
+                const isSelected = selectedOption === option.id;
+                const showCorrect = showFeedback && option.correct;
+                const showIncorrect = showFeedback && isSelected && !option.correct;
+                
+                let optionClass = 'quiz-option';
+                if (showCorrect) optionClass += ' correct';
+                else if (showIncorrect) optionClass += ' incorrect';
+                else if (isSelected) optionClass += ' selected';
+
+                let iconHtml = '';
+                if (showCorrect) {
+                    iconHtml = `<svg class="option-icon correct" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+                } else if (showIncorrect) {
+                    iconHtml = `<svg class="option-icon incorrect" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+                }
+
+                optionsHtml += `
+                    <button class="${optionClass}" onclick="selectOption('${option.id}', ${option.correct})" ${showFeedback ? 'disabled' : ''}>
+                        <div class="option-letter">${option.id}</div>
+                        <span class="option-text">${option.text}</span>
+                        ${iconHtml}
+                    </button>
+                `;
+            }
+
+            let feedbackHtml = '';
+            if (showFeedback && selectedOption) {
+                const option = q.options.find(o => o.id === selectedOption);
+                const isCorrect = option.correct;
+                feedbackHtml = `
+                    <div class="quiz-feedback ${isCorrect ? 'correct' : 'incorrect'}">
+                        <div class="feedback-header">
+                            <svg class="feedback-icon ${isCorrect ? 'correct' : 'incorrect'}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                ${isCorrect 
+                                    ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />'
+                                    : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />'
+                                }
+                            </svg>
+                            <div>
+                                <div class="feedback-title ${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Resposta Correta!' : 'Resposta Incorreta'}</div>
+                                <p class="feedback-text">${option.feedback}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="quiz-next-btn" onclick="nextQuestion()">
+                        ${currentQuestion < questions.length - 1 ? 'Próxima Questão' : 'Ver Resultado'}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </button>
+                `;
+            }
+
+            quizContent.innerHTML = `
+                <div class="quiz-card">
+                    <div class="quiz-question-header">
+                        <div class="question-number">${currentQuestion + 1}</div>
+                        <div class="question-text">
+                            <h3>${q.question}</h3>
+                            ${q.code ? `<code class="question-code">${q.code}</code>` : ''}
+                        </div>
+                    </div>
+                    <div class="quiz-options">
+                        ${optionsHtml}
+                    </div>
+                    ${feedbackHtml}
+                </div>
+            `;
+        }
+
+        function selectOption(optionId, isCorrect) {
+            if (showFeedback) return;
+            
+            selectedOption = optionId;
+            showFeedback = true;
+            
+            answers.push({ questionId: questions[currentQuestion].id, correct: isCorrect });
+            
+            if (isCorrect) {
+                score++;
+            }
+
+            renderQuiz();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                selectedOption = null;
+                showFeedback = false;
+                renderQuiz();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            const percentage = Math.round((score / questions.length) * 100);
+            const isExcellent = percentage >= 80;
+            const isGood = percentage >= 60;
+            
+            const quizContent = document.getElementById('quizContent');
+            
+            let resultClass = 'needs-practice';
+            let resultTitle = 'Continue praticando!';
+            if (isExcellent) {
+                resultClass = 'excellent';
+                resultTitle = 'Excelente!';
+            } else if (isGood) {
+                resultClass = 'good';
+                resultTitle = 'Bom trabalho!';
+            }
+
+            // Create confetti
+            if (isExcellent || isGood) {
+                createConfetti();
+            }
+
+            const stars = Array.from({ length: 5 }, (_, i) => {
+                const filled = i < Math.ceil(percentage / 20);
+                return `<svg class="star ${filled ? 'filled' : 'empty'}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>`;
+            }).join('');
+
+            quizContent.innerHTML = `
+                <div class="result-card">
+                    <div class="result-icon ${resultClass}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                        </svg>
+                    </div>
+                    <h2 class="result-title">${resultTitle}</h2>
+                    <p class="result-subtitle">Você acertou ${score} de ${questions.length} questões</p>
+                    <div class="stars">${stars}</div>
+                    <div class="result-score">${percentage}%</div>
+                    <button class="result-btn" onclick="restartQuiz()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Tentar Novamente
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('globalProgress').style.width = '100%';
+        }
+
+        function createConfetti() {
+            const colors = ['#6366f1', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            selectedOption = null;
+            showFeedback = false;
+            score = 0;
+            answers = [];
+            document.getElementById('globalProgress').style.width = '0%';
+            renderQuiz();
+        }
+
+        // Initialize quiz
+        renderQuiz();
+    </script>
+</body>
+</html>
