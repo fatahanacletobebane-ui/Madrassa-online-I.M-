@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FB Aulas Online - Lição 4: Condições IF e ELSE (Para Iniciantes)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --bg: #f1f5f9;
+            --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg);
+            color: var(--dark);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #3730a3 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .lesson-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--white);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        .nav-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--gray);
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        nav a:hover, nav a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary);
+        }
+
+        .card-yellow { border-left-color: var(--secondary); }
+        .card-green { border-left-color: var(--success); }
+        .card-red { border-left-color: var(--danger); }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: var(--dark);
+            margin: 1.5rem 0 0.8rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        /* Exemplo do dia a dia */
+        .daily-example {
+            background: #fef3c7;
+            border: 2px solid var(--secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .daily-example h4 {
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .daily-example p {
+            color: #78350f;
+            margin: 0;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-label {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .code-comment { color: #94a3b8; }
+        .code-keyword { color: #f472b6; font-weight: bold; }
+        .code-function { color: #60a5fa; }
+        .code-string { color: #a3e635; }
+        .code-number { color: #fbbf24; }
+        .code-operator { color: #f87171; }
+
+        /* Interactive Demo */
+        .interactive-box {
+            background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid #c4b5fd;
+        }
+
+        .demo-controls {
+            display: grid;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        input, select {
+            padding: 0.75rem;
+            border: 2px solid #c4b5fd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #3730a3;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .result-box {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border: 2px solid #c4b5fd;
+            min-height: 100px;
+        }
+
+        .result-box h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Step by Step */
+        .steps {
+            counter-reset: step;
+        }
+
+        .step {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Comparison Table */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .comparison-yes {
+            background: #d1fae5;
+            border: 2px solid var(--success);
+        }
+
+        .comparison-no {
+            background: #fee2e2;
+            border: 2px solid var(--danger);
+        }
+
+        .comparison-box h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Quiz */
+        .quiz-option {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary);
+            background: #f5f3ff;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: #d1fae5;
+        }
+
+        .quiz-option.wrong {
+            border-color: var(--danger);
+            background: #fee2e2;
+        }
+
+        /* Tips */
+        .tip {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+        }
+
+        .tip::before {
+            content: "💡 DICA: ";
+            font-weight: 700;
+            color: #1e40af;
+        }
+
+        /* Warning */
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid var(--secondary);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+        }
+
+        .warning::before {
+            content: "⚠️ ATENÇÃO: ";
+            font-weight: 700;
+            color: #92400e;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+        }
+
+        .support-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            max-width: 500px;
+            margin: 1rem auto;
+        }
+
+        .support-box h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .support-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        /* Visual Flow */
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .flow-box {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .flow-start {
+            background: #dbeafe;
+            border: 2px solid #3b82f6;
+        }
+
+        .flow-decision {
+            background: #fef3c7;
+            border: 2px solid var(--secondary);
+            transform: rotate(0deg);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            padding: 2rem;
+        }
+
+        .flow-action {
+            background: #d1fae5;
+            border: 2px solid var(--success);
+        }
+
+        .flow-end {
+            background: #e2e8f0;
+            border: 2px solid var(--gray);
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: var(--gray);
+        }
+
+        /* Progress */
+        .progress-bar {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.5rem; }
+            .comparison { grid-template-columns: 1fr; }
+            .card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="lesson-tag">📚 Lição 4 de 12 - Para Iniciantes</div>
+    <h1>Condições IF e ELSE</h1>
+    <p class="subtitle">Aprenda a fazer o computador tomar decisões usando exemplos simples do dia a dia</p>
+</header>
+
+<nav>
+    <div class="nav-container">
+        <a href="#o-que-e" class="active">O que é?</a>
+        <a href="#if-simples">IF Simples</a>
+        <a href="#if-else">IF e ELSE</a>
+        <a href="#exemplos">Exemplos</a>
+        <a href="#praticar">Praticar</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- Progresso -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressBar"></div>
+    </div>
+
+    <!-- Introdução -->
+    <section id="o-que-e" class="card">
+        <h2>🤔 O que são Condições?</h2>
+        
+        <p>Imagine que você está na casa de um amigo e quer sair:</p>
+        
+        <div class="daily-example">
+            <h4>🌧️ Exemplo do Dia a Dia</h4>
+            <p><strong>SE</strong> estiver a chover, levo guarda-chuva.<br>
+            <strong>SENÃO</strong> (se não estiver), não levo.</p>
+        </div>
+
+        <p>Na programação, usamos <strong>IF</strong> (se) e <strong>ELSE</strong> (senão) para fazer o computador tomar decisões assim. É como ensinar o computador a pensar!</p>
+
+        <div class="comparison">
+            <div class="comparison-box comparison-yes">
+                <h4>✅ Condição VERDADEIRA</h4>
+                <p>O código dentro do IF executa</p>
+            </div>
+            <div class="comparison-box comparison-no">
+                <h4>❌ Condição FALSA</h4>
+                <p>O código dentro do ELSE executa (ou nada acontece)</p>
+            </div>
+        </div>
+
+        <div class="tip">
+            Sempre que você vê "SE... ENTÃO..." no português, provavelmente vai usar um IF no código!
+        </div>
+    </section>
+
+    <!-- IF Simples -->
+    <section id="if-simples" class="card card-yellow">
+        <h2>🔵 IF Simples (Somente "SE")</h2>
+        
+        <p>O IF mais básico verifica <strong>apenas uma condição</strong>. Se for verdade, faz algo. Se for falsa, continua o programa normalmente.</p>
+
+        <h3>📱 Exemplo: Verificar Idade para Entrar no Facebook</h3>
+        
+        <div class="daily-example">
+            <h4>📝 Em Português:</h4>
+            <p>SE a idade for maior ou igual a 13 anos, pode criar conta.<br>
+            Caso contrário, não fazemos nada especial.</p>
+        </div>
+
+        <div class="code-block">
+            <span class="code-label">JavaScript</span>
+<span class="code-comment">// Guardamos a idade numa "caixa" chamada idade</span>
+<span class="code-keyword">let</span> idade = <span class="code-number">15</span>;
+
+<span class="code-comment">// IF = SE</span>
+<span class="code-keyword">if</span> (idade >= <span class="code-number">13</span>) {
+    <span class="code-function">console</span>.log(<span class="code-string">"Pode criar conta no Facebook!"</span>);
+}
+
+<span class="code-comment">// Esta linha SEMPRE executa, IF ou não</span>
+<span class="code-function">console</span>.log(<span class="code-string">"Fim do programa"</span>);
+        </div>
+
+        <div class="flow-diagram">
+            <div class="flow-box flow-start">Início</div>
+            <div class="flow-arrow">⬇️</div>
+            <div class="flow-box flow-decision">Idade >= 13?</div>
+            <div class="flow-arrow">⬇️ SIM</div>
+            <div class="flow-box flow-action">Mostrar "Pode criar conta"</div>
+            <div class="flow-arrow">⬇️</div>
+            <div class="flow-box flow-end">Fim</div>
+        </div>
+
+        <div class="warning">
+            Não esqueça: o sinal <strong>>=</strong> significa "maior ou igual". É diferente de <strong>></strong> que é só "maior".
+        </div>
+    </section>
+
+    <!-- IF e ELSE -->
+    <section id="if-else" class="card card-green">
+        <h2>🟢 IF e ELSE (SE... SENÃO...)</h2>
+        
+        <p>Agora vamos aprender a fazer <strong>duas coisas diferentes</strong>: uma se a condição for verdadeira, outra se for falsa.</p>
+
+        <h3>💰 Exemplo: Comprar Pão na Padaria</h3>
+        
+        <div class="daily-example">
+            <h4>📝 Em Português:</h4>
+            <p>SE tiver 50 MTN ou mais, compro o pão.<br>
+            SENÃO, fico em casa porque não tenho dinheiro suficiente.</p>
+        </div>
+
+        <div class="code-block">
+            <span class="code-label">JavaScript</span>
+<span class="code-keyword">let</span> dinheiro = <span class="code-number">30</span>;
+
+<span class="code-keyword">if</span> (dinheiro >= <span class="code-number">50</span>) {
+    <span class="code-function">console</span>.log(<span class="code-string">"Compro o pão! 🍞"</span>);
+} <span class="code-keyword">else</span> {
+    <span class="code-function">console</span>.log(<span class="code-string">"Não tenho dinheiro suficiente... 😢"</span>);
+}
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>O computador verifica a condição</h4>
+                    <p>dinheiro (30) >= 50? <strong>Resultado: FALSO</strong></p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Como é FALSO, pula o IF e vai para o ELSE</h4>
+                    <p>Executa o que está dentro das chaves do ELSE</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Resultado na tela:</h4>
+                    <p>"Não tenho dinheiro suficiente... 😢"</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip">
+            Use ELSE quando quiser que o programa faça algo específico quando a condição NÃO for atendida.
+        </div>
+    </section>
+
+    <!-- Operadores -->
+    <section class="card card-red">
+        <h2>🔴 Operadores de Comparação (Muito Importante!)</h2>
+        
+        <p>Para fazer condições, precisamos comparar valores. Aqui estão os operadores mais usados:</p>
+
+        <div class="code-block" style="background: #f8fafc; color: var(--dark); border: 2px solid #e2e8f0;">
+            <span style="display: block; margin: 0.5rem 0;">
+                <strong>==</strong>  igual a (5 == 5 → verdadeiro)
+            </span>
+            <span style="display: block; margin: 0.5rem 0;">
+                <strong>!=</strong>  diferente de (5 != 3 → verdadeiro)
+            </span>
+            <span style="display: block; margin: 0.5rem 0;">
+                <strong>></strong>   maior que (10 > 5 → verdadeiro)
+            </span>
+            <span style="display: block; margin: 0.5rem 0;">
+                <strong><</strong>   menor que (3 < 7 → verdadeiro)
+            </span>
+            <span style="display: block; margin: 0.5rem 0;">
+                <strong>>=</strong>  maior ou igual (5 >= 5 → verdadeiro)
+            </span>
+            <span style="display: block; margin: 0.5rem 0;">
+                <strong><=</strong>  menor ou igual (4 <= 5 → verdadeiro)
+            </span>
+        </div>
+
+        <div class="warning">
+            <strong>==</strong> (dois iguais) compara valores. <strong>=</strong> (um igual) guarda valor numa variável. Não confunda!
+        </div>
+
+        <h3>📋 Exemplos Práticos:</h3>
+        <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+            <li><code>nota == 20</code> → A nota é exatamente 20?</li>
+            <li><code>senha != "1234"</code> → A senha é diferente de "1234"?</li>
+            <li><code>saldo > 0</code> → O saldo é maior que zero?</li>
+            <li><code>idade >= 18</code> → Tem 18 anos ou mais?</li>
+        </ul>
+    </section>
+
+    <!-- Exemplos Práticos -->
+    <section id="exemplos" class="card">
+        <h2>📚 Mais Exemplos do Dia a Dia</h2>
+
+        <h3>🎓 Exemplo 1: Aprovação na Escola</h3>
+        <div class="code-block">
+<span class="code-keyword">let</span> nota = <span class="code-number">14</span>;
+
+<span class="code-keyword">if</span> (nota >= <span class="code-number">10</span>) {
+    <span class="code-function">console</span>.log(<span class="code-string">"Aprovado! 🎉"</span>);
+} <span class="code-keyword">else</span> {
+    <span class="code-function">console</span>.log(<span class="code-string">"Reprovado... Estude mais 📚"</span>);
+}
+        </div>
+
+        <h3>🔋 Exemplo 2: Bateria do Telefone</h3>
+        <div class="code-block">
+<span class="code-keyword">let</span> bateria = <span class="code-number">15</span>;
+
+<span class="code-keyword">if</span> (bateria <= <span class="code-number">20</span>) {
+    <span class="code-function">console</span>.log(<span class="code-string">"Bateria fraca! Carregue já! 🔌"</span>);
+} <span class="code-keyword">else</span> {
+    <span class="code-function">console</span>.log(<span class="code-string">"Bateria OK ✅"</span>);
+}
+        </div>
+
+        <h3>🍽️ Exemplo 3: Almoço em Casa</h3>
+        <div class="code-block">
+<span class="code-keyword">let</span> hora = <span class="code-number">13</span>;
+
+<span class="code-keyword">if</span> (hora == <span class="code-number">13</span>) {
+    <span class="code-function">console</span>.log(<span class="code-string">"Hora do almoço! 🍛"</span>);
+} <span class="code-keyword">else</span> {
+    <span class="code-function">console</span>.log(<span class="code-string">"Ainda não é hora de comer"</span>);
+}
+        </div>
+    </section>
+
+    <!-- Prática Interativa -->
+    <section id="praticar" class="interactive-box">
+        <h2 style="color: #5b21b6;">🎮 Hora de Praticar!</h2>
+        <p>Altere os valores abaixo e veja o que acontece:</p>
+
+        <div class="demo-controls">
+            <div class="control-group">
+                <label>👤 Idade da pessoa:</label>
+                <input type="number" id="inputIdade" value="16" min="0" max="120">
+            </div>
+            
+            <div class="control-group">
+                <label>💰 Dinheiro disponível (MTN):</label>
+                <input type="number" id="inputDinheiro" value="100" min="0">
+            </div>
+
+            <button class="btn" onclick="executarDemo()">
+                ▶️ Executar Código
+            </button>
+        </div>
+
+        <div class="result-box" id="resultadoDemo">
+            <h4>🖥️ Resultado:</h4>
+            <p style="color: var(--gray);">Clique em "Executar Código" para ver o resultado...</p>
+        </div>
+
+        <div class="code-block" style="margin-top: 1.5rem; font-size: 0.85rem;">
+<span class="code-keyword">let</span> idade = <span class="code-number" id="codeIdade">16</span>;
+<span class="code-keyword">let</span> dinheiro = <span class="code-number" id="codeDinheiro">100</span>;
+
+<span class="code-keyword">if</span> (idade >= <span class="code-number">18</span>) {
+    <span class="code-function">console</span>.log(<span class="code-string">"Pode entrar na festa"</span>);
+    
+    <span class="code-keyword">if</span> (dinheiro >= <span class="code-number">50</span>) {
+        <span class="code-function">console</span>.log(<span class="code-string">"E pode comprar refrigerante!"</span>);
+    } <span class="code-keyword">else</span> {
+        <span class="code-function">console</span>.log(<span class="code-string">"Mas sem dinheiro para bebida"</span>);
+    }
+    
+} <span class="code-keyword">else</span> {
+    <span class="code-function">console</span>.log(<span class="code-string">"Não pode entrar - menor de idade"</span>);
+}
+        </div>
+    </section>
+
+    <!-- Quiz -->
+    <section class="card">
+        <h2>📝 Teste Rápido</h2>
+        <p>O que este código vai mostrar na tela?</p>
+        
+        <div class="code-block" style="background: #f8fafc; color: var(--dark);">
+<span class="code-keyword">let</span> x = <span class="code-number">10</span>;
+<span class="code-keyword">let</span> y = <span class="code-number">5</span>;
+
+<span class="code-keyword">if</span> (x > y) {
+    <span class="code-function">console</span>.log(<span class="code-string">"X é maior"</span>);
+} <span class="code-keyword">else</span> {
+    <span class="code-function">console</span>.log(<span class="code-string">"Y é maior"</span>);
+}
+        </div>
+
+        <div class="quiz-option" onclick="checkAnswer(this, true)">
+            a) "X é maior"
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">
+            b) "Y é maior"
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">
+            c) Não mostra nada
+        </div>
+        <div class="quiz-option" onclick="checkAnswer(this, false)">
+            d) Dá erro
+        </div>
+
+        <div id="quizFeedback" style="margin-top: 1rem; font-weight: 600;"></div>
+    </section>
+
+    <!-- Resumo -->
+    <section class="card card-green">
+        <h2>✅ Resumo do que Aprendemos</h2>
+        
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">✓</div>
+                <div class="step-content">
+                    <h4>IF</h4>
+                    <p>Verifica se uma condição é verdadeira. Se for, executa o código dentro das chaves.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">✓</div>
+                <div class="step-content">
+                    <h4>ELSE</h4>
+                    <p>Executa quando a condição do IF é falsa. É o "plano B".</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">✓</div>
+                <div class="step-content">
+                    <h4>Operadores</h4>
+                    <p>Usamos ==, !=, >, <, >=, <= para comparar valores.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip">
+            Pratique com exemplos do seu dia a dia: "SE tenho fome, como. SENÃO, estudo."
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <div class="support-box">
+        <h3>📞 Precisa de Ajuda?</h3>
+        <div class="support-item">
+            <span>📱</span>
+            <span>860407269 (WhatsApp)</span>
+        </div>
+        <div class="support-item">
+            <span>💰</span>
+            <span>Curso: 500 MTN (3 prestações)</span>
+        </div>
+    </div>
+    <p style="margin-top: 1rem; opacity: 0.8;">
+        © 2024 FB Aulas Online - Aprenda Programação do Zero
+    </p>
+</footer>
+
+<script>
+    // Progress bar on scroll
+    window.onscroll = function() {
+        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        let scrolled = (winScroll / height) * 100;
+        document.getElementById("progressBar").style.width = scrolled + "%";
+    };
+
+    // Demo interativo
+    function executarDemo() {
+        const idade = parseInt(document.getElementById('inputIdade').value);
+        const dinheiro = parseInt(document.getElementById('inputDinheiro').value);
+        
+        // Atualizar código mostrado
+        document.getElementById('codeIdade').textContent = idade;
+        document.getElementById('codeDinheiro').textContent = dinheiro;
+        
+        let resultado = '';
+        
+        if (idade >= 18) {
+            resultado += '✅ Pode entrar na festa\n';
+            
+            if (dinheiro >= 50) {
+                resultado += '🥤 E pode comprar refrigerante!';
+            } else {
+                resultado += '💸 Mas sem dinheiro para bebida';
+            }
+        } else {
+            resultado = '❌ Não pode entrar - menor de idade';
+        }
+        
+        document.getElementById('resultadoDemo').innerHTML = 
+            '<h4>🖥️ Resultado:</h4><pre style="font-family: inherit; margin-top: 0.5rem; white-space: pre-wrap;">' + resultado + '</pre>';
+    }
+
+    // Quiz
+    function checkAnswer(element, isCorrect) {
+        // Reset all options
+        document.querySelectorAll('.quiz-option').forEach(opt => {
+            opt.classList.remove('correct', 'wrong');
+            opt.style.pointerEvents = 'none';
+        });
+        
+        const feedback = document.getElementById('quizFeedback');
+        
+        if (isCorrect) {
+            element.classList.add('correct');
+            feedback.innerHTML = '<span style="color: var(--success);">✅ Correto! X (10) é maior que Y (5), então executa o IF.</span>';
+        } else {
+            element.classList.add('wrong');
+            feedback.innerHTML = '<span style="color: var(--danger);">❌ Errado. X vale 10 e Y vale 5. 10 > 5 é verdadeiro!</span>';
+        }
+    }
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('nav a').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Update active state
+                document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+            }
+        });
+    });
+
+    // Run demo on load
+    executarDemo();
+</script>
+
+</body>
+</html>
