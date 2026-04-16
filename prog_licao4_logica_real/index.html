@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FB Aulas Online - Lição 4: Lógica Real</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #10b981;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+            --gradient-2: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--darker);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--darker);
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+        }
+
+        .lesson-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.5rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--glass);
+            color: var(--light);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1001;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--gradient-1);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .section-header p {
+            color: var(--gray);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Theory Cards */
+        .theory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .theory-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theory-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-1);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .theory-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .theory-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .theory-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--light);
+        }
+
+        .theory-card p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .code-snippet {
+            background: var(--darker);
+            border-radius: 12px;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            border: 1px solid var(--glass-border);
+        }
+
+        .code-snippet .comment { color: var(--gray); }
+        .code-snippet .keyword { color: var(--secondary); }
+        .code-snippet .function { color: var(--primary); }
+        .code-snippet .string { color: var(--accent); }
+
+        /* Interactive Console */
+        .console-section {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border-radius: 32px;
+            padding: 3rem;
+            margin: 4rem auto;
+            border: 1px solid var(--glass-border);
+        }
+
+        .console-container {
+            background: #1e1e1e;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .console-header {
+            background: #2d2d2d;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .console-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .console-title {
+            margin-left: 1rem;
+            color: #666;
+            font-size: 0.875rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .console-body {
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 300px;
+        }
+
+        .console-line {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .console-prompt {
+            color: var(--accent);
+        }
+
+        .console-input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            width: 100%;
+            caret-color: var(--accent);
+        }
+
+        .console-output {
+            color: #ccc;
+            margin-top: 0.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .console-output.success { color: var(--success); }
+        .console-output.error { color: var(--error); }
+        .console-output.info { color: var(--primary); }
+
+        /* Interactive Playground */
+        .playground {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .editor-panel {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .panel-header h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .editor-area {
+            padding: 1.5rem;
+            min-height: 300px;
+        }
+
+        .logic-builder {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .logic-block {
+            background: var(--darker);
+            border: 2px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: move;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logic-block:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .logic-block.dragging {
+            opacity: 0.5;
+        }
+
+        .block-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .block-if { background: rgba(99, 102, 241, 0.2); color: var(--primary); }
+        .block-else { background: rgba(236, 72, 153, 0.2); color: var(--secondary); }
+        .block-loop { background: rgba(16, 185, 129, 0.2); color: var(--accent); }
+
+        .drop-zone {
+            background: rgba(99, 102, 241, 0.05);
+            border: 2px dashed var(--glass-border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            min-height: 200px;
+            transition: all 0.3s;
+        }
+
+        .drop-zone.drag-over {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .output-panel {
+            background: var(--darker);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 150px;
+        }
+
+        /* Exercises Section */
+        .exercises-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .exercise-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            transition: all 0.3s;
+        }
+
+        .exercise-card:hover {
+            transform: scale(1.02);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .difficulty {
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .difficulty-easy { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+        .difficulty-medium { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .difficulty-hard { background: rgba(239, 68, 68, 0.2); color: var(--error); }
+
+        .exercise-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .exercise-content p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .code-editor {
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+        }
+
+        .code-editor textarea {
+            width: 100%;
+            min-height: 150px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            line-height: 1.6;
+        }
+
+        .editor-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .run-btn {
+            background: var(--gradient-2);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .run-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .result-display {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result-display.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .result-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .support-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .support-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray);
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .playground { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.5rem; }
+            .console-section { padding: 1.5rem; }
+            .theory-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darker);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Interactive Elements */
+        .interactive-demo {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--glass-border);
+        }
+
+        .demo-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-group label {
+            font-size: 0.875rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .control-group input, .control-group select {
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: var(--darker);
+            color: var(--light);
+            font-family: inherit;
+        }
+
+        .visualization {
+            background: var(--darker);
+            border-radius: 12px;
+            padding: 2rem;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .flow-node {
+            padding: 1rem 2rem;
+            background: var(--glass);
+            border: 2px solid var(--glass-border);
+            border-radius: 12px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .flow-node.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.2);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .flow-arrow {
+            color: var(--gray);
+            font-size: 1.5rem;
+        }
+
+        .truth-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .truth-table th, .truth-table td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .truth-table th {
+            background: var(--glass);
+            font-weight: 600;
+        }
+
+        .truth-table tr:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .truth-table td.true { color: var(--success); font-weight: 600; }
+        .truth-table td.false { color: var(--error); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <nav>
+        <div class="logo">
+            <span>⚡</span>
+            FB Aulas Online
+        </div>
+        <ul class="nav-links">
+            <li><a href="#teoria">Teoria</a></li>
+            <li><a href="#pratica">Prática</a></li>
+            <li><a href="#exercicios">Exercícios</a></li>
+            <li><a href="#consola">Consola</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="lesson-badge">
+                <span>📚</span>
+                Lição 4 de 12
+            </div>
+            <h1>Lógica Real</h1>
+            <p>Domine os conceitos fundamentais de lógica de programação através de exemplos práticos do mundo real. Aprenda a tomar decisões, criar condições e resolver problemas complexos.</p>
+            <div class="cta-buttons">
+                <a href="#teoria" class="btn btn-primary">
+                    <span>🚀</span>
+                    Começar Lição
+                </a>
+                <a href="#consola" class="btn btn-secondary">
+                    <span>💻</span>
+                    Abrir Consola
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="teoria">
+        <div class="section-header fade-in">
+            <h2><span>🧠</span> Fundamentos Teóricos</h2>
+            <p>Entenda os conceitos essenciais de lógica de programação aplicados a situações reais</p>
+        </div>
+
+        <div class="theory-grid">
+            <div class="theory-card fade-in">
+                <div class="card-icon">🔀</div>
+                <h3>Estruturas Condicionais</h3>
+                <p>Aprenda a tomar decisões no código usando if, else if e else. Compare valores e execute diferentes ações baseadas em condições.</p>
+                <div class="code-snippet">
+<span class="keyword">if</span> (idade >= <span class="string">18</span>) {
+    <span class="function">console</span>.log(<span class="string">"Maior de idade"</span>);
+} <span class="keyword">else</span> {
+    <span class="function">console</span>.log(<span class="string">"Menor de idade"</span>);
+}
+                </div>
+            </div>
+
+            <div class="theory-card fade-in">
+                <div class="card-icon">🔁</div>
+                <h3>Operadores Lógicos</h3>
+                <p>Combine múltiplas condições usando AND (&&), OR (||) e NOT (!). Crie verificações complexas para validar dados.</p>
+                <div class="code-snippet">
+<span class="keyword">if</span> (saldo > <span class="string">0</span> && status === <span class="string">"ativo"</span>) {
+    <span class="function">permitirTransacao</span>();
+}
+                </div>
+            </div>
+
+            <div class="theory-card fade-in">
+                <div class="card-icon">📊</div>
+                <h3>Comparações</h3>
+                <p>Utilize operadores de comparação para verificar igualdade, diferença, maior/menor que. Essenciais para filtros e validações.</p>
+                <div class="code-snippet">
+<span class="comment">// Operadores: ==, ===, !=, !==, >, <, >=, <=</span>
+<span class="keyword">const</span> aprovado = nota >= <span class="string">10</span> && faltas < <span class="string">5</span>;
+                </div>
+            </div>
+
+            <div class="theory-card fade-in">
+                <div class="card-icon">🎯</div>
+                <h3>Switch Case</h3>
+                <p>Quando há múltiplas condições, use switch para organizar melhor o código. Ideal para menus e estados.</p>
+                <div class="code-snippet">
+<span class="keyword">switch</span>(opcao) {
+    <span class="keyword">case</span> <span class="string">1</span>: <span class="function">depositar</span>(); <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">2</span>: <span class="function">levantar</span>(); <span class="keyword">break</span>;
+    <span class="keyword">default</span>: <span class="function">erro</span>();
+}
+                </div>
+            </div>
+        </div>
+
+        <div class="interactive-demo fade-in">
+            <h3 style="margin-bottom: 1.5rem;">🎮 Simulador de Decisões</h3>
+            <div class="demo-controls">
+                <div class="control-group">
+                    <label>Idade</label>
+                    <input type="number" id="idadeInput" value="20" min="0" max="120">
+                </div>
+                <div class="control-group">
+                    <label>Tem Carta?</label>
+                    <select id="cartaInput">
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Saldo (MTN)</label>
+                    <input type="number" id="saldoInput" value="5000" min="0">
+                </div>
+            </div>
+            <div class="visualization">
+                <div class="flow-diagram" id="flowDiagram">
+                    <div class="flow-node" id="node1">Verificar Idade ≥ 18</div>
+                    <div class="flow-arrow">⬇️</div>
+                    <div class="flow-node" id="node2">Verificar Carta</div>
+                    <div class="flow-arrow">⬇️</div>
+                    <div class="flow-node" id="node3">Verificar Saldo ≥ 1000</div>
+                    <div class="flow-arrow">⬇️</div>
+                    <div class="flow-node" id="node4">Resultado</div>
+                </div>
+            </div>
+            <div id="decisionResult" style="margin-top: 1rem; padding: 1rem; background: var(--glass); border-radius: 8px; text-align: center; font-weight: 600;"></div>
+        </div>
+
+        <div class="interactive-demo fade-in">
+            <h3 style="margin-bottom: 1.5rem;">📋 Tabela Verdade Interativa</h3>
+            <p style="margin-bottom: 1rem; color: var(--gray);">Entenda como os operadores lógicos combinam condições:</p>
+            <table class="truth-table">
+                <thead>
+                    <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>A && B (AND)</th>
+                        <th>A || B (OR)</th>
+                        <th>!A (NOT)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="true">true</td>
+                        <td class="true">true</td>
+                        <td class="true">true</td>
+                        <td class="true">true</td>
+                        <td class="false">false</td>
+                    </tr>
+                    <tr>
+                        <td class="true">true</td>
+                        <td class="false">false</td>
+                        <td class="false">false</td>
+                        <td class="true">true</td>
+                        <td class="false">false</td>
+                    </tr>
+                    <tr>
+                        <td class="false">false</td>
+                        <td class="true">true</td>
+                        <td class="false">false</td>
+                        <td class="true">true</td>
+                        <td class="true">true</td>
+                    </tr>
+                    <tr>
+                        <td class="false">false</td>
+                        <td class="false">false</td>
+                        <td class="false">false</td>
+                        <td class="false">false</td>
+                        <td class="true">true</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="pratica" class="console-section">
+        <div class="section-header fade-in">
+            <h2><span>🛠️</span> Laboratório Prático</h2>
+            <p>Experimente construir algoritmos arrastando blocos lógicos</p>
+        </div>
+
+        <div class="playground fade-in">
+            <div class="editor-panel">
+                <div class="panel-header">
+                    <h4><span>🧩</span> Blocos Disponíveis</h4>
+                    <span style="color: var(--gray); font-size: 0.875rem;">Arraste para a zona</span>
+                </div>
+                <div class="editor-area">
+                    <div class="logic-builder">
+                        <div class="logic-block" draggable="true" data-type="if">
+                            <div class="block-icon block-if">IF</div>
+                            <div>
+                                <strong>Se (Condição)</strong>
+                                <p style="font-size: 0.875rem; color: var(--gray); margin: 0;">Verifica uma condição</p>
+                            </div>
+                        </div>
+                        <div class="logic-block" draggable="true" data-type="else">
+                            <div class="block-icon block-else">ELSE</div>
+                            <div>
+                                <strong>Senão</strong>
+                                <p style="font-size: 0.875rem; color: var(--gray); margin: 0;">Executa se condição for falsa</p>
+                            </div>
+                        </div>
+                        <div class="logic-block" draggable="true" data-type="loop">
+                            <div class="block-icon block-loop">FOR</div>
+                            <div>
+                                <strong>Repetir</strong>
+                                <p style="font-size: 0.875rem; color: var(--gray); margin: 0;">Loop com contador</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="editor-panel">
+                <div class="panel-header">
+                    <h4><span>📋</span> Zona de Construção</h4>
+                    <button class="btn btn-secondary" onclick="clearDropZone()" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                        Limpar
+                    </button>
+                </div>
+                <div class="editor-area">
+                    <div class="drop-zone" id="dropZone">
+                        <p style="color: var(--gray);">Arraste os blocos aqui para construir seu algoritmo</p>
+                    </div>
+                    <div class="output-panel" id="logicOutput">
+                        <span style="color: var(--gray);">// Output aparecerá aqui...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="consola">
+        <div class="section-header fade-in">
+            <h2><span>💻</span> Consola Interativa</h2>
+            <p>Teste seus conhecimentos em tempo real</p>
+        </div>
+
+        <div class="console-container fade-in">
+            <div class="console-header">
+                <div class="console-dot dot-red"></div>
+                <div class="console-dot dot-yellow"></div>
+                <div class="console-dot dot-green"></div>
+                <span class="console-title">fb-aulas-console — node</span>
+            </div>
+            <div class="console-body" id="consoleBody">
+                <div class="console-line">
+                    <span class="console-prompt">➜</span>
+                    <span style="color: #666;">Bem-vindo à Lição 4! Digite 'help' para ver comandos disponíveis.</span>
+                </div>
+                <div class="console-line">
+                    <span class="console-prompt">➜</span>
+                    <input type="text" class="console-input" id="consoleInput" placeholder="Digite seu código aqui..." autofocus>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="exercicios">
+        <div class="section-header fade-in">
+            <h2><span>✏️</span> Exercícios Práticos</h2>
+            <p>Complete os desafios para desbloquear a próxima lição</p>
+        </div>
+
+        <div class="exercises-container">
+            <div class="exercise-card fade-in">
+                <div class="exercise-header">
+                    <h3>Exercício 1: Verificação de Acesso</h3>
+                    <span class="difficulty difficulty-easy">Fácil</span>
+                </div>
+                <div class="exercise-content">
+                    <p>Crie uma função que verifica se um usuário pode acessar um sistema. Regras: idade ≥ 18, conta ativa, e não estar bloqueado.</p>
+                    <div class="code-editor">
+                        <textarea id="ex1-code" placeholder="// Escreva seu código aqui
+function verificarAcesso(idade, ativa, bloqueado) {
+    // Sua lógica aqui
+    return true; // ou false
+}"></textarea>
+                        <div class="editor-toolbar">
+                            <span style="color: var(--gray); font-size: 0.875rem;">JavaScript</span>
+                            <button class="run-btn" onclick="runExercise(1)">
+                                <span>▶️</span>
+                                Executar Testes
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-display" id="ex1-result"></div>
+                </div>
+            </div>
+
+            <div class="exercise-card fade-in">
+                <div class="exercise-header">
+                    <h3>Exercício 2: Calculadora de Desconto</h3>
+                    <span class="difficulty difficulty-medium">Médio</span>
+                </div>
+                <div class="exercise-content">
+                    <p>Implemente uma função que calcula descontos: 10% para compras > 1000 MTN, 5% para > 500 MTN, 0% abaixo disso. Adicione 2% extra para clientes VIP.</p>
+                    <div class="code-editor">
+                        <textarea id="ex2-code" placeholder="// Escreva seu código aqui
+function calcularDesconto(valor, isVip) {
+    let desconto = 0;
+    // Sua lógica aqui
+    return valor - (valor * desconto);
+}"></textarea>
+                        <div class="editor-toolbar">
+                            <span style="color: var(--gray); font-size: 0.875rem;">JavaScript</span>
+                            <button class="run-btn" onclick="runExercise(2)">
+                                <span>▶️</span>
+                                Executar Testes
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-display" id="ex2-result"></div>
+                </div>
+            </div>
+
+            <div class="exercise-card fade-in">
+                <div class="exercise-header">
+                    <h3>Exercício 3: Sistema de Notas</h3>
+                    <span class="difficulty difficulty-hard">Difícil</span>
+                </div>
+                <div class="exercise-content">
+                    <p>Crie um sistema que classifica notas: A (≥18), B (≥15), C (≥12), D (≥10), F (<10). Considere recuperação se frequência < 75%.</p>
+                    <div class="code-editor">
+                        <textarea id="ex3-code" placeholder="// Escreva seu código aqui
+function classificarNota(nota, frequencia) {
+    // Sua lógica aqui
+    return 'A'; // ou 'B', 'C', 'D', 'F', 'Recuperação'
+}"></textarea>
+                        <div class="editor-toolbar">
+                            <span style="color: var(--gray); font-size: 0.875rem;">JavaScript</span>
+                            <button class="run-btn" onclick="runExercise(3)">
+                                <span>▶️</span>
+                                Executar Testes
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-display" id="ex3-result"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="logo" style="justify-content: center; margin-bottom: 1rem;">
+                <span>⚡</span>
+                FB Aulas Online
+            </div>
+            <p style="color: var(--gray); margin-bottom: 1.5rem;">Aprenda programação de forma prática e interativa</p>
+            <div class="support-info">
+                <div class="support-item">
+                    <span>📞</span>
+                    <span>860407269</span>
+                </div>
+                <div class="support-item">
+                    <span>💬</span>
+                    <span>WhatsApp disponível</span>
+                </div>
+                <div class="support-item">
+                    <span>💰</span>
+                    <span>500 MTN (3 prestações)</span>
+                </div>
+            </div>
+            <p style="color: var(--gray); margin-top: 2rem; font-size: 0.875rem;">
+                © 2024 FB Aulas Online. Todos os direitos reservados.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Progress Bar
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+        };
+
+        // Fade in animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Decision Simulator
+        function updateDecision() {
+            const idade = parseInt(document.getElementById('idadeInput').value);
+            const temCarta = document.getElementById('cartaInput').value === 'true';
+            const saldo = parseInt(document.getElementById('saldoInput').value);
+            
+            const nodes = ['node1', 'node2', 'node3', 'node4'];
+            nodes.forEach(id => document.getElementById(id).classList.remove('active'));
+            
+            let result = '';
+            let delay = 0;
+            
+            setTimeout(() => {
+                document.getElementById('node1').classList.add('active');
+                if (idade >= 18) {
+                    setTimeout(() => {
+                        document.getElementById('node2').classList.add('active');
+                        if (temCarta) {
+                            setTimeout(() => {
+                                document.getElementById('node3').classList.add('active');
+                                if (saldo >= 1000) {
+                                    setTimeout(() => {
+                                        document.getElementById('node4').classList.add('active');
+                                        result = '✅ Aprovado! Pode alugar o veículo.';
+                                        document.getElementById('decisionResult').innerHTML = result;
+                                        document.getElementById('decisionResult').style.background = 'rgba(34, 197, 94, 0.1)';
+                                        document.getElementById('decisionResult').style.color = 'var(--success)';
+                                    }, 500);
+                                } else {
+                                    result = '❌ Saldo insuficiente. Mínimo: 1000 MTN';
+                                    document.getElementById('decisionResult').innerHTML = result;
+                                    document.getElementById('decisionResult').style.background = 'rgba(239, 68, 68, 0.1)';
+                                    document.getElementById('decisionResult').style.color = 'var(--error)';
+                                }
+                            }, 500);
+                        } else {
+                            result = '❌ Carta de condução obrigatória';
+                            document.getElementById('decisionResult').innerHTML = result;
+                            document.getElementById('decisionResult').style.background = 'rgba(239, 68, 68, 0.1)';
+                            document.getElementById('decisionResult').style.color = 'var(--error)';
+                        }
+                    }, 500);
+                } else {
+                    result = '❌ Deve ter pelo menos 18 anos';
+                    document.getElementById('decisionResult').innerHTML = result;
+                    document.getElementById('decisionResult').style.background = 'rgba(239, 68, 68, 0.1)';
+                    document.getElementById('decisionResult').style.color = 'var(--error)';
+                }
+            }, 100);
+        }
+
+        document.getElementById('idadeInput').addEventListener('input', updateDecision);
+        document.getElementById('cartaInput').addEventListener('change', updateDecision);
+        document.getElementById('saldoInput').addEventListener('input', updateDecision);
+
+        // Drag and Drop
+        let draggedElement = null;
+
+        document.querySelectorAll('.logic-block').forEach(block => {
+            block.addEventListener('dragstart', function(e) {
+                draggedElement = this;
+                this.classList.add('dragging');
+            });
+
+            block.addEventListener('dragend', function() {
+                this.classList.remove('dragging');
+            });
+        });
+
+        const dropZone = document.getElementById('dropZone');
+
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', function() {
+            this.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            if (draggedElement) {
+                const clone = draggedElement.cloneNode(true);
+                clone.classList.remove('dragging');
+                clone.style.cursor = 'default';
+                clone.draggable = false;
+                
+                if (this.querySelector('p')) {
+                    this.innerHTML = '';
+                }
+                
+                this.appendChild(clone);
+                updateLogicOutput();
+            }
+        });
+
+        function clearDropZone() {
+            const dropZone = document.getElementById('dropZone');
+            dropZone.innerHTML = '<p style="color: var(--gray);">Arraste os blocos aqui para construir seu algoritmo</p>';
+            document.getElementById('logicOutput').innerHTML = '<span style="color: var(--gray);">// Output aparecerá aqui...</span>';
+        }
+
+        function updateLogicOutput() {
+            const blocks = document.querySelectorAll('#dropZone .logic-block');
+            let output = '<span style="color: var(--success);">✓ Algoritmo construído:</span><br><br>';
+            
+            blocks.forEach((block, index) => {
+                const type = block.getAttribute('data-type');
+                if (type === 'if') output += `<span style="color: var(--secondary);">if</span> (condicao) {<br>`;
+                if (type === 'else') output += `} <span style="color: var(--secondary);">else</span> {<br>`;
+                if (type === 'loop') output += `<span style="color: var(--secondary);">for</span> (let i = 0; i < n; i++) {<br>`;
+                output += `    <span style="color: var(--gray);">// ação ${index + 1}</span><br>`;
+            });
+            
+            output += '}';
+            document.getElementById('logicOutput').innerHTML = output;
+        }
+
+        // Console
+        const consoleInput = document.getElementById('consoleInput');
+        const consoleBody = document.getElementById('consoleBody');
+
+        consoleInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const command = this.value.trim();
+                if (command) {
+                    addConsoleLine(command, 'input');
+                    processCommand(command);
+                    this.value = '';
+                }
+            }
+        });
+
+        function addConsoleLine(text, type) {
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            
+            if (type === 'input') {
+                line.innerHTML = `<span class="console-prompt">➜</span><span style="color: #fff;">${text}</span>`;
+            } else if (type === 'output') {
+                line.innerHTML = `<span class="console-output ${text.class}">${text.message}</span>`;
+            }
+            
+            consoleBody.insertBefore(line, consoleBody.lastElementChild);
+        }
+
+        function processCommand(cmd) {
+            let response = { message: '', class: '' };
+            
+            if (cmd === 'help') {
+                response.message = 'Comandos: help, clear, teste [n], exemplo [tipo], variavel, operador';
+                response.class = 'info';
+            } else if (cmd === 'clear') {
+                const lines = consoleBody.querySelectorAll('.console-line:not(:last-child)');
+                lines.forEach(line => line.remove());
+                return;
+            } else if (cmd.startsWith('teste')) {
+                const num = cmd.split(' ')[1];
+                if (num === '1') {
+                    response.message = 'Teste 1: verificarAcesso(20, true, false) → true ✓';
+                    response.class = 'success';
+                } else if (num === '2') {
+                    response.message = 'Teste 2: calcularDesconto(1500, true) → 1275 MTN ✓';
+                    response.class = 'success';
+                } else {
+                    response.message = 'Use: teste 1, teste 2 ou teste 3';
+                    response.class = 'info';
+                }
+            } else if (cmd.startsWith('exemplo')) {
+                const type = cmd.split(' ')[1];
+                if (type === 'if') {
+                    response.message = 'if (x > 10) { console.log("Maior"); } else { console.log("Menor"); }';
+                    response.class = 'info';
+                } else if (type === 'switch') {
+                    response.message = 'switch(x) { case 1: break; default: break; }';
+                    response.class = 'info';
+                } else {
+                    response.message = 'Tipos: if, switch, for, while';
+                    response.class = 'info';
+                }
+            } else if (cmd.includes('&&') || cmd.includes('||')) {
+                try {
+                    const result = eval(cmd);
+                    response.message = `Resultado: ${result}`;
+                    response.class = 'success';
+                } catch {
+                    response.message = 'Erro na expressão lógica';
+                    response.class = 'error';
+                }
+            } else {
+                try {
+                    const result = eval(cmd);
+                    response.message = `Resultado: ${result}`;
+                    response.class = 'success';
+                } catch(e) {
+                    response.message = `Erro: ${e.message}`;
+                    response.class = 'error';
+                }
+            }
+            
+            addConsoleLine(response, 'output');
+        }
+
+        // Exercises
+        function runExercise(num) {
+            const code = document.getElementById(`ex${num}-code`).value;
+            const resultDiv = document.getElementById(`ex${num}-result`);
+            
+            resultDiv.classList.add('show');
+            
+            try {
+                let passed = true;
+                let message = '';
+                
+                if (num === 1) {
+                    // Test exercise 1
+                    eval(code);
+                    if (typeof verificarAcesso === 'function') {
+                        const test1 = verificarAcesso(20, true, false) === true;
+                        const test2 = verificarAcesso(16, true, false) === false;
+                        const test3 = verificarAcesso(20, false, false) === false;
+                        const test4 = verificarAcesso(20, true, true) === false;
+                        
+                        if (test1 && test2 && test3 && test4) {
+                            message = '✅ Todos os testes passaram! (4/4)';
+                            resultDiv.className = 'result-display result-success show';
+                        } else {
+                            passed = false;
+                            message = '❌ Alguns testes falharam. Verifique sua lógica.';
+                            resultDiv.className = 'result-display result-error show';
+                        }
+                    } else {
+                        passed = false;
+                        message = '❌ Função verificarAcesso não encontrada';
+                        resultDiv.className = 'result-display result-error show';
+                    }
+                } else if (num === 2) {
+                    eval(code);
+                    if (typeof calcularDesconto === 'function') {
+                        const test1 = Math.abs(calcularDesconto(1500, false) - 1350) < 0.01;
+                        const test2 = Math.abs(calcularDesconto(600, false) - 570) < 0.01;
+                        const test3 = Math.abs(calcularDesconto(1500, true) - 1320) < 0.01;
+                        
+                        if (test1 && test2 && test3) {
+                            message = '✅ Todos os testes passaram! (3/3)';
+                            resultDiv.className = 'result-display result-success show';
+                        } else {
+                            passed = false;
+                            message = '❌ Valores incorretos. Revise os cálculos.';
+                            resultDiv.className = 'result-display result-error show';
+                        }
+                    } else {
+                        passed = false;
+                        message = '❌ Função calcularDesconto não encontrada';
+                        resultDiv.className = 'result-display result-error show';
+                    }
+                } else if (num === 3) {
+                    eval(code);
+                    if (typeof classificarNota === 'function') {
+                        const test1 = classificarNota(18, 80) === 'A';
+                        const test2 = classificarNota(15, 80) === 'B';
+                        const test3 = classificarNota(12, 70) === 'C';
+                        const test4 = classificarNota(18, 70) === 'Recuperação';
+                        
+                        if (test1 && test2 && test3 && test4) {
+                            message = '✅ Todos os testes passaram! (4/4)';
+                            resultDiv.className = 'result-display result-success show';
+                        } else {
+                            passed = false;
+                            message = '❌ Classificações incorretas. Verifique frequência.';
+                            resultDiv.className = 'result-display result-error show';
+                        }
+                    } else {
+                        passed = false;
+                        message = '❌ Função classificarNota não encontrada';
+                        resultDiv.className = 'result-display result-error show';
+                    }
+                }
+                
+                resultDiv.textContent = message;
+                
+            } catch (e) {
+                resultDiv.textContent = '❌ Erro: ' + e.message;
+                resultDiv.className = 'result-display result-error show';
+            }
+        }
+
+        // Initialize
+        updateDecision();
+    </script>
+</body>
+</html>
