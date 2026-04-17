@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula de Arrays - Programação para Iniciantes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-code: #0d1117;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #334155;
+            --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            --gradient-2: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --gradient-3: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(217, 70, 239, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        /* Header */
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-text-fill-color: initial;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-card);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+        }
+
+        .progress-track {
+            width: 200px;
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--gradient-2);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-light);
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem 0;
+        }
+
+        .lesson-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-light);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Lesson Cards */
+        .lesson-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .lesson-section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-number {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin: 1.5rem 0 1rem;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        strong {
+            color: var(--text-primary);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+        .code-header {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-lang {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .code-lang::before {
+            content: '●';
+            color: var(--accent);
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.375rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        pre {
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .code-block pre code {
+            color: #e6edf3;
+            background: transparent;
+            padding: 0;
+        }
+
+        .keyword { color: #ff7b72; }
+        .string { color: #a5d6ff; }
+        .number { color: #79c0ff; }
+        .function { color: #d2a8ff; }
+        .comment { color: #8b949e; font-style: italic; }
+        .operator { color: #ff7b72; }
+        .parameter { color: #ffa657; }
+
+        /* Array Visualizer */
+        .array-container {
+            background: var(--bg-dark);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .array-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .array-box {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            min-height: 80px;
+            padding: 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .array-item {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            position: relative;
+            animation: popIn 0.3s ease;
+        }
+
+        .array-item.highlight {
+            background: var(--gradient-2);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+
+        .array-index {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .array-item:hover .array-index {
+            opacity: 1;
+        }
+
+        .array-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .method-card {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .method-card:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .method-name {
+            font-family: 'Fira Code', monospace;
+            color: var(--primary-light);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .method-desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Interactive Playground */
+        .playground {
+            background: var(--bg-code);
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            background: var(--gradient-1);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .playground-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .playground-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .playground-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 400px;
+        }
+
+        .editor-panel {
+            border-right: 1px solid var(--border);
+        }
+
+        .editor-textarea {
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            background: var(--bg-code);
+            color: #e6edf3;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            padding: 1.5rem;
+            border: none;
+            resize: none;
+            outline: none;
+        }
+
+        .output-panel {
+            background: var(--bg-dark);
+            padding: 1.5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            overflow-y: auto;
+        }
+
+        .output-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .output-content {
+            color: var(--success);
+            line-height: 1.7;
+        }
+
+        .output-error {
+            color: var(--danger);
+        }
+
+        /* Tips Box */
+        .tip-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 16px 16px 0;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .tip-title {
+            color: var(--accent);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: var(--gradient-1);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover td {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* Quiz Section */
+        .quiz-option {
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .quiz-option.wrong {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            background: var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Navigation */
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-prev {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .nav-prev:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .nav-next {
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+        }
+
+        .nav-next:hover {
+            transform: translateX(4px);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Exercise Cards */
+        .exercise-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .exercise-card:hover {
+            border-color: var(--primary);
+            transform: translateX(8px);
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .difficulty {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .difficulty-easy {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .difficulty-medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .difficulty-hard {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .exercise-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .check-btn {
+            margin-top: 1rem;
+            background: var(--primary);
+            color: white;
+        }
+
+        .check-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .playground-body {
+                grid-template-columns: 1fr;
+            }
+            
+            .editor-panel {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            
+            .progress-track {
+                width: 100px;
+            }
+            
+            .lesson-section {
+                padding: 1.5rem;
+            }
+            
+            .comparison-table {
+                font-size: 0.875rem;
+            }
+            
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.75rem;
+            }
+
+            .array-methods {
+                grid-template-columns: 1fr;
+            }
+
+            .array-box {
+                min-height: 60px;
+            }
+
+            .Array-item {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">📊</div>
+                    <span>CodeAcademy</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">0% Completo</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Lesson Header -->
+            <div class="lesson-header fade-in">
+                <div class="badge">📦 Módulo 5 • Estruturas de Dados</div>
+                <h1>Arrays (Listas)</h1>
+                <p class="subtitle">Aprenda a armazenar múltiplos valores em uma única variável e manipular coleções de dados!</p>
+            </div>
+
+            <!-- Section 1: Introduction -->
+            <section class="lesson-section fade-in" id="section1">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <h2>O que são Arrays?</h2>
+                </div>
+                
+                <p>Um <strong>Array</strong> é uma estrutura de dados que armazena múltiplos valores em uma única variável. Pense nele como uma <strong>lista ordenada</strong> de itens.</p>
+                
+                <div class="array-container">
+                    <div class="array-label">Visualização: Array de Frutas</div>
+                    <div class="array-box" id="arrayDemo">
+                        <div class="array-item" data-index="0">🍎<span class="array-index">[0]</span></div>
+                        <div class="Array-item" data-index="1">🍌<span class="array-index">[1]</span></div>
+                        <div class="Array-item" data-index="2">🍇<span class="Array-index">[2]</span></div>
+                        <div class="Array-item" data-index="3">🍊<span class="Array-index">[3]</span></div>
+                    </div>
+                    <div class="demo-controls">
+                        <button class="btn btn-primary" onclick="addItem()">➕ Adicionar</button>
+                        <button class="btn btn-secondary" onclick="removeItem()">➖ Remover</button>
+                        <button class="btn btn-secondary" onclick="clearArray()">🗑️ Limpar</button>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">💡 Índices Importantes</div>
+                    <p>Arrays em JavaScript começam no índice <strong>0</strong> (zero). O primeiro elemento está na posição 0, o segundo na 1, e assim por diante!</p>
+                </div>
+            </section>
+
+            <!-- Section 2: Creating Arrays -->
+            <section class="lesson-section fade-in" id="section2">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <h2>Criando Arrays</h2>
+                </div>
+
+                <h3>Formas de Criar</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="comment">// Usando colchetes (mais comum)</span>
+<span class="keyword">let</span> frutas = [<span class="string">"Maçã"</span>, <span class="string">"Banana"</span>, <span class="string">"Laranja"</span>];
+
+<span class="comment">// Array vazio</span>
+<span class="keyword">let</span> numeros = [];
+
+<span class="comment">// Com new Array()</span>
+<span class="keyword">let</span> carros = <span class="keyword">new</span> <span class="function">Array</span>(<span class="string">"Fusca"</span>, <span class="string">"Gol"</span>, <span class="string">"Civic"</span>);</code></pre>
+                </div>
+
+                <h3>Acessando Elementos</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code>console.<span class="function">log</span>(frutas[<span class="number">0</span>]);    <span class="comment">// "Maçã"</span>
+console.<span class="function">log</span>(frutas[<span class="number">1</span>]);    <span class="comment">// "Banana"</span>
+console.<span class="function">log</span>(frutas[<span class="number">2</span>]);    <span class="comment">// "Laranja"</span>
+
+<span class="comment">// Último elemento</span>
+<span class="keyword">let</span> ultimo = frutas[frutas.<span class="function">length</span> - <span class="number">1</span>];</code></pre>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">🎯 Dica Pro</div>
+                    <p>Use <code>frutas.at(-1)</code> para pegar o último elemento sem calcular o length!</p>
+                </div>
+            </section>
+
+            <!-- Section 3: Modifying Arrays -->
+            <section class="lesson-section fade-in" id="section3">
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <h2>Modificando Arrays</h2>
+                </div>
+
+                <h3>Principais Métodos</h3>
+                
+                <div class="array-methods">
+                    <div class="method-card" onclick="demoMethod('push')">
+                        <div class="method-name">📥 push()</div>
+                        <div class="method-desc">Adiciona um elemento ao FINAL do array</div>
+                    </div>
+                    <div class="method-card" onclick="demoMethod('pop')">
+                        <div class="method-name">📤 pop()</div>
+                        <div class="method-desc">Remove o ÚLTIMO elemento e retorna ele</div>
+                    </div>
+                    <div class="method-card" onclick="demoMethod('shift')">
+                        <div class="method-name">📤 shift()</div>
+                        <div class="method-desc">Remove o PRIMEIRO elemento e retorna ele</div>
+                    </div>
+                    <div class="method-card" onclick="demoMethod('unshift')">
+                        <div class="method-name">📥 unshift()</div>
+                        <div class="method-desc">Adiciona um elemento no INÍCIO do array</div>
+                    </div>
+                    <div class="method-card" onclick="demoMethod('splice')">
+                        <div class="method-name">✂️ splice()</div>
+                        <div class="method-desc">Remove/Adiciona elementos em qualquer posição</div>
+                    </div>
+                    <div class="method-card" onclick="demoMethod('indexOf')">
+                        <div class="method-name">🔍 indexOf()</div>
+                        <div class="method-desc">Encontra a posição de um elemento</div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">let</span> cores = [<span class="string">"Vermelho"</span>, <span class="string">"Verde"</span>, <span class="string">"Azul"</span>];
+
+cores.<span class="function">push</span>(<span class="string">"Amarelo"</span>);        <span class="comment">// ["Vermelho", "Verde", "Azul", "Amarelo"]</span>
+cores.<span class="function">pop</span>();                  <span class="comment">// Remove "Amarelo"</span>
+cores.<span class="function">unshift</span>(<span class="string">"Preto"</span>);     <span class="comment">// ["Preto", "Vermelho", "Verde", "Azul"]</span>
+cores.<span class="function">shift</span>();                <span class="comment">// Remove "Preto"</span>
+
+<span class="comment">// splice(posição, quantosRemover, adicionar...)</span>
+cores.<span class="function">splice</span>(<span class="number">1</span>, <span class="number">1</span>, <span class="string">"Rosa"</span>); <span class="comment">// ["Vermelho", "Rosa", "Azul"]</span></code></pre>
+                </div>
+            </section>
+
+            <!-- Section 4: Iterating Arrays -->
+            <section class="lesson-section fade-in" id="section4">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <h2>Percorrendo Arrays</h2>
+                </div>
+
+                <p>Combinando Arrays com Loops, podemos processar cada elemento:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">let</span> notas = [<span class="number">8.5</span>, <span class="number">9.0</span>, <span class="number">7.5</span>, <span class="number">10</span>];
+
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < notas.<span class="function">length</span>; i++) {
+    console.<span class="function">log</span>(<span class="string">"Nota "</span> + i + <span class="string">": "</span> + notas[i]);
+}
+
+<span class="comment">// Somando todas as notas</span>
+<span class="keyword">let</span> soma = <span class="number">0</span>;
+<span class="keyword">for</span> (<span class="keyword">let</span> nota <span class="keyword">of</span> notas) {
+    soma += nota;
+}
+console.<span class="function">log</span>(<span class="string">"Média: "</span> + soma / notas.<span class="function">length</span>);</code></pre>
+                </div>
+
+                <h3>for...of vs for...in</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Loop</th>
+                            <th>Uso</th>
+                            <th>Retorna</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>for...of</code></td>
+                            <td>Valores do array</td>
+                            <td>Elemento</td>
+                        </tr>
+                        <tr>
+                            <td><code>For...in</code></td>
+                            <td>Índices do array</td>
+                            <td>Índice (0, 1, 2...)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Section 5: Array Methods Deep Dive -->
+            <section class="lesson-section fade-in" id="section5">
+                <div class="section-header">
+                    <div class="section-number">5</div>
+                    <h2>Métodos Avançados</h2>
+                </div>
+
+                <h3>map() - Transforma cada elemento</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">let</span> numeros = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];
+
+<span class="keyword">let</span> dobrados = numeros.<span class="function">map</span>(num => num * <span class="number">2</span>);
+<span class="comment">// [2, 4, 6, 8]</span></code></pre>
+                </div>
+
+                <h3>filter() - Filtra elementos</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">let</span> idades = [<span class="number">15</span>, <span class="number">22</span>, <span class="number">18</span>, <span class="number">12</span>, <span class="number">30</span>];
+
+<span class="keyword">let</span> maiores = idades.<span class="function">filter</span>(idade => idade >= <span class="number">18</span>);
+<span class="comment">// [22, 18, 30]</span></code></pre>
+                </div>
+
+                <h3>reduce() - Reduz a um valor</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">let</span> valores = [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>];
+
+<span class="keyword">let</span> total = valores.<span class="function">reduce</span>((acc, val) => acc + val, <span class="number">0</span>);
+<span class="comment">// 60 (10+20+30)</span></code></pre>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">🚀 Métodos Modernos</div>
+                    <p>Esses métodos (<code>map</code>, <code>filter</code>, <code>reduce</code>) são extremamente poderosos e são usados constantemente no desenvolvimento profissional!</p>
+                </div>
+            </section>
+
+            <!-- Section 6: Practical Examples -->
+            <section class="lesson-section fade-in" id="section6">
+                <div class="section-header">
+                    <div class="section-number">6</div>
+                    <h2>Exemplos Práticos</h2>
+                </div>
+
+                <h3>1. Lista de Compras</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">let</span> compras = [<span class="string">"Leite"</span>, <span class="string">"Pão"</span>, <span class="string">"Ovos"</span>];
+
+<span class="comment">// Adicionar item</span>
+compras.<span class="function">push</span>(<span class="string">"Manteiga"</span>);
+
+<span class="comment">// Marcar como comprado (remover)</span>
+<span class="keyword">let</span> item = <span class="function">prompt</span>(<span class="string">"O que você comprou?"</span>);
+<span class="keyword">let</span> posicao = compras.<span class="function">indexOf</span>(item);
+
+<span class="keyword">if</span> (posicao !== -<span class="number">1</span>) {
+    compras.<span class="function">splice</span>(posicao, <span class="number">1</span>);
+    console.<span class="function">log</span>(item + <span class="string">" comprado! ✅"</span>);
+} <span class="keyword">else</span> {
+    console.<span class="function">log</span>(<span class="string">"Item não encontrado na lista"</span>);
+}</code></pre>
+                </div>
+
+                <h3>2. Maior e Menor Valor</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">let</span> valores = [<span class="number">45</span>, <span class="number">12</span>, <span class="number">89</span>, <span class="number">33</span>, <span class="number">5</span>];
+
+<span class="keyword">let</span> maior = Math.<span class="function">max</span>(...valores);
+<span class="keyword">let</span> menor = Math.<span class="function">min</span>(...valores);
+
+console.<span class="function">log</span>(<span class="string">"Maior: "</span> + maior);   <span class="comment">// 89</span>
+console.<span class="function">log</span>(<span class="string">"Menor: "</span> + menor);   <span class="comment">// 5</span></code></pre>
+                </div>
+
+                <h3>3. Array de Objetos</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">let</span> alunos = [
+    { nome: <span class="string">"Ana"</span>, nota: <span class="number">8.5</span> },
+    { nome: <span class="string">"Bruno"</span>, nota: <span class="number">7.0</span> },
+    { nome: <span class="string">"Carlos"</span>, nota: <span class="number">9.5</span> }
+];
+
+<span class="comment">// Encontrar alunos aprovados (nota >= 7)</span>
+<span class="keyword">let</span> aprovados = alunos.<span class="function">filter</span>(aluno => aluno.nota >= <span class="number">7</span>);
+
+aprovados.<span class="function">forEach</span>(aluno => {
+    console.<span class="function">log</span>(aluno.nome + <span class="string">" ✅"</span>);
+});</code></pre>
+                </div>
+            </section>
+
+            <!-- Section 7: Exercises -->
+            <section class="lesson-section fade-in" id="section7">
+                <div class="section-header">
+                    <div class="section-number">7</div>
+                    <h2>Exercícios Práticos</h2>
+                </div>
+
+                <!-- Exercise 1 -->
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <span class="difficulty difficulty-easy">Fácil</span>
+                        <span class="exercise-title">Exercício 1: Soma do Array</span>
+                    </div>
+                    <p>Crie uma função que recebe um array de números e retorna a soma de todos os elementos. Use o método <code>reduce</code>.</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">JavaScript</span>
+                        </div>
+                        <pre><code><span class="keyword">function</span> <span class="function">somarArray</span>(<span class="parameter">numeros</span>) {
+    <span class="comment">// Use reduce aqui</span>
+}</code></pre>
+                    </div>
+
+                    <button class="btn check-btn" onclick="checkExercise1()">✓ Verificar Resposta</button>
+                    
+                    <div class="success-message" id="success1">
+                        ✅ Resposta: <code>return numeros.reduce((a, b) => a + b, 0);</code>
+                    </div>
+                </div>
+
+                <!-- Exercise 2 -->
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <span class="difficulty difficulty-medium">Médio</span>
+                        <span class="exercise-title">Exercício 2: Remover Duplicados</span>
+                    </div>
+                    <p>Crie uma função que remove valores duplicados de um array. Dica: Use <code>filter</code> com <code>indexOf</code>.</p>
+                    
+                    <Button class="btn check-btn" onclick="checkExercise2()">✓ Ver Dica</button>
+                    
+                    <div class="success-message" id="success2">
+                        💡 Dica: <code>return array.filter((item, index) => array.indexOf(item) === index);</code>
+                    </div>
+                </div>
+
+                <!-- Exercise 3 -->
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <span class="difficulty difficulty-hard">Desafio</span>
+                        <span class="exercise-title">Exercício 3: Ordenar Array</span>
+                    </div>
+                    <p>Crie uma função que ordena um array de números em ordem crescente <strong>sem usar o método sort()</strong>. Implemente o algoritmo Bubble Sort!</p>
+                    
+                    <button class="btn check-btn" onclick="checkExercise3()">✓ Ver Resposta</button>
+                    
+                    <div class="success-message" id="success3">
+                        🧠 Algoritmo Bubble Sort:<br>
+                        <code>for (let i = 0; i < array.length; i++) {<br>
+                        &nbsp;&nbsp;for (let j = 0; j < array.length - 1; j++) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;if (array[j] > array[j + 1]) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[array[j], array[j + 1]] = [array[j + 1], array[j]];<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                        &nbsp;&nbsp;}<br>
+                        }</code>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 8: Quiz -->
+            <section class="lesson-section fade-in" id="section8">
+                <div class="section-header">
+                    <div class="section-number">8</div>
+                    <h2>Quiz Rápido</h2>
+                </div>
+
+                <p><strong>Pergunta 1:</strong> Qual método adiciona um elemento no INÍCIO do array?</p>
+                
+                <div class="quiz-option" onclick="selectOption(this, false)">
+                    <span class="option-letter">A</span>
+                    <span>push()</span>
+                </div>
+                <div class="quiz-option" onclick="selectOption(this, true)">
+                    <span class="option-letter">B</span>
+                    <span>unshift()</span>
+                </div>
+                <div class="quiz-option" onclick="selectOption(this, false)">
+                    <span class="option-letter">C</span>
+                    <span>shift()</span>
+                </div>
+
+                <p style="margin-top: 2rem;"><strong>Pergunta 2:</strong> O que <code>[1, 2, 3].map(x => x * 2)</code> retorna?</p>
+                
+                <div class="quiz-option" onclick="selectOption(this, true)">
+                    <span class="option-letter">A</span>
+                    <span>[2, 4, 6]</span>
+                </div>
+                <div class="quiz-option" onclick="selectOption(this, false)">
+                    <span class="option-letter">B</span>
+                    <span>[1, 2, 3, 2, 4, 6]</span>
+                </div>
+                <div class="quiz-option" onclick="selectOption(this, false)">
+                    <span class="option-letter">C</span>
+                    <span>[2, 4, 6, 8]</span>
+                </div>
+
+                <p style="margin-top: 2rem;"><strong>Pergunta 3:</strong> Qual é o índice do elemento "Banana" em <code>["Maçã", "Banana"]</code>?</p>
+                
+                <div class="quiz-option" onclick="selectOption(this, false)">
+                    <span class="option-letter">A</span>
+                    <span>0</span>
+                </div>
+                <div class="quiz-option" onclick="selectOption(this, true)">
+                    <span class="option-letter">B</span>
+                    <span>1</span>
+                </div>
+                <div class="quiz-option" onclick="selectOption(this, false)">
+                    <span class="option-letter">C</span>
+                    <span>2</span>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="lesson-nav">
+                <a href="#" class="nav-btn nav-prev">
+                    ← Aula Anterior (Funções)
+                </a>
+                <button class="nav-btn nav-next" onclick="completeLesson()">
+                    Próxima Aula →
+                </Button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Progress tracking
+        let currentProgress = 0;
+        
+        function updateProgress() {
+            const scrolled = window.scrollY + window.innerHeight;
+            const total = document.documentElement.scrollHeight;
+            currentProgress = Math.min(100, Math.round((scrolled / total) * 100));
+            
+            document.getElementById('progressFill').style.width = currentProgress + '%';
+            document.getElementById('progressText').textContent = currentProgress + '% Completo';
+        }
+
+        window.addEventListener('scroll', updateProgress);
+        window.addEventListener('load', updateProgress);
+
+        // Array Demo Interactions
+        const frutas = ['🍎', '🍌', '🍇', '🍊'];
+        let currentArray = [...frutas];
+
+        function renderArray() {
+            const container = document.getElementById('arrayDemo');
+            container.innerHTML = '';
+            
+            currentArray.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'array-item';
+                div.textContent = item;
+                div.setAttribute('data-index', index);
+                div.innerHTML = `<span class="array-index">[${index}]</span>`;
+                container.appendChild(div);
+            });
+        }
+
+        function addItem() {
+            const novasFrutas = ['🥝', '🍓', '🍍', '🥭', '🍉'];
+            const random = novasFrutas[Math.floor(Math.random() * novasFrutas.length)];
+            currentArray.push(random);
+            renderArray();
+        }
+
+        function removeItem() {
+            if (currentArray.length > 0) {
+                currentArray.pop();
+                renderArray();
+            }
+        }
+
+        function clearArray() {
+            currentArray = [];
+            renderArray();
+        }
+
+        // Initialize array demo
+        renderArray();
+
+        // Interactive Playground
+        function RunPlayground() {
+            const code = document.getElementById('codeEditor').value;
+            const output = document.getElementById('consoleOutput');
+            
+            let logs = [];
+            const originalLog = console.log;
+            console.log = function(...args) {
+                logs.push(args.join(' '));
+            };
+            
+            try {
+                // Create a safe environment for array experiments
+                const sandbox = {
+                    console: { log: (...args) => logs.push(args.join(' ')) }
+                };
+                
+                // Wrap in function to allow return statements
+                const runUserCode = new Function('sandbox', `
+                    with(sandbox) {
+                        ${code}
+                    }
+                `);
+                
+                RunUserCode(sandbox);
+                
+                output.innerHTML = logs.join('<br>') || '// Sem saída';
+                output.className = 'output-content';
+            } catch (error) {
+                output.innerHTML = '❌ Erro: ' + error.message;
+                output.className = 'output-content output-error';
+            } finally {
+                console.log = originalLog;
+            }
+        }
+
+        function ResetPlayground() {
+            document.getElementById('codeEditor').value = `// Experimente com arrays!
+let numeros = [1, 2, 3, 4, 5];
+
+// Use algum método de array
+console.log(numeros);`;
+            document.getElementById('consoleOutput').textContent = '// Clique em Executar para ver o resultado...';
+        }
+
+        // Copy code functionality
+        function copyCode(btn) {
+            const codeBlock = btn.closest('.code-block').querySelector('pre');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const original = btn.textContent;
+                btn.textContent = '✓ Copiado!';
+                setTimeout(() => {
+                    btn.textContent = original;
+                }, 2000);
+            });
+        }
+
+        // Exercise checking
+        function checkExercise1() {
+            document.getElementById('success1').style.display = 'block';
+            updateProgress();
+        }
+
+        function checkExercise2() {
+            document.getElementById('success2').style.display = 'block';
+            UpdateProgress();
+        }
+
+        function checkExercise3() {
+            document.getElementById('success3').style.display = 'block';
+            UpdateProgress();
+        }
+
+        // Quiz functionality
+        function selectOption(element, isCorrect) {
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'wrong');
+            });
+            
+            element.classList.add('selected');
+            
+            If (isCorrect) {
+                element.classList.add('correct');
+                element.style.animation = 'popIn 0.3s ease';
+            } Else {
+                element.classList.add('wrong');
+            }
+        }
+
+        // Complete lesson
+        function completeLesson() {
+            alert('🎉 Parabéns! Você completou a aula de Arrays!');
+            document.getElementById('progressFill').style.width = '100%';
+            document.getElementById('progressText').textContent = '100% Completo';
+        }
+
+        // Add fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.lesson-section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+
+        // Method demo
+        function demoMethod(method) {
+            const array = ['Maçã', 'Banana', 'Laranja'];
+            let result;
+            
+            switch(method) {
+                case 'push':
+                    array.push('Uva');
+                    result = 'Adicionado "Uva" no final: ' + array.join(', ');
+                    break;
+                case 'pop':
+                    const removido = array.pop();
+                    result = 'Removido do final: ' + removido;
+                    break;
+                case 'Shift':
+                    const removido = array.shift();
+                    result = 'Removido do início: ' + removido;
+                    break;
+                case 'Unshift':
+                    array.unshift('Morango');
+                    result = 'Adicionado "Morango" no início: ' + array.join(', ');
+                    break;
+                case 'Splice':
+                    array.splice(1, 1, 'Kiwi');
+                    result = 'Na posição 1, removeu 1 e adicionou "Kiwi": ' + array.join(', ');
+                    break;
+                case 'IndexOf':
+                    const pos = array.indexOf('Banana');
+                    result = 'Posição de "Banana": ' + pos;
+                    break;
+            }
+            
+            alert('Demonstração de ' + method + '():\\n' + result);
+        }
+    </script>
+</body>
+</html>
