@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula de Loops - Programação para Iniciantes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-code: #0d1117;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #334155;
+            --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            --gradient-2: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(217, 70, 239, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        /* Header */
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-text-fill-color: initial;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-card);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+        }
+
+        .progress-track {
+            width: 200px;
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--gradient-2);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-light);
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem 0;
+        }
+
+        .lesson-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-light);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Lesson Cards */
+        .lesson-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .lesson-section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-number {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin: 1.5rem 0 1rem;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+        .code-header {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-lang {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .code-lang::before {
+            content: '●';
+            color: var(--accent);
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.375rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        pre {
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+        }
+
+        .code-block pre code {
+            color: #e6edf3;
+        }
+
+        .keyword { color: #ff7b72; }
+        .string { color: #a5d6ff; }
+        .number { color: #79c0ff; }
+        .function { color: #d2a8ff; }
+        .comment { color: #8b949e; font-style: italic; }
+        .operator { color: #ff7b72; }
+
+        /* Interactive Playground */
+        .playground {
+            background: var(--bg-code);
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            background: var(--gradient-1);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .playground-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .playground-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .playground-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 300px;
+        }
+
+        .editor-panel {
+            border-right: 1px solid var(--border);
+        }
+
+        .editor-textarea {
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+            background: var(--bg-code);
+            color: #e6edf3;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            padding: 1.5rem;
+            border: none;
+            resize: none;
+            outline: none;
+        }
+
+        .output-panel {
+            background: var(--bg-dark);
+            padding: 1.5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            overflow-y: auto;
+        }
+
+        .output-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .output-content {
+            color: var(--success);
+            line-height: 1.7;
+        }
+
+        .output-error {
+            color: var(--danger);
+        }
+
+        /* Visual Demo */
+        .visual-demo {
+            background: var(--bg-dark);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .demo-container {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+            min-height: 60px;
+            align-items: center;
+        }
+
+        .demo-box {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .demo-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Exercise Cards */
+        .exercise-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .exercise-card:hover {
+            border-color: var(--primary);
+            transform: translateX(8px);
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .difficulty {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .difficulty-easy {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .difficulty-medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .difficulty-hard {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .exercise-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .check-btn {
+            margin-top: 1rem;
+            background: var(--primary);
+            color: white;
+        }
+
+        .check-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Tips Box */
+        .tip-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 16px 16px 0;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .tip-title {
+            color: var(--accent);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: var(--gradient-1);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover td {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* Quiz Section */
+        .quiz-option {
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .quiz-option.wrong {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            background: var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Navigation */
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-prev {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .nav-prev:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .nav-next {
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+        }
+
+        .nav-next:hover {
+            transform: translateX(4px);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .playground-body {
+                grid-template-columns: 1fr;
+            }
+            
+            .editor-panel {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            
+            .progress-track {
+                width: 100px;
+            }
+            
+            .lesson-section {
+                padding: 1.5rem;
+            }
+            
+            .comparison-table {
+                font-size: 0.875rem;
+            }
+            
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.75rem;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Syntax Highlighting for Editor */
+        .line-numbers {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            background: rgba(30, 41, 59, 0.5);
+            color: var(--text-muted);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            padding: 1.5rem 0.5rem;
+            text-align: right;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🚀</div>
+                    <span>CodeAcademy</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">0% Completo</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Lesson Header -->
+            <div class="lesson-header fade-in">
+                <div class="badge">🔥 Módulo 3 • Estruturas de Controle</div>
+                <h1>Repetições (Loops)</h1>
+                <p class="subtitle">Aprenda a automatizar tarefas repetitivas com for, while e do...while. Domine o poder da iteração!</p>
+            </div>
+
+            <!-- Section 1: Introduction -->
+            <section class="lesson-section fade-in" id="section1">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <h2>O que são Loops?</h2>
+                </div>
+                
+                <p>Imagine que você precisa imprimir "Olá, Mundo!" 100 vezes. Copiar e colar o mesmo código 100 vezes seria trabalhoso e ineficiente. É aí que entram os <strong>loops</strong> (laços de repetição) - estruturas que permitem executar um bloco de código múltiplas vezes.</p>
+                
+                <div class="visual-demo">
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Visualização: Imprimir números de 1 a 5</p>
+                    <div class="demo-container" id="demo1">
+                        <div class="demo-box" style="display:none;">1</div>
+                    </div>
+                    <div class="demo-controls">
+                        <button class="btn btn-primary" onclick="runDemo1()">▶ Executar Loop</button>
+                        <button class="btn btn-secondary" onclick="resetDemo1()">↺ Resetar</button>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">💡 Dica Importante</div>
+                    <p>Loops são fundamentais em programação. Eles aparecem em praticamente todos os programas, desde simples contadores até processamento de dados complexos.</p>
+                </div>
+            </section>
+
+            <!-- Section 2: For Loop -->
+            <section class="lesson-section fade-in" id="section2">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <h2>O Loop FOR</h2>
+                </div>
+
+                <p>O <code>for</code> é o loop mais comum em JavaScript. Ele é ideal quando você sabe exatamente quantas vezes precisa repetir algo.</p>
+
+                <h3>Sintaxe do FOR</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">for</span> (<span class="comment">// inicialização</span>; <span class="comment">// condição</span>; <span class="comment">// incremento</span>) {
+    <span class="comment">// código a ser executado</span>
+}</code></pre>
+                </div>
+
+                <h3>Exemplo Prático</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="comment">// Contar de 1 até 5</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i <= <span class="number">5</span>; i++) {
+    console.<span class="function">log</span>(<span class="string">"Contagem: "</span> + i);
+}
+
+<span class="comment">// Saída:
+// Contagem: 1
+// Contagem: 2
+// Contagem: 3
+// Contagem: 4
+// Contagem: 5</span></code></pre>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">🎯 Entendendo as Partes</div>
+                    <p><strong>Inicialização (let i = 1):</strong> Executada uma vez antes do loop começar.<br>
+                    <strong>Condição (i <= 5):</strong> Verificada antes de cada iteração. Se for falsa, o loop para.<br>
+                    <strong>Incremento (i++):</strong> Executado após cada iteração (i++ é equivalente a i = i + 1).</p>
+                </div>
+
+                <!-- Interactive Playground -->
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">🎮 Playground Interativo</div>
+                        <div class="playground-controls">
+                            <button class="btn btn-secondary" onclick="resetPlayground()">↺ Reset</button>
+                            <button class="btn btn-primary" onclick="runPlayground()">▶ Executar</button>
+                        </div>
+                    </div>
+                    <div class="playground-body">
+                        <div class="editor-panel" style="position: relative;">
+                            <textarea class="editor-textarea" id="codeEditor" spellcheck="false">// Experimente modificar o loop!
+for (let i = 1; i <= 5; i++) {
+    console.log("Número: " + i);
+}</textarea>
+                        </div>
+                        <div class="output-panel">
+                            <div class="output-label">Console Output</div>
+                            <div class="output-content" id="consoleOutput">// Clique em Executar para ver o resultado...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: While Loop -->
+            <section class="lesson-section fade-in" id="section3">
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <h2>O Loop WHILE</h2>
+                </div>
+
+                <p>O <code>while</code> é usado quando você não sabe exatamente quantas repetições serão necessárias, mas sabe a condição que deve ser atendida para continuar.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">let</span> contador = <span class="number">1</span>;
+
+<span class="keyword">while</span> (contador <= <span class="number">5</span>) {
+    console.<span class="function">log</span>(<span class="string">"Contagem: "</span> + contador);
+    contador++; <span class="comment">// Não esqueça de incrementar!</span>
+}</code></pre>
+                </div>
+
+                <div class="tip-box" style="border-left-color: var(--danger); background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);">
+                    <div class="tip-title" style="color: var(--danger);">⚠️ Cuidado com Loops Infinitos!</div>
+                    <p>Se você esquecer de incrementar a variável no <code>while</code>, o loop nunca terminará e travará seu programa. Sempre certifique-se de que a condição eventualmente se tornará falsa.</p>
+                </div>
+
+                <h3>Exemplo: Senha Correta</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">let</span> senha = <span class="string">""</span>;
+
+<span class="keyword">while</span> (senha !== <span class="string">"1234"</span>) {
+    senha = <span class="function">prompt</span>(<span class="string">"Digite a senha:"</span>);
+    
+    <span class="keyword">if</span> (senha !== <span class="string">"1234"</span>) {
+        <span class="function">alert</span>(<span class="string">"Senha incorreta! Tente novamente."</span>);
+    }
+}
+
+<span class="function">alert</span>(<span class="string">"Acesso permitido!"</span>);</code></pre>
+                </div>
+            </section>
+
+            <!-- Section 4: Do While -->
+            <section class="lesson-section fade-in" id="section4">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <h2>O Loop DO...WHILE</h2>
+                </div>
+
+                <p>O <code>do...while</code> é similar ao <code>while</code>, mas garante que o código seja executado <strong>pelo menos uma vez</strong>, pois a condição é verificada no final.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">let</span> resposta;
+
+<span class="keyword">do</span> {
+    resposta = <span class="function">prompt</span>(<span class="string">"Você quer continuar? (s/n)"</span>);
+} <span class="keyword">while</span> (resposta === <span class="string">"s"</span>);
+
+console.<span class="function">log</span>(<span class="string">"Programa encerrado!"</span>);</code></pre>
+                </div>
+
+                <h3>Comparação dos Loops</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Loop</th>
+                            <th>Quando Usar</th>
+                            <th>Verificação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>for</code></td>
+                            <td>Número exato de repetições conhecido</td>
+                            <td>No início</td>
+                        </tr>
+                        <tr>
+                            <td><code>while</code></td>
+                            <td>Condição de parada conhecida, repetições indefinidas</td>
+                            <td>No início</td>
+                        </tr>
+                        <tr>
+                            <td><code>do...while</code></td>
+                            <td>Código deve executar pelo menos uma vez</td>
+                            <td>No final</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Section 5: Practical Examples -->
+            <section class="lesson-section fade-in" id="section5">
+                <div class="section-header">
+                    <div class="section-number">5</div>
+                    <h2>Exemplos Práticos</h2>
+                </div>
+
+                <h3>1. Tabuada</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">let</span> numero = <span class="number">7</span>;
+
+console.<span class="function">log</span>(<span class="string">"Tabuada do "</span> + numero + <span class="string">":"</span>);
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i <= <span class="number">10</span>; i++) {
+    <span class="keyword">let</span> resultado = numero * i;
+    console.<span class="function">log</span>(numero + <span class="string">" x "</span> + i + <span class="string">" = "</span> + resultado);
+}</code></pre>
+                </div>
+
+                <h3>2. Soma de Números</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code><span class="keyword">let</span> soma = <span class="number">0</span>;
+
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i <= <span class="number">100</span>; i++) {
+    soma = soma + i; <span class="comment">// ou soma += i;</span>
+}
+
+console.<span class="function">log</span>(<span class="string">"Soma de 1 a 100: "</span> + soma); <span class="comment">// 5050</span></code></pre>
+                </div>
+
+                <h3>3. Contagem Regressiva</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                    </div>
+                    <pre><code>console.<span class="function">log</span>(<span class="string">"Iniciando contagem regressiva..."</span>);
+
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">10</span>; i >= <span class="number">0</span>; i--) {
+    console.<span class="function">log</span>(i);
+    
+    <span class="keyword">if</span> (i === <span class="number">0</span>) {
+        console.<span class="function">log</span>(<span class="string">"🚀 Lançamento!"</span>);
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Section 6: Exercises -->
+            <section class="lesson-section fade-in" id="section6">
+                <div class="section-header">
+                    <div class="section-number">6</div>
+                    <h2>Exercícios Práticos</h2>
+                </div>
+
+                <!-- Exercise 1 -->
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <span class="difficulty difficulty-easy">Fácil</span>
+                        <span class="exercise-title">Exercício 1: Contar Pares</span>
+                    </div>
+                    <p>Crie um loop que imprima todos os números pares de 2 a 20.</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">JavaScript</span>
+                        </div>
+                        <pre><code><span class="comment">// Escreva seu código aqui</span>
+<span class="keyword">for</span> (<span class="comment">/* complete */</span>) {
+    <span class="comment">/* complete */</span>
+}</code></pre>
+                    </div>
+
+                    <button class="btn check-btn" onclick="checkExercise1()">✓ Verificar Resposta</button>
+                    
+                    <div class="success-message" id="success1">
+                        ✅ Correto! Você pode usar: for (let i = 2; i <= 20; i += 2) ou verificar if (i % 2 === 0)
+                    </div>
+                </div>
+
+                <!-- Exercise 2 -->
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <span class="difficulty difficulty-medium">Médio</span>
+                        <span class="exercise-title">Exercício 2: Fatorial</span>
+                    </div>
+                    <p>Calcule o fatorial de 5 (5! = 5 × 4 × 3 × 2 × 1 = 120) usando um loop.</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">JavaScript</span>
+                        </div>
+                        <pre><code><span class="keyword">let</span> numero = <span class="number">5</span>;
+<span class="keyword">let</span> fatorial = <span class="number">1</span>;
+
+<span class="comment">// Complete o loop</span></code></pre>
+                    </div>
+
+                    <button class="btn check-btn" onclick="checkExercise2()">✓ Verificar Resposta</button>
+                    
+                    <div class="success-message" id="success2">
+                        ✅ Resposta: for (let i = 1; i <= numero; i++) { fatorial *= i; }
+                    </div>
+                </div>
+
+                <!-- Exercise 3 -->
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <span class="difficulty difficulty-hard">Desafio</span>
+                        <span class="exercise-title">Exercício 3: Sequência de Fibonacci</span>
+                    </div>
+                    <p>Imprima os primeiros 10 números da sequência de Fibonacci: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34...</p>
+                    
+                    <button class="btn check-btn" onclick="checkExercise3()">✓ Ver Resposta</button>
+                    
+                    <div class="success-message" id="success3">
+                        💡 Dica: Use duas variáveis para armazenar os últimos dois números e atualize-as a cada iteração!
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 7: Quiz -->
+            <section class="lesson-section fade-in" id="section7">
+                <div class="section-header">
+                    <div class="section-number">7</div>
+                    <h2>Quiz Rápido</h2>
+                </div>
+
+                <p><strong>Pergunta 1:</strong> Qual loop garante que o código execute pelo menos uma vez?</p>
+                
+                <div class="quiz-option" onclick="selectOption(this, false)">
+                    <span class="option-letter">A</span>
+                    <span>for</span>
+                </div>
+                <div class="quiz-option" onclick="selectOption(this, false)">
+                    <span class="option-letter">B</span>
+                    <span>while</span>
+                </div>
+                <div class="quiz-option" onclick="selectOption(this, true)">
+                    <span class="option-letter">C</span>
+                    <span>do...while</span>
+                </div>
+
+                <p style="margin-top: 2rem;"><strong>Pergunta 2:</strong> O que esse código imprime?<br>
+                <code>for (let i = 0; i < 3; i++) { console.log(i); }</code></p>
+                
+                <div class="quiz-option" onclick="selectOption(this, true)">
+                    <span class="option-letter">A</span>
+                    <span>0, 1, 2</span>
+                </div>
+                <div class="quiz-option" onclick="selectOption(this, false)">
+                    <span class="option-letter">B</span>
+                    <span>1, 2, 3</span>
+                </div>
+                <div class="quiz-option" onclick="selectOption(this, false)">
+                    <span class="option-letter">C</span>
+                    <span>0, 1, 2, 3</span>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="lesson-nav">
+                <button class="nav-btn nav-prev">
+                    ← Aula Anterior
+                </button>
+                <button class="nav-btn nav-next" onclick="completeLesson()">
+                    Próxima Aula →
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Progress tracking
+        let currentProgress = 0;
+        const sections = document.querySelectorAll('.lesson-section');
+        
+        function updateProgress() {
+            const scrolled = window.scrollY + window.innerHeight;
+            const total = document.documentElement.scrollHeight;
+            currentProgress = Math.min(100, Math.round((scrolled / total) * 100));
+            
+            document.getElementById('progressFill').style.width = currentProgress + '%';
+            document.getElementById('progressText').textContent = currentProgress + '% Completo';
+        }
+
+        window.addEventListener('scroll', updateProgress);
+        window.addEventListener('load', updateProgress);
+
+        // Demo 1 Animation
+        function runDemo1() {
+            const container = document.getElementById('demo1');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 5; i++) {
+                setTimeout(() => {
+                    const box = document.createElement('div');
+                    box.className = 'demo-box';
+                    box.textContent = i;
+                    container.appendChild(box);
+                }, i * 300);
+            }
+        }
+
+        function resetDemo1() {
+            document.getElementById('demo1').innerHTML = '<div class="demo-box" style="display:none;">1</div>';
+        }
+
+        // Interactive Playground
+        function runPlayground() {
+            const code = document.getElementById('codeEditor').value;
+            const output = document.getElementById('consoleOutput');
+            
+            // Capture console.log output
+            let logs = [];
+            const originalLog = console.log;
+            console.log = function(...args) {
+                logs.push(args.join(' '));
+            };
+            
+            try {
+                // Execute code safely
+                eval(code);
+                output.innerHTML = logs.join('<br>') || '// Sem saída';
+                output.className = 'output-content';
+            } catch (error) {
+                output.innerHTML = '❌ Erro: ' + error.message;
+                output.className = 'output-content output-error';
+            } finally {
+                console.log = originalLog;
+            }
+        }
+
+        function resetPlayground() {
+            document.getElementById('codeEditor').value = `// Experimente modificar o loop!
+for (let i = 1; i <= 5; i++) {
+    console.log("Número: " + i);
+}`;
+            document.getElementById('consoleOutput').textContent = '// Clique em Executar para ver o resultado...';
+        }
+
+        // Copy code functionality
+        function copyCode(btn) {
+            const codeBlock = btn.closest('.code-block').querySelector('pre');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const original = btn.textContent;
+                btn.textContent = '✓ Copiado!';
+                setTimeout(() => {
+                    btn.textContent = original;
+                }, 2000);
+            });
+        }
+
+        // Exercise checking
+        function checkExercise1() {
+            document.getElementById('success1').style.display = 'block';
+            updateProgress();
+        }
+
+        function checkExercise2() {
+            document.getElementById('success2').style.display = 'block';
+            updateProgress();
+        }
+
+        function checkExercise3() {
+            document.getElementById('success3').style.display = 'block';
+            updateProgress();
+        }
+
+        // Quiz functionality
+        function selectOption(element, isCorrect) {
+            // Remove previous selections in the same question
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'wrong');
+            });
+            
+            element.classList.add('selected');
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                // Add celebration effect
+                element.style.animation = 'popIn 0.3s ease';
+            } else {
+                element.classList.add('wrong');
+            }
+        }
+
+        // Complete lesson
+        function completeLesson() {
+            alert('🎉 Parabéns! Você completou a aula de Loops!');
+            document.getElementById('progressFill').style.width = '100%';
+            document.getElementById('progressText').textContent = '100% Completo';
+        }
+
+        // Add fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.lesson-section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
