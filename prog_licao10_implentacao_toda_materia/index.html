@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exame Final - Madrassa Online</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-code: #0d1117;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #334155;
+            --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            --gradient-2: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(217, 70, 239, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        header {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-text-fill-color: initial;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .exam-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: var(--bg-card);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+        }
+
+        .timer {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .timer.warning {
+            color: var(--danger);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        main {
+            padding: 3rem 0;
+        }
+
+        .exam-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Login Section */
+        .login-section {
+            max-width: 500px;
+            margin: 3rem auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        input[type="email"] {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-pay {
+            background: var(--gradient-2);
+            color: white;
+            margin-top: 1rem;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .status-warning {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+        }
+
+        /* Exam Content */
+        .exam-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .question-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            border-color: var(--primary);
+        }
+
+        .question-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-1);
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            margin-right: 0.75rem;
+        }
+
+        .question-text {
+            font-size: 1.125rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.03);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            background: var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: var(--primary);
+        }
+
+        .project-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+
+        .project-value {
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .requirements-list {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .requirements-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .requirements-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .editor-container {
+            background: var(--bg-code);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .editor-header {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .editor-title {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .ai-warning {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .code-editor {
+            width: 100%;
+            min-height: 300px;
+            background: var(--bg-code);
+            color: #e6edf3;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            padding: 1.5rem;
+            border: none;
+            resize: vertical;
+            outline: none;
+        }
+
+        .editor-toolbar {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(30, 41, 59, 0.5);
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-run {
+            background: var(--success);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-run:hover {
+            background: #059669;
+        }
+
+        .btn-check {
+            background: var(--warning);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .output-panel {
+            background: var(--bg-dark);
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            min-height: 100px;
+        }
+
+        .output-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .anti-cheat-warning {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
+            border: 2px solid var(--danger);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .warning-icon {
+            font-size: 2rem;
+        }
+
+        .warning-text h4 {
+            color: var(--danger);
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-text p {
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: 0.875rem;
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border-radius: 24px;
+            margin-top: 3rem;
+        }
+
+        .btn-submit {
+            background: var(--gradient-1);
+            color: white;
+            padding: 1.5rem 3rem;
+            font-size: 1.25rem;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Results Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .result-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-details {
+            background: var(--bg-dark);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .penalty {
+            color: var(--danger);
+            font-weight: 700;
+        }
+
+        .console-output {
+            background: #000;
+            color: #0f0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .exam-info {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 1rem;
+            }
+
+            .exam-section {
+                padding: 1.5rem;
+            }
+
+            .project-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .editor-toolbar {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🎓</div>
+                    <span>Exame Final - Madrassa Online</span>
+                </div>
+                <div class="exam-info" id="examInfo" style="display: none;">
+                    <div class="timer" id="timer">60:00</div>
+                    <div style="color: var(--text-muted); font-size: 0.875rem;">
+                        <span id="answeredCount">0</span>/12 respondido
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Login Section -->
+            <div class="login-section" id="loginSection">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">🎓</div>
+                    <h2 style="margin-bottom: 0.5rem;">Exame Final de JavaScript</h2>
+                    <p style="color: var(--text-secondary);">Módulo: Programação para Iniciantes</p>
+                </div>
+
+                <div id="loginStatus"></div>
+
+                <div class="form-group">
+                    <label>Email do Aluno</label>
+                    <input type="email" id="studentEmail" placeholder="Digite seu email cadastrado">
+                </div>
+
+                <button class="btn btn-primary" id="verifyBtn" onclick="verifyStudent()">
+                    Verificar Cadastro
+                </button>
+
+                <div id="paymentSection" class="hidden" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                    <div class="status-warning status-message">
+                        <span>⚠️</span>
+                        <div>
+                            <strong>Exame já realizado</strong><br>
+                            <span style="font-size: 0.875rem;">Você já fez este exame. Para refazer, é necessário pagar 50 MTN.</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-pay" onclick="processPayment()">
+                        💳 Pagar 50 MTN e Refazer Exame
+                    </button>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 12px;">
+                    <p style="margin: 0; font-size: 0.875rem; color: var(--text-muted);">
+                        <strong style="color: var(--accent);">📋 Regras do Exame:</strong><br>
+                        • 10 perguntas de múltipla escolha (1 valor cada)<br>
+                        • 2 projetos práticos (5 valores cada)<br>
+                        • Nota máxima: 20 valores<br>
+                        • Tempo limite: 60 minutos<br>
+                        • Apenas 1 tentativa gratuita<br>
+                        • Retake custa 50 MTN
+                    </p>
+                </div>
+            </div>
+
+            <!-- Exam Content -->
+            <div id="examContent" class="hidden">
+                <div class="anti-cheat-warning">
+                    <span class="warning-icon">🛡️</span>
+                    <div class="warning-text">
+                        <h4>Sistema Anti-Plágio Ativo</h4>
+                        <p>Código será analisado para detectar uso de IA. Projetos identificados como gerados por IA terão penalização de 2.5 valores.</p>
+                    </div>
+                </div>
+
+                <div class="exam-section">
+                    <div class="section-title">
+                        <div class="section-icon">❓</div>
+                        <div>
+                            <h2>Parte 1: Múltipla Escolha</h2>
+                            <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">10 perguntas aleatórias - 1 valor cada</p>
+                        </div>
+                    </div>
+                    <div id="questionsContainer"></div>
+                </div>
+
+                <div class="exam-section">
+                    <div class="section-title">
+                        <div class="section-icon">💻</div>
+                        <div>
+                            <h2>Parte 2: Projetos Práticos</h2>
+                            <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">2 projetos sorteados - 5 valores cada</p>
+                        </div>
+                    </div>
+                    <div id="projectsContainer"></div>
+                </div>
+
+                <div class="submit-section">
+                    <h3 style="margin-bottom: 1rem;">Pronto para entregar?</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                        Verifique todas as respostas antes de enviar. Você não poderá alterar após envio.
+                    </p>
+                    <button class="btn-submit" id="submitBtn" onclick="submitExam()">
+                        📤 Entregar Exame
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Results Modal -->
+    <div class="modal-overlay" id="resultsModal">
+        <div class="modal-content">
+            <div class="result-icon" id="resultIcon">🏆</div>
+            <div class="result-score" id="finalScore">0/20</div>
+            <h2 id="resultTitle">Exame Concluído!</h2>
+            <p id="resultMessage" style="color: var(--text-secondary); margin-bottom: 1.5rem;"></p>
+            
+            <div class="result-details">
+                <div class="detail-row">
+                    <span>Perguntas Corretas</span>
+                    <span id="mcScore">0/10</span>
+                </div>
+                <div class="detail-row">
+                    <span>Projeto 1</span>
+                    <span id="project1Score">0/5</span>
+                </div>
+                <div class="detail-row">
+                    <span>Projeto 2</span>
+                    <span id="project2Score">0/5</span>
+                </div>
+                <div class="detail-row penalty hidden" id="penaltyRow">
+                    <span>Penalização IA</span>
+                    <span id="penaltyValue">-0</span>
+                </div>
+                <div class="detail-row" style="border-top: 2px solid var(--primary); margin-top: 0.5rem; padding-top: 1rem;">
+                    <span style="font-weight: 700;">NOTA FINAL</span>
+                    <span id="finalTotal" style="font-weight: 700; color: var(--primary-light);">0/20</span>
+                </div>
+            </div>
+
+            <div class="console-output" id="consoleOutput"></div>
+
+            <button class="btn btn-primary" onclick="location.reload()" style="margin-top: 1.5rem;">
+                🔄 Sair
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== FIREBASE CONFIG ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
+            authDomain: "madrassa-online-b851c.firebaseapp.com",
+            databaseURL: "https://madrassa-online-b851c-default-rtdb.firebaseio.com",
+            projectId: "madrassa-online-b851c",
+            storageBucket: "madrassa-online-b851c.firebasestorage.app",
+            messagingSenderId: "360782668012",
+            appId: "1:360782668012:web:d501ef187911db632445c9",
+            measurementId: "G-RV9GD4S22T"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // ==================== BANCO DE DADOS DO EXAME ====================
+        const allQuestions = [
+            { id: 1, question: "Qual é a saída de console.log(typeof 'Hello')?", options: ["string", "text", "String", "char"], correct: 0 },
+            { id: 2, question: "Qual operador é usado para comparação estrita?", options: ["==", "===", "=", "!="], correct: 1 },
+            { id: 3, question: "Como declarar uma constante?", options: ["var", "let", "const", "fixed"], correct: 2 },
+            { id: 4, question: "Qual método adiciona elemento ao final do array?", options: ["append()", "push()", "add()", "insert()"], correct: 1 },
+            { id: 5, question: "O que retorna [1, 2, 3].map(x => x * 2)?", options: ["[1, 2, 3, 2, 4, 6]", "[2, 4, 6]", "6", "[1, 2, 3]"], correct: 1 },
+            { id: 6, question: "Qual loop é melhor para iterar sobre array?", options: ["for...in", "for...of", "while", "do...while"], correct: 1 },
+            { id: 7, question: "Como acessar o último elemento de um array 'arr'?", options: ["arr[arr.length]", "arr[arr.length - 1]", "arr.last()", "arr[-1]"], correct: 1 },
+            { id: 8, question: "Qual função converte string para número inteiro?", options: ["parseInt()", "toInteger()", "Number()", "parse()"], correct: 0 },
+            { id: 9, question: "O que é o escopo de variável 'let' dentro de função?", options: ["Global", "Local/Função", "Bloco", "Script"], correct: 1 },
+            { id: 10, question: "Qual método remove o último elemento de um array?", options: ["shift()", "pop()", "splice()", "remove()"], correct: 1 },
+            { id: 11, question: "O que retorna typeof null em JavaScript?", options: ["null", "undefined", "object", "number"], correct: 2 },
+            { id: 12, question: "Como verificar se uma variável é um array?", options: ["typeof arr === 'array'", "arr.isArray()", "Array.isArray(arr)", "arr instanceof Array"], correct: 2 },
+            { id: 13, question: "Qual é o resultado de 5 + '5'?", options: ["10", "55", "NaN", "Error"], correct: 1 },
+            { id: 14, question: "O que faz o método filter() em um array?", options: ["Modifica cada elemento", "Cria novo array com elementos que passam no teste", "Remove duplicados", "Ordena o array"], correct: 1 },
+            { id: 15, question: "Qual palavra-chave retorna um valor de uma função?", options: ["break", "return", "exit", "yield"], correct: 1 },
+            { id: 16, question: "Como declarar uma função arrow?", options: ["function => {}", "() => {}", "function() => {}", "=> {}"], correct: 1 },
+            { id: 17, question: "O que é hoisting em JavaScript?", options: ["Elevação de variáveis e funções", "Ordenação de arrays", "Compressão de código", "Cache de dados"], correct: 0 },
+            { id: 18, question: "Qual método junta elementos de um array em string?", options: ["concat()", "merge()", "join()", "combine()"], correct: 2 },
+            { id: 19, question: "O que retorna Math.floor(4.9)?", options: ["4", "5", "4.9", "NaN"], correct: 0 },
+            { id: 20, question: "Como adicionar evento de clique a um botão?", options: ["button.onClick()", "button.addEventListener('click', fn)", "button.click = fn", "button.on('click', fn)"], correct: 1 },
+            { id: 21, question: "Qual é a diferença entre null e undefined?", options: ["Não há diferença", "null é atribuído, undefined é ausência de valor", "undefined é atribuído, null é erro", "null é objeto, undefined é string"], correct: 1 },
+            { id: 22, question: "O que faz o operador spread (...)?", options: ["Multiplica números", "Expande iteráveis", "Comprime código", "Cria regex"], correct: 1 },
+            { id: 23, question: "Qual método encontra o primeiro elemento que satisfaz condição?", options: ["filter()", "find()", "search()", "locate()"], correct: 1 },
+            { id: 24, question: "Como prevenir comportamento padrão de um evento?", options: ["event.stop()", "event.preventDefault()", "event.cancel()", "event.halt()"], correct: 1 },
+            { id: 25, question: "O que é closure em JavaScript?", options: ["Fechamento de conexão", "Função com acesso ao escopo pai", "Fim de script", "Bloqueio de código"], correct: 1 },
+            { id: 26, question: "Qual método converte JSON para objeto JavaScript?", options: ["JSON.toObject()", "JSON.parse()", "JSON.convert()", "JSON.load()"], correct: 1 },
+            { id: 27, question: "O que retorna setTimeout?", options: ["undefined", "Promise", "ID do timer", "boolean"], correct: 2 },
+            { id: 28, question: "Qual é o escopo de uma variável var dentro de um if?", options: ["Bloco do if", "Função inteira", "Global", "Script"], correct: 1 },
+            { id: 29, question: "Como remover propriedade de um objeto?", options: ["delete obj.prop", "remove obj.prop", "obj.prop = null", "obj.remove('prop')"], correct: 0 },
+            { id: 30, question: "O que faz Promise.all()?", options: ["Executa promises em sequência", "Aguarda todas promises resolverem", "Cancela promises", "Cria promise vazia"], correct: 1 }
+        ];
+
+        const allProjects = [
+            {
+                id: 1,
+                title: "Calculadora de IMC",
+                description: "Crie uma função que calcula o Índice de Massa Corporal.",
+                requirements: ["Função recebe peso (kg) e altura (m)", "Retorna objeto com imc e classificação", "Classificações: Abaixo do peso (<18.5), Normal (18.5-24.9), Sobrepeso (25-29.9), Obeso (≥30)", "IMC deve ter 1 casa decimal"],
+                hints: ["Use peso / (altura * altura)", "Use if/else para classificar", "Use toFixed(1) para formatar"]
+            },
+            {
+                id: 2,
+                title: "Conversor de Temperatura",
+                description: "Crie funções para converter entre Celsius, Fahrenheit e Kelvin.",
+                requirements: ["Função celsiusToFahrenheit(c)", "Função fahrenheitToCelsius(f)", "Função celsiusToKelvin(c)", "Retornar valor com 1 casa decimal"],
+                hints: ["F = (C × 9/5) + 32", "C = (F - 32) × 5/9", "K = C + 273.15"]
+            },
+            {
+                id: 3,
+                title: "Validador de Senha",
+                description: "Crie uma função que verifica se uma senha é forte.",
+                requirements: ["Mínimo 8 caracteres", "Pelo menos 1 letra maiúscula", "Pelo menos 1 número", "Pelo menos 1 caractere especial (!@#$%^&*)", "Retornar objeto com valido (boolean) e erros (array)"],
+                hints: ["Use regex com /[A-Z]/, /[0-9]/, /[!@#$%^&*]/", "Teste com .test()", "Monte array de erros"]
+            },
+            {
+                id: 4,
+                title: "Contador de Vogais",
+                description: "Crie uma função que conta vogais em uma string.",
+                requirements: ["Contar a, e, i, o, u (maiúsculas e minúsculas)", "Retornar objeto com total e detalhamento por vogal", "Ignorar acentos (opcional, bônus)", "Funcionar com strings vazias"],
+                hints: ["Converta para lowercase", "Use for...of para iterar", "Use objeto para contar"]
+            },
+            {
+                id: 5,
+                title: "Ordenador de Números",
+                description: "Crie uma função que ordena array de números sem usar sort().",
+                requirements: ["Implementar algoritmo Bubble Sort", "Ordenar em ordem crescente", "Não usar método sort() nativo", "Retornar novo array ordenado"],
+                hints: ["Use dois loops for aninhados", "Compare arr[j] > arr[j+1]", "Troque com destructuring [a,b]=[b,a]"]
+            },
+            {
+                id: 6,
+                title: "Gerador de Tabuada",
+                description: "Crie uma função que gera a tabuada de um número.",
+                requirements: ["Receber número como parâmetro", "Retornar array de strings formatadas", "Formato: '5 x 1 = 5'", "Gerar de 1 a 10"],
+                hints: ["Use loop for de 1 a 10", "Use template literals", "Push strings em array"]
+            },
+            {
+                id: 7,
+                title: "Validador de CPF",
+                description: "Crie uma função que valida formato de CPF.",
+                requirements: ["Aceitar formatos: 000.000.000-00 ou 00000000000", "Verificar se tem 11 dígitos", "Validar dígitos verificadores (bônus)", "Retornar boolean"],
+                hints: ["Remova pontos e traço com replace", "Verifique length === 11", "Use regex para formato"]
+            },
+            {
+                id: 8,
+                title: "Sistema de Biblioteca",
+                description: "Crie um sistema simples de gerenciamento de livros.",
+                requirements: ["Array de livros (título, autor, disponivel)", "Função emprestarLivro(titulo)", "Função devolverLivro(titulo)", "Função listarDisponiveis()", "Atualizar status disponivel"],
+                hints: ["Use array de objetos", "Find para localizar livro", "Atualize propriedade disponivel"]
+            },
+            {
+                id: 9,
+                title: "Formatador de Data",
+                description: "Crie uma função que formata datas de várias maneiras.",
+                requirements: ["Receber objeto Date ou string 'YYYY-MM-DD'", "Retornar formatos: DD/MM/YYYY, 'DD de Mês de YYYY', 'Dia da semana, DD/MM'", "Validar data inválida"],
+                hints: ["Use new Date()", "Array de nomes de meses", "getDate(), getMonth(), getFullYear()"]
+            },
+            {
+                id: 10,
+                title: "Jogo de Adivinhação",
+                description: "Crie um jogo onde o computador 'pensa' em um número.",
+                requirements: ["Gerar número aleatório 1-100", "Função tentar(numero) retorna 'maior', 'menor' ou 'acertou'", "Contar tentativas", "Revelar número ao acertar"],
+                hints: ["Math.random() * 100 + 1", "Math.floor() para inteiro", "Contador de tentativas"]
+            },
+            {
+                id: 11,
+                title: "Carrinho de Compras",
+                description: "Crie um sistema de carrinho de compras.",
+                requirements: ["Adicionar item (nome, preco, quantidade)", "Remover item por nome", "Calcular total", "Aplicar desconto percentual", "Listar itens formatados"],
+                hints: ["Array de objetos item", "Reduce para calcular total", "FindIndex para remover"]
+            },
+            {
+                id: 12,
+                title: "Anagrama Checker",
+                description: "Verifique se duas palavras são anagramas.",
+                requirements: ["Anagrama: mesmas letras, ordem diferente", "Ignorar espaços e case", "Retornar boolean", "Funcionar com frases"],
+                hints: ["Remova espaços e converta para lowercase", "Split, sort, join para comparar", "Ou use contador de caracteres"]
+            },
+            {
+                id: 13,
+                title: "Relógio Digital",
+                description: "Crie uma função que retorna hora formatada.",
+                requirements: ["Retornar HH:MM:SS", "Formato 24 horas", "Completar com zeros à esquerda", "Opcional: AM/PM"],
+                hints: ["new Date()", "String(hour).padStart(2, '0')", "Template literals"]
+            },
+            {
+                id: 14,
+                title: "Fibonacci Generator",
+                description: "Gere sequência de Fibonacci.",
+                requirements: ["Receber quantidade de termos", "Retornar array com sequência", "Começar com 0, 1", "Validar entrada > 0"],
+                hints: ["Inicie com [0, 1]", "Loop for adicionando soma dos dois anteriores", "Push no array"]
+            },
+            {
+                id: 15,
+                title: "Quiz Scorer",
+                description: "Sistema de pontuação de quiz.",
+                requirements: ["Receber array de respostas do usuário", "Receber array de gabarito", "Calcular acertos e erros", "Retornar porcentagem e nota 0-10", "Mostrar quais errou"],
+                hints: ["Compare arrays index por index", "Conte acertos", "Calcule nota: (acertos/total) * 10"]
+            }
+        ];
+
+        // ==================== VARIÁVEIS GLOBAIS ====================
+        let currentExam = {
+            student: null,
+            email: null,
+            questions: [],
+            projects: [],
+            answers: {},
+            projectCodes: {},
+            startTime: null,
+            timeLeft: 3600,
+            attemptNumber: 1,
+            hasPaid: false
+        };
+
+        let timerInterval;
+        let consoleLogs = [];
+
+        // ==================== FUNÇÕES DE CONSOLE ====================
+        function logToConsole(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            const logEntry = `[${timestamp}] ${prefix} ${message}`;
+            consoleLogs.push(logEntry);
+            console.log(logEntry);
+        }
+
+        // ==================== VERIFICAÇÃO DO ALUNO ====================
+        async function verifyStudent() {
+            const email = document.getElementById('studentEmail').value.trim().toLowerCase();
+            const btn = document.getElementById('verifyBtn');
+            const statusDiv = document.getElementById('loginStatus');
+
+            if (!email) {
+                showStatus('Por favor, digite seu email.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Verificando...';
+
+            try {
+                logToConsole(`Verificando email: ${email}`, 'info');
+
+                // Buscar na Realtime Database
+                const snapshot = await database.ref('users').orderByChild('email').equalTo(email).once('value');
+                const userData = snapshot.val();
+
+                if (!userData) {
+                    logToConsole(`Email não encontrado: ${email}`, 'error');
+                    showStatus('Email não encontrado no sistema. Verifique seu cadastro.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Verificar Cadastro';
+                    return;
+                }
+
+                // Pegar o primeiro usuário encontrado
+                const userId = Object.keys(userData)[0];
+                const user = userData[userId];
+
+                logToConsole(`Usuário encontrado: ${user.name}`, 'success');
+
+                // Verificar se já fez o exame
+                const examSnapshot = await database.ref(`exams/${userId}`).once('value');
+                const examHistory = examSnapshot.val();
+
+                if (examHistory) {
+                    const attempts = Object.keys(examHistory).length;
+                    logToConsole(`Exame já realizado. Tentativas: ${attempts}`, 'warning');
+
+                    if (!examHistory.paidRetake) {
+                        currentExam.attemptNumber = attempts + 1;
+                        document.getElementById('paymentSection').classList.remove('hidden');
+                        showStatus(`Você já fez este exame ${attempts} vez(es). Pague 50 MTN para refazer.`, 'warning');
+                        btn.disabled = false;
+                        btn.innerHTML = 'Verificar Cadastro';
+                        return;
+                    }
+                }
+
+                // Aluno aprovado para fazer exame
+                currentExam.student = user;
+                currentExam.email = email;
+                currentExam.userId = userId;
+
+                logToConsole(`Aluno autorizado: ${user.name}`, 'success');
+                startExam();
+
+            } catch (error) {
+                logToConsole(`Erro na verificação: ${error.message}`, 'error');
+                showStatus('Erro ao verificar cadastro. Tente novamente.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Verificar Cadastro';
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('loginStatus');
+            statusDiv.innerHTML = `<div class="status-message status-${type}"><span>${type === 'error' ? '❌' : type === 'success' ? '✅' : '⚠️'}</span><span>${message}</span></div>`;
+        }
+
+        // ==================== PAGAMENTO ====================
+        async function processPayment() {
+            const email = document.getElementById('studentEmail').value.trim().toLowerCase();
+            
+            logToConsole('Iniciando processo de pagamento de 50 MTN...', 'info');
+            
+            // Simulação de pagamento - em produção, integrar com gateway de pagamento
+            const confirmed = confirm('Você será redirecionado para pagar 50 MTN. Confirma?');
+            
+            if (confirmed) {
+                // Simular processamento
+                logToConsole('Pagamento processado com sucesso', 'success');
+                
+                // Marcar como pago no banco
+                await database.ref(`payments/${currentExam.userId}`).push({
+                    amount: 50,
+                    currency: 'MTN',
+                    timestamp: Date.now(),
+                    status: 'completed'
+                });
+
+                currentExam.hasPaid = true;
+                document.getElementById('paymentSection').classList.add('hidden');
+                showStatus('Pagamento confirmado! Você pode refazer o exame.', 'success');
+                
+                setTimeout(() => startExam(), 1500);
+            }
+        }
+
+        // ==================== INICIAR EXAME ====================
+        function startExam() {
+            logToConsole('Iniciando exame...', 'info');
+
+            // Sortear perguntas e projetos
+            currentExam.questions = shuffleArray([...allQuestions]).slice(0, 10);
+            currentExam.projects = shuffleArray([...allProjects]).slice(0, 2);
+            currentExam.startTime = Date.now();
+
+            logToConsole(`Perguntas sorteadas: ${currentExam.questions.map(q => q.id).join(', ')}`, 'info');
+            logToConsole(`Projetos sorteados: ${currentExam.projects.map(p => p.id).join(', ')}`, 'info');
+
+            // Esconder login, mostrar exame
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('examContent').classList.remove('hidden');
+            document.getElementById('examInfo').style.display = 'flex';
+
+            renderQuestions();
+            renderProjects();
+            startTimer();
+
+            logToConsole('Exame iniciado com sucesso', 'success');
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // ==================== RENDERIZAÇÃO ====================
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            currentExam.questions.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <div class="question-text">
+                        <span class="question-number">${index + 1}</span>
+                        ${q.question}
+                    </div>
+                    <div class="options">
+                        ${q.options.map((opt, i) => `
+                            <div class="option" onclick="selectOption(${index}, ${i}, this)">
+                                <span class="option-letter">${String.fromCharCode(65 + i)}</span>
+                                <span>${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectOption(questionIndex, optionIndex, element) {
+            const card = element.closest('.question-card');
+            card.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            currentExam.answers[questionIndex] = optionIndex;
+            updateAnsweredCount();
+            logToConsole(`Pergunta ${questionIndex + 1}: opção ${String.fromCharCode(65 + optionIndex)} selecionada`, 'info');
+        }
+
+        function renderProjects() {
+            const container = document.getElementById('projectsContainer');
+            container.innerHTML = '';
+
+            currentExam.projects.forEach((p, index) => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.innerHTML = `
+                    <div class="project-header">
+                        <div class="project-title">Projeto ${index + 1}: ${p.title}</div>
+                        <div class="project-value">5.0 valores</div>
+                    </div>
+                    <p class="project-description">${p.description}</p>
+                    <ul class="requirements-list">
+                        ${p.requirements.map(r => `<li>${r}</li>`).join('')}
+                    </ul>
+                    <div class="editor-container">
+                        <div class="editor-header">
+                            <span class="editor-title">script.js</span>
+                            <div class="ai-warning">⚠️ Código será analisado</div>
+                        </div>
+                        <textarea class="code-editor" id="project-${index}" placeholder="// Escreva seu código aqui
+// Dicas: ${p.hints.join(', ')}
+
+function ${p.title.toLowerCase().replace(/\s+/g, '')}() {
+    // Sua implementação
+    
+}"></textarea>
+                        <div class="editor-toolbar">
+                            <button class="btn-run" onclick="runProject(${index})">▶ Testar Código</button>
+                            <button class="btn-check" onclick="checkAI(${index})">🔍 Verificar Originalidade</button>
+                        </div>
+                        <div class="output-panel" id="output-${index}">
+                            <div class="output-label">Console / Resultado</div>
+                            <div style="color: var(--text-muted);">Clique em "Testar Código" para executar...</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // ==================== EXECUÇÃO DE CÓDIGO ====================
+        function runProject(index) {
+            const code = document.getElementById(`project-${index}`).value;
+            const output = document.getElementById(`output-${index}`);
+
+            let logs = [];
+            const originalLog = console.log;
+
+            console.log = function(...args) {
+                logs.push(args.join(' '));
+            };
+
+            try {
+                const func = new Function(code);
+                func();
+
+                output.innerHTML = `
+                    <div class="output-label">✅ Execução bem-sucedida</div>
+                    <div style="color: var(--success);">${logs.join('<br>') || '// Sem saída no console'}</div>
+                `;
+
+                currentExam.projectCodes[index] = code;
+                logToConsole(`Projeto ${index + 1} executado com sucesso`, 'success');
+
+            } catch (error) {
+                output.innerHTML = `
+                    <div class="output-label">❌ Erro</div>
+                    <div style="color: var(--danger);">${error.message}</div>
+                `;
+                logToConsole(`Erro no projeto ${index + 1}: ${error.message}`, 'error');
+            } finally {
+                console.log = originalLog;
+            }
+        }
+
+        // ==================== DETECTOR DE IA ====================
+        function checkAI(index) {
+            const code = document.getElementById(`project-${index}`).value;
+            
+            if (!code.trim()) {
+                alert('Escreva algum código primeiro!');
+                return;
+            }
+
+            logToConsole(`Analisando originalidade do projeto ${index + 1}...`, 'info');
+
+            const aiPatterns = detectAIPatterns(code);
+            const output = document.getElementById(`output-${index}`);
+
+            let analysisHTML = '<div class="output-label">🔍 Análise de Originalidade</div>';
+
+            if (aiPatterns.score > 70) {
+                analysisHTML += `
+                    <div style="color: var(--danger); font-weight: 700; margin-bottom: 0.5rem;">
+                        ⚠️ ALTO RISCO DE CÓPIA IA DETECTADO
+                    </div>
+                    <div style="color: var(--danger);">
+                        Similaridade: ${aiPatterns.score}%<br>
+                        Penalização aplicada: -2.5 valores<br><br>
+                        Padrões detectados:<br>
+                        ${aiPatterns.found.map(p => `• ${p}`).join('<br>')}
+                    </div>
+                `;
+                currentExam.projectCodes[index + '_penalty'] = 2.5;
+                currentExam.projectCodes[index + '_aiScore'] = aiPatterns.score;
+                logToConsole(`Projeto ${index + 1}: ALTO RISCO DE IA - Penalidade -2.5`, 'warning');
+            } else if (aiPatterns.score > 40) {
+                analysisHTML += `
+                    <div style="color: var(--warning); font-weight: 700; margin-bottom: 0.5rem;">
+                        ⚡ RISCO MODERADO
+                    </div>
+                    <div style="color: var(--warning);">
+                        Similaridade: ${aiPatterns.score}%<br>
+                        Alguns padrões suspeitos encontrados.<br>
+                        Recomendado revisar e personalizar o código.
+                    </div>
+                `;
+                currentExam.projectCodes[index + '_aiScore'] = aiPatterns.score;
+                logToConsole(`Projeto ${index + 1}: Risco moderado de IA`, 'warning');
+            } else {
+                analysisHTML += `
+                    <div style="color: var(--success); font-weight: 700; margin-bottom: 0.5rem;">
+                        ✅ CÓDIGO APARENTEMENTE ORIGINAL
+                    </div>
+                    <div style="color: var(--success);">
+                        Similaridade: ${aiPatterns.score}%<br>
+                        Nenhum padrão de IA significativo detectado.
+                    </div>
+                `;
+                currentExam.projectCodes[index + '_aiScore'] = aiPatterns.score;
+                logToConsole(`Projeto ${index + 1}: Código original confirmado`, 'success');
+            }
+
+            output.innerHTML = analysisHTML;
+        }
+
+        function detectAIPatterns(code) {
+            const patterns = [];
+            let score = 0;
+
+            const detailedComments = (code.match(/\/\*\*[\s\S]*?\*\//g) || []).length;
+            const inlineComments = (code.match(/\/\/.{50,}/g) || []).length;
+            if (detailedComments > 2 || inlineComments > 5) {
+                patterns.push('Comentários excessivamente detalhados');
+                score += 15;
+            }
+
+            const genericNames = ['result', 'data', 'value', 'item', 'element', 'current', 'temp'];
+            const hasGenericPattern = genericNames.every(name => 
+                new RegExp(`\\b${name}\\d*\\b`, 'i').test(code)
+            );
+            if (hasGenericPattern) {
+                patterns.push('Nomenclatura genérica padronizada');
+                score += 10;
+            }
+
+            const lines = code.split('\n');
+            const avgLineLength = lines.reduce((a, b) => a + b.length, 0) / lines.length;
+            if (avgLineLength > 30 && avgLineLength < 60 && lines.length > 20) {
+                patterns.push('Formatação excessivamente uniforme');
+                score += 10;
+            }
+
+            const modernChain = /\[.*\]\s*\.\s*map\s*\(.*\)\s*\.\s*filter\s*\(.*\)\s*\.\s*reduce\s*\(/;
+            if (modernChain.test(code)) {
+                patterns.push('Encadeamento funcional "textbook"');
+                score += 20;
+            }
+
+            const complexRegex = /\/\^.*\[.*\].*\$.*\//;
+            if (complexRegex.test(code)) {
+                patterns.push('Regex complexa sem testes intermediários');
+                score += 15;
+            }
+
+            if (code.includes('@param') || code.includes('@return') || code.includes('@function')) {
+                patterns.push('Documentação estilo JSDoc (comum em IA)');
+                score += 15;
+            }
+
+            if (!code.includes('console.log') && code.length > 200) {
+                patterns.push('Ausência de logs de debug (código "perfeito")');
+                score += 10;
+            }
+
+            const genericTryCatch = /try\s*{\s*[\s\S]{0,50}\s*}\s*catch\s*\(\s*\w+\s*\)\s*{\s*console\.(log|error)\s*\(/;
+            if (genericTryCatch.test(code)) {
+                patterns.push('Tratamento de erro genérico');
+                score += 5;
+            }
+
+            return {
+                score: Math.min(score, 100),
+                found: patterns
+            };
+        }
+
+        // ==================== TIMER ====================
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                currentExam.timeLeft--;
+                
+                const minutes = Math.floor(currentExam.timeLeft / 60);
+                const seconds = currentExam.timeLeft % 60;
+                const timerEl = document.getElementById('timer');
+                
+                timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (currentExam.timeLeft <= 300) {
+                    timerEl.classList.add('warning');
+                }
+
+                if (currentExam.timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function updateAnsweredCount() {
+            const answered = Object.keys(currentExam.answers).length;
+            const projectsDone = Object.keys(currentExam.projectCodes).filter(k => !k.includes('_')).length;
+            document.getElementById('answeredCount').textContent = answered + projectsDone;
+        }
+
+        // ==================== FINALIZAR EXAME ====================
+        async function submitExam() {
+            clearInterval(timerInterval);
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').innerHTML = '<span class="loading"></span> Processando...';
+
+            logToConsole('Finalizando exame...', 'info');
+
+            // Calcular notas
+            let correctAnswers = 0;
+            currentExam.questions.forEach((q, index) => {
+                if (currentExam.answers[index] === q.correct) {
+                    correctAnswers++;
+                }
+            });
+
+            const mcScore = correctAnswers;
+            let penalty1 = currentExam.projectCodes['0_penalty'] || 0;
+            let penalty2 = currentExam.projectCodes['1_penalty'] || 0;
+
+            // Projetos: assumir nota máxima se código existe (avaliação manual em produção)
+            const project1Base = currentExam.projectCodes[0] ? 5 : 0;
+            const project2Base = currentExam.projectCodes[1] ? 5 : 0;
+
+            const finalProject1 = Math.max(0, project1Base - penalty1);
+            const finalProject2 = Math.max(0, project2Base - penalty2);
+
+            const totalPenalty = penalty1 + penalty2;
+            const finalScore = mcScore + finalProject1 + finalProject2;
+
+            const result = {
+                student: currentExam.student,
+                email: currentExam.email,
+                userId: currentExam.userId,
+                timestamp: Date.now(),
+                duration: 3600 - currentExam.timeLeft,
+                scores: {
+                    multipleChoice: mcScore,
+                    project1: finalProject1,
+                    project2: finalProject2,
+                    penalty: totalPenalty,
+                    total: finalScore,
+                    max: 20
+                },
+                details: {
+                    questions: currentExam.questions.map((q, i) => ({
+                        question: q.question,
+                        userAnswer: currentExam.answers[i],
+                        correctAnswer: q.correct,
+                        isCorrect: currentExam.answers[i] === q.correct
+                    })),
+                    projects: currentExam.projects.map((p, i) => ({
+                        title: p.title,
+                        code: currentExam.projectCodes[i] || null,
+                        aiScore: currentExam.projectCodes[i + '_aiScore'] || 0,
+                        penalty: currentExam.projectCodes[i + '_penalty'] || 0
+                    }))
+                },
+                attemptNumber: currentExam.attemptNumber,
+                hasPaid: currentExam.hasPaid
+            };
+
+            logToConsole(`Nota final calculada: ${finalScore}/20`, 'info');
+            logToConsole(`Penalidades IA: ${totalPenalty}`, 'warning');
+
+            // Salvar no Firebase
+            try {
+                await database.ref(`exams/${currentExam.userId}`).push(result);
+                logToConsole('Resultado salvo no Firebase com sucesso', 'success');
+            } catch (error) {
+                logToConsole(`Erro ao salvar: ${error.message}`, 'error');
+            }
+
+            // Mostrar resultados
+            showResults(result);
+        }
+
+        function showResults(result) {
+            const modal = document.getElementById('resultsModal');
+            const scores = result.scores;
+
+            const icon = scores.total >= 10 ? '🏆' : scores.total >= 6 ? '📜' : '❌';
+            document.getElementById('resultIcon').textContent = icon;
+            
+            const title = scores.total >= 10 ? 'Aprovado!' : scores.total >= 6 ? 'Recuperação' : 'Reprovado';
+            document.getElementById('resultTitle').textContent = title;
+            
+            const msg = scores.total >= 10 ? 
+                `Parabéns, ${result.student.name}! Você completou o curso com sucesso.` :
+                scores.total >= 6 ?
+                `Você está na recuperação. Estude mais e tente novamente.` :
+                `Infelizmente você não atingiu a nota mínima. Retake custa 50 MTN.`;
+            document.getElementById('resultMessage').textContent = msg;
+
+            document.getElementById('mcScore').textContent = `${scores.multipleChoice}/10`;
+            document.getElementById('project1Score').textContent = `${scores.project1}/5`;
+            document.getElementById('project2Score').textContent = `${scores.project2}/5`;
+            
+            if (scores.penalty > 0) {
+                document.getElementById('penaltyRow').classList.remove('hidden');
+                document.getElementById('penaltyValue').textContent = `-${scores.penalty}`;
+            }
+            
+            document.getElementById('finalTotal').textContent = `${scores.total}/20`;
+            document.getElementById('finalScore').textContent = `${scores.total}/20`;
+
+            // Console output
+            document.getElementById('consoleOutput').textContent = consoleLogs.join('\n');
+
+            modal.classList.add('active');
+
+            // Log final
+            console.log('%c=== RESULTADO FINAL ===', 'font-size: 20px; font-weight: bold; color: #6366f1;');
+            console.log('Aluno:', result.student.name);
+            console.log('Email:', result.email);
+            console.log('Nota:', scores.total + '/20');
+            console.log('Perguntas:', scores.multipleChoice + '/10');
+            console.log('Projeto 1:', scores.project1 + '/5');
+            console.log('Projeto 2:', scores.project2 + '/5');
+            console.log('Penalidades:', scores.penalty);
+            console.log('Timestamp:', new Date(result.timestamp).toLocaleString());
+            console.log('%c=======================', 'font-size: 20px; font-weight: bold; color: #6366f1;');
+        }
+
+        // Prevenir saída acidental durante o exame
+        window.addEventListener('beforeunload', (e) => {
+            if (!document.getElementById('examContent').classList.contains('hidden') && 
+                !document.getElementById('resultsModal').classList.contains('active')) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    </script>
+</body>
+</html>
