@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Prático - Sistema de Estudantes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-code: #0d1117;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #334155;
+            --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            --gradient-2: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --gradient-3: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(217, 70, 239, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        /* Header */
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-text-fill-color: initial;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-card);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+        }
+
+        .progress-track {
+            width: 200px;
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--gradient-2);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-light);
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem 0;
+        }
+
+        .lesson-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-light);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Lesson Cards */
+        .lesson-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .lesson-section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-number {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin: 1.5rem 0 1rem;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        strong {
+            color: var(--text-primary);
+        }
+
+        /* Project Overview */
+        .project-overview {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .project-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+        .code-header {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-lang {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .code-lang::before {
+            content: '●';
+            color: var(--accent);
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.375rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        pre {
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .code-block pre code {
+            color: #e6edf3;
+            background: transparent;
+            padding: 0;
+        }
+
+        .keyword { color: #ff7b72; }
+        .string { color: #a5d6ff; }
+        .number { color: #79c0ff; }
+        .function { color: #d2a8ff; }
+        .comment { color: #8b949e; font-style: italic; }
+        .operator { color: #ff7b72; }
+        .parameter { color: #ffa657; }
+
+        /* Step Cards */
+        .step-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--gradient-1);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.875rem;
+            margin-right: 0.75rem;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 1.125rem;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .concept-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .concept-tag {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Interactive Demo */
+        .demo-container {
+            background: var(--bg-code);
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .demo-header {
+            background: var(--gradient-1);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .demo-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-body {
+            padding: 2rem;
+        }
+
+        .student-list {
+            display: grid;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .student-card {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .student-info h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .student-info p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        .student-grade {
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .grade-high { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .grade-medium { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .grade-low { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        .demo-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-light);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Tips Box */
+        .tip-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 16px 16px 0;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .tip-title {
+            color: var(--accent);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Challenge Box */
+        .challenge-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border: 2px solid var(--success);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .challenge-title {
+            color: var(--success);
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Exercise Cards */
+        .exercise-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .exercise-card:hover {
+            border-color: var(--primary);
+            transform: translateX(8px);
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .difficulty {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .difficulty-easy { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .difficulty-medium { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .difficulty-hard { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        .exercise-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .check-btn {
+            margin-top: 1rem;
+            background: var(--primary);
+            color: white;
+        }
+
+        .check-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Navigation */
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-prev {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .nav-prev:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .nav-next {
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+        }
+
+        .nav-next:hover {
+            transform: translateX(4px);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .progress-track {
+                width: 100px;
+            }
+            
+            .lesson-section {
+                padding: 1.5rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🚀</div>
+                    <span>CodeAcademy</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">0% Completo</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Lesson Header -->
+            <div class="lesson-header fade-in">
+                <div class="badge">🎯 Lição 8 • Projeto Final</div>
+                <h1>Projeto Prático: Sistema de Estudantes</h1>
+                <p class="subtitle">Aplique tudo o que aprendeu! Crie um sistema completo usando Variáveis, Condicionais, Loops, Funções e Arrays.</p>
+            </div>
+
+            <!-- Section 1: Project Overview -->
+            <section class="lesson-section fade-in" id="section1">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <h2>O Projeto</h2>
+                </div>
+
+                <div class="project-overview">
+                    <div class="project-icon">🎓</div>
+                    <h3 style="margin-bottom: 1rem;">Sistema de Gerenciamento de Estudantes</h3>
+                    <p>Vamos criar um sistema que permite cadastrar estudantes, calcular médias, verificar aprovação e gerar relatórios. Este projeto integra todos os conceitos das aulas anteriores!</p>
+                    
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <span class="feature-icon">👤</span>
+                            <span>Cadastrar estudantes</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📊</span>
+                            <span>Calcular médias</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✅</span>
+                            <span>Verificar aprovação</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📋</span>
+                            <span>Listar todos</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🔍</span>
+                            <span>Buscar estudante</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📈</span>
+                            <span>Estatísticas</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">💡 Conceitos que Vamos Usar</div>
+                    <p><strong>Variáveis</strong> para armazenar dados • <strong>Arrays</strong> para lista de estudantes • <strong>Objetos</strong> para cada estudante • <strong>Funções</strong> para operações • <strong>Loops</strong> para percorrer • <strong>Condicionais</strong> para verificar aprovação</p>
+                </div>
+            </section>
+
+            <!-- Section 2: Step by Step -->
+            <section class="lesson-section fade-in" id="section2">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <h2>Desenvolvimento Passo a Passo</h2>
+                </div>
+
+                <!-- Step 1 -->
+                <div class="step-card">
+                    <div class="step-title">
+                        <span class="step-number">1</span>
+                        Estrutura de Dados (Variáveis e Arrays)
+                    </div>
+                    <p>Primeiro, definimos como vamos armazenar os estudantes. Cada estudante será um objeto com nome e notas, e teremos um array para guardar todos.</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">JavaScript</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                        </div>
+                        <pre><code><span class="comment">// Array principal que armazena todos os estudantes</span>
+<span class="keyword">let</span> estudantes = [];
+
+<span class="comment">// Estrutura de um estudante (objeto)</span>
+<span class="keyword">let</span> estudante = {
+    nome: <span class="string">"Maria Silva"</span>,
+    notas: [<span class="number">8.5</span>, <span class="number">9.0</span>, <span class="number">7.5</span>],
+    media: <span class="number">0</span>,
+    situacao: <span class="string">""</span>
+};</code></pre>
+                    </div>
+                    
+                    <div class="concept-tags">
+                        <span class="concept-tag">📦 Variáveis</span>
+                        <span class="concept-tag">📊 Arrays</span>
+                        <span class="concept-tag">📋 Objetos</span>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-card">
+                    <div class="step-title">
+                        <span class="step-number">2</span>
+                        Função para Cadastrar Estudante
+                    </div>
+                    <p>Criamos uma função que recebe nome e notas, calcula a média automaticamente e adiciona ao array.</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">JavaScript</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                        </div>
+                        <pre><code><span class="keyword">function</span> <span class="function">cadastrarEstudante</span>(<span class="parameter">nome</span>, <span class="parameter">notas</span>) {
+    <span class="comment">// Calcular média usando reduce</span>
+    <span class="keyword">let</span> soma = notas.<span class="function">reduce</span>((acc, nota) => acc + nota, <span class="number">0</span>);
+    <span class="keyword">let</span> media = soma / notas.<span class="function">length</span>;
+    
+    <span class="comment">// Determinar situação (condicional)</span>
+    <span class="keyword">let</span> situacao = <span class="string">""</span>;
+    <span class="keyword">if</span> (media >= <span class="number">7</span>) {
+        situacao = <span class="string">"Aprovado"</span>;
+    } <span class="keyword">else if</span> (media >= <span class="number">5</span>) {
+        situacao = <span class="string">"Recuperação"</span>;
+    } <span class="keyword">else</span> {
+        situacao = <span class="string">"Reprovado"</span>;
+    }
+    
+    <span class="comment">// Criar objeto e adicionar ao array</span>
+    <span class="keyword">let</span> estudante = {
+        nome: nome,
+        notas: notas,
+        media: media.<span class="function">toFixed</span>(<span class="number">1</span>),
+        situacao: situacao
+    };
+    
+    estudantes.<span class="function">push</span>(estudante);
+    console.<span class="function">log</span>(<span class="string">"✅ Estudante cadastrado com sucesso!"</span>);
+}</code></pre>
+                    </div>
+                    
+                    <div class="concept-tags">
+                        <span class="concept-tag">⚙️ Funções</span>
+                        <span class="concept-tag">🔀 Condicionais</span>
+                        <span class="concept-tag">🔄 Reduce</span>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-card">
+                    <div class="step-title">
+                        <span class="step-number">3</span>
+                        Função para Listar Estudantes (Loop)
+                    </div>
+                    <p>Usamos um loop para percorrer o array e exibir todos os estudantes cadastrados.</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">JavaScript</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                        </div>
+                        <pre><code><span class="keyword">function</span> <span class="function">listarEstudantes</span>() {
+    <span class="keyword">if</span> (estudantes.<span class="function">length</span> === <span class="number">0</span>) {
+        console.<span class="function">log</span>(<span class="string">"Nenhum estudante cadastrado."</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    console.<span class="function">log</span>(<span class="string">"\\n📋 LISTA DE ESTUDANTES:"</span>);
+    console.<span class="function">log</span>(<span class="string">"========================"</span>);
+    
+    <span class="comment">// Loop for...of para percorrer array</span>
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < estudantes.<span class="function">length</span>; i++) {
+        <span class="keyword">let</span> e = estudantes[i];
+        console.<span class="function">log</span>(<span class="string">"${i + 1}. ${e.nome}"</span>);
+        console.<span class="function">log</span>(<span class="string">"   Média: ${e.media} - ${e.situacao}"</span>);
+        console.<span class="function">log</span>(<span class="string">""</span>);
+    }
+}</code></pre>
+                    </div>
+                    
+                    <div class="concept-tags">
+                        <span class="concept-tag">🔁 Loops</span>
+                        <span class="concept-tag">📊 Arrays</span>
+                        <span class="concept-tag">🔍 Length</span>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step-card">
+                    <div class="step-title">
+                        <span class="step-number">4</span>
+                        Função de Busca (Filter)
+                    </div>
+                    <p>Criamos uma função para buscar estudantes por nome usando o método filter.</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">JavaScript</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                        </div>
+                        <pre><code><span class="keyword">function</span> <span class="function">buscarEstudante</span>(<span class="parameter">nomeBusca</span>) {
+    <span class="comment">// Filter retorna array com elementos que atendem condição</span>
+    <span class="keyword">let</span> encontrados = estudantes.<span class="function">filter</span>(e => 
+        e.nome.<span class="function">toLowerCase</span>().<span class="function">includes</span>(nomeBusca.<span class="function">toLowerCase</span>())
+    );
+    
+    <span class="keyword">if</span> (encontrados.<span class="function">length</span> > <span class="number">0</span>) {
+        console.<span class="function">log</span>(<span class="string">"🔍 Resultados encontrados:"</span>);
+        encontrados.<span class="function">forEach</span>(e => {
+            console.<span class="function">log</span>(<span class="string">"- ${e.nome}: ${e.situacao}"</span>);
+        });
+    } <span class="keyword">else</span> {
+        console.<span class="function">log</span>(<span class="string">"❌ Nenhum estudante encontrado."</span>);
+    }
+    
+    <span class="keyword">return</span> encontrados;
+}</code></pre>
+                    </div>
+                    
+                    <div class="concept-tags">
+                        <span class="concept-tag">🔍 Filter</span>
+                        <span class="concept-tag">📤 forEach</span>
+                        <span class="concept-tag">🔤 Strings</span>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="step-card">
+                    <div class="step-title">
+                        <span class="step-number">5</span>
+                        Estatísticas do Sistema (Reduce e Math)
+                    </div>
+                    <p>Função que calcula estatísticas gerais: média da turma, maior nota, menor nota, total de aprovados.</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">JavaScript</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                        </div>
+                        <pre><code><span class="keyword">function</span> <span class="function">gerarEstatisticas</span>() {
+    <span class="keyword">if</span> (estudantes.<span class="function">length</span> === <span class="number">0</span>) {
+        console.<span class="function">log</span>(<span class="string">"Sem dados para estatísticas."</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="comment">// Extrair todas as médias</span>
+    <span class="keyword">let</span> medias = estudantes.<span class="function">map</span>(e => <span class="function">parseFloat</span>(e.media));
+    
+    <span class="comment">// Cálculos</span>
+    <span class="keyword">let</span> mediaTurma = medias.<span class="function">reduce</span>((a, b) => a + b, <span class="number">0</span>) / medias.<span class="function">length</span>;
+    <span class="keyword">let</span> maiorMedia = Math.<span class="function">max</span>(...medias);
+    <span class="keyword">let</span> menorMedia = Math.<span class="function">min</span>(...medias);
+    <span class="keyword">let</span> aprovados = estudantes.<span class="function">filter</span>(e => e.situacao === <span class="string">"Aprovado"</span>).<span class="function">length</span>;
+    
+    console.<span class="function">log</span>(<span class="string">"\\n📊 ESTATÍSTICAS DA TURMA:"</span>);
+    console.<span class="function">log</span>(<span class="string">"Total de estudantes: ${estudantes.length}"</span>);
+    console.<span class="function">log</span>(<span class="string">"Média da turma: ${mediaTurma.toFixed(1)}"</span>);
+    console.<span class="function">log</span>(<span class="string">"Maior média: ${maiorMedia}"</span>);
+    console.<span class="function">log</span>(<span class="string">"Menor média: ${menorMedia}"</span>);
+    console.<span class="function">log</span>(<span class="string">"Aprovados: ${aprovados} (${((aprovados/estudantes.length)*100).toFixed(0)}%)"</span>);
+}</code></pre>
+                    </div>
+                    
+                    <div class="concept-tags">
+                        <span class="concept-tag">📊 Map</span>
+                        <span class="concept-tag">📈 Math</span>
+                        <span class="concept-tag">📉 Reduce</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Complete Code -->
+            <section class="lesson-section fade-in" id="section3">
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <h2>Código Completo</h2>
+                </div>
+
+                <p>Aqui está o sistema completo, pronto para usar:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript - Sistema Completo</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copiar Tudo</button>
+                    </div>
+                    <pre><code><span class="comment">// ==========================================</span>
+<span class="comment">// SISTEMA DE GERENCIAMENTO DE ESTUDANTES</span>
+<span class="comment">// ==========================================</span>
+
+<span class="keyword">let</span> estudantes = [];
+
+<span class="comment">// 1. CADASTRAR ESTUDANTE</span>
+<span class="keyword">function</span> <span class="function">cadastrarEstudante</span>(<span class="parameter">nome</span>, <span class="parameter">notas</span>) {
+    <span class="keyword">let</span> soma = notas.<span class="function">reduce</span>((acc, nota) => acc + nota, <span class="number">0</span>);
+    <span class="keyword">let</span> media = soma / notas.<span class="function">length</span>;
+    
+    <span class="keyword">let</span> situacao = media >= <span class="number">7</span> ? <span class="string">"Aprovado"</span> : 
+                 media >= <span class="number">5</span> ? <span class="string">"Recuperação"</span> : <span class="string">"Reprovado"</span>;
+    
+    estudantes.<span class="function">push</span>({
+        nome: nome,
+        notas: notas,
+        media: media.<span class="function">toFixed</span>(<span class="number">1</span>),
+        situacao: situacao
+    });
+    
+    console.<span class="function">log</span>(<span class="string">"✅ ${nome} cadastrado!"</span>);
+}
+
+<span class="comment">// 2. LISTAR TODOS</span>
+<span class="keyword">function</span> <span class="function">listarEstudantes</span>() {
+    console.<span class="function">log</span>(<span class="string">"\\n📋 LISTA DE ESTUDANTES:"</span>);
+    estudantes.<span class="function">forEach</span>((e, i) => {
+        console.<span class="function">log</span>(<span class="string">"${i + 1}. ${e.nome} - Média: ${e.media} (${e.situacao})"</span>);
+    });
+}
+
+<span class="comment">// 3. BUSCAR ESTUDANTE</span>
+<span class="keyword">function</span> <span class="function">buscarEstudante</span>(<span class="parameter">termo</span>) {
+    <span class="keyword">let</span> resultados = estudantes.<span class="function">filter</span>(e => 
+        e.nome.<span class="function">toLowerCase</span>().<span class="function">includes</span>(termo.<span class="function">toLowerCase</span>())
+    );
+    <span class="keyword">return</span> resultados;
+}
+
+<span class="comment">// 4. ESTATÍSTICAS</span>
+<span class="keyword">function</span> <span class="function">estatisticas</span>() {
+    <span class="keyword">if</span> (estudantes.<span class="function">length</span> === <span class="number">0</span>) <span class="keyword">return</span>;
+    
+    <span class="keyword">let</span> medias = estudantes.<span class="function">map</span>(e => <span class="function">parseFloat</span>(e.media));
+    <span class="keyword">let</span> mediaTurma = medias.<span class="function">reduce</span>((a, b) => a + b) / medias.<span class="function">length</span>;
+    <span class="keyword">let</span> aprovados = estudantes.<span class="function">filter</span>(e => e.situacao === <span class="string">"Aprovado"</span>).<span class="function">length</span>;
+    
+    console.<span class="function">log</span>(<span class="string">"\\n📊 Estatísticas:"</span>);
+    console.<span class="function">log</span>(<span class="string">"Média da turma: ${mediaTurma.toFixed(1)}"</span>);
+    console.<span class="function">log</span>(<span class="string">"Taxa de aprovação: ${((aprovados/estudantes.length)*100).toFixed(0)}%"</span>);
+}
+
+<span class="comment">// ===== TESTANDO O SISTEMA =====</span>
+
+<span class="function">cadastrarEstudante</span>(<span class="string">"Ana Silva"</span>, [<span class="number">8.5</span>, <span class="number">9.0</span>, <span class="number">7.5</span>]);
+<span class="function">cadastrarEstudante</span>(<span class="string">"Bruno Costa"</span>, [<span class="number">6.0</span>, <span class="number">5.5</span>, <span class="number">7.0</span>]);
+<span class="function">cadastrarEstudante</span>(<span class="string">"Carla Mendes"</span>, [<span class="number">9.5</span>, <span class="number">9.0</span>, <span class="number">10</span>]);
+<span class="function">cadastrarEstudante</span>(<span class="string">"Daniel Souza"</span>, [<span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">3.5</span>]);
+
+<span class="function">listarEstudantes</span>();
+<span class="function">estatisticas</span>();</code></pre>
+                </div>
+            </section>
+
+            <!-- Section 4: Live Demo -->
+            <section class="lesson-section fade-in" id="section4">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <h2>Demonstração Interativa</h2>
+                </div>
+
+                <div class="demo-container">
+                    <div class="demo-header">
+                        <div class="demo-title">🎓 Sistema em Funcionamento</div>
+                        <button class="btn btn-primary" onclick="runDemo()">▶ Executar Demo</button>
+                    </div>
+                    <div class="demo-body">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="totalStudents">0</div>
+                                <div class="stat-label">Total Estudantes</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="avgGrade">-</div>
+                                <div class="stat-label">Média da Turma</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="approvedCount">0</div>
+                                <div class="stat-label">Aprovados</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="approvalRate">0%</div>
+                                <div class="stat-label">Taxa Aprovação</div>
+                            </div>
+                        </div>
+
+                        <div class="student-list" id="studentList">
+                            <!-- Students will appear here -->
+                        </div>
+
+                        <div class="demo-controls">
+                            <button class="btn btn-primary" onclick="addDemoStudent()">➕ Adicionar Estudante</button>
+                            <button class="btn btn-secondary" onclick="clearDemo()">🗑️ Limpar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: Challenges -->
+            <section class="lesson-section fade-in" id="section5">
+                <div class="section-header">
+                    <div class="section-number">5</div>
+                    <h2>Desafios de Expansão</h2>
+                </div>
+
+                <p>Agora que você tem o sistema base, tente implementar estas melhorias:</p>
+
+                <div class="challenge-box">
+                    <div class="challenge-title">🏆 Desafio 1: Remover Estudante</div>
+                    <p>Adicione uma função <code>removerEstudante(nome)</code> que remove um estudante do array pelo nome. Dica: Use <code>findIndex()</code> e <code>splice()</code>.</p>
+                </div>
+
+                <div class="challenge-box">
+                    <div class="challenge-title">🏆 Desafio 2: Ordenar por Média</div>
+                    <p>Crie uma função <code>listarRanking()</code> que mostra os estudantes ordenados da maior para a menor média. Dica: Use <code>sort()</code> com função de comparação.</p>
+                </div>
+
+                <div class="challenge-box">
+                    <div class="challenge-title">🏆 Desafio 3: Persistência de Dados</div>
+                    <p>Adicione funções <code>salvarDados()</code> e <code>carregarDados()</code> que usam <code>localStorage</code> para manter os dados mesmo após fechar o navegador.</p>
+                </div>
+
+                <div class="challenge-box">
+                    <div class="challenge-title">🏆 Desafio 4: Validação</div>
+                    <p>Adicione validações: verifique se o nome não está vazio, se as notas estão entre 0 e 10, e se o estudante já não existe antes de cadastrar.</p>
+                </div>
+            </section>
+
+            <!-- Section 6: Exercises -->
+            <section class="lesson-section fade-in" id="section6">
+                <div class="section-header">
+                    <div class="section-number">6</div>
+                    <h2>Exercícios Práticos</h2>
+                </div>
+
+                <!-- Exercise 1 -->
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <span class="difficulty difficulty-easy">Fácil</span>
+                        <span class="exercise-title">Exercício 1: Contar por Situação</span>
+                    </div>
+                    <p>Crie uma função que retorna quantos estudantes estão em cada situação (Aprovado, Recuperação, Reprovado).</p>
+                    
+                    <button class="btn check-btn" onclick="checkExercise1()">✓ Ver Resposta</button>
+                    
+                    <div class="success-message" id="success1">
+                        ✅ Dica: Use <code>filter().length</code> para cada situação ou crie um objeto contador com <code>forEach</code>.
+                    </div>
+                </div>
+
+                <!-- Exercise 2 -->
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <span class="difficulty difficulty-medium">Médio</span>
+                        <span class="exercise-title">Exercício 2: Melhor e Pior Aluno</span>
+                    </div>
+                    <p>Crie funções <code>melhorAluno()</code> e <code>piorAluno()</code> que retornam o nome do estudante com maior e menor média.</p>
+                    
+                    <button class="btn check-btn" onclick="checkExercise2()">✓ Ver Dica</button>
+                    
+                    <div class="success-message" id="success2">
+                        💡 Dica: Use <code>reduce()</code> comparando as médias, ou <code>sort()</code> e pegue o primeiro/último elemento.
+                    </div>
+                </div>
+
+                <!-- Exercise 3 -->
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <span class="difficulty difficulty-hard">Desafio</span>
+                        <span class="exercise-title">Exercício 3: Sistema de Login</span>
+                    </div>
+                    <p>Adicione um sistema simples de login: cada estudante tem um email e senha. Crie funções para autenticar e mostrar apenas os dados do estudante logado.</p>
+                    
+                    <button class="btn check-btn" onclick="checkExercise3()">✓ Ver Conceitos</button>
+                    
+                    <div class="success-message" id="success3">
+                        🧠 Conceitos necessários: Adicione email/senha ao objeto estudante, use <code>find()</code> para localizar, e condicionais para verificar a senha.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 7: Next Steps -->
+            <section class="lesson-section fade-in" id="section7">
+                <div class="section-header">
+                    <div class="section-number">7</div>
+                    <h2>Próximos Passos</h2>
+                </div>
+
+                <p>Parabéns por completar o projeto! Você agora tem uma base sólida em JavaScript. Aqui está o que estudar em seguida:</p>
+
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <span class="feature-icon">🌐</span>
+                        <span>DOM Manipulation (interagir com HTML)</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📡</span>
+                        <span>Fetch API (requisições HTTP)</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📦</span>
+                        <span>ES6+ Features (classes, módulos)</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">⚛️</span>
+                        <span>Frameworks (React, Vue)</span>
+                    </div>
+                </div>
+
+                <div class="tip-box" style="margin-top: 2rem;">
+                    <div class="tip-title">🎉 Você Conseguiu!</div>
+                    <p>Você acabou de criar um sistema real de gerenciamento! Este projeto pode ser expandido para um sistema de notas escolar, uma lista de tarefas, um catálogo de produtos, ou qualquer outra aplicação que envolva cadastro e listagem de dados.</p>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="lesson-nav">
+                <a href="#" class="nav-btn nav-prev">
+                    ← Aula Anterior (Arrays)
+                </a>
+                <button class="nav-btn nav-next" onclick="completeCourse()">
+                    🎓 Concluir Curso →
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Progress tracking
+        let currentProgress = 0;
+        
+        function updateProgress() {
+            const scrolled = window.scrollY + window.innerHeight;
+            const total = document.documentElement.scrollHeight;
+            currentProgress = Math.min(100, Math.round((scrolled / total) * 100));
+            
+            document.getElementById('progressFill').style.width = currentProgress + '%';
+            document.getElementById('progressText').textContent = currentProgress + '% Completo';
+        }
+
+        window.addEventListener('scroll', updateProgress);
+        window.addEventListener('load', updateProgress);
+
+        // Demo Data
+        let demoStudents = [];
+        const demoNames = ['Ana Silva', 'Bruno Costa', 'Carla Mendes', 'Daniel Souza', 'Elisa Lima'];
+        const demoGrades = [
+            [8.5, 9.0, 7.5],
+            [6.0, 5.5, 7.0],
+            [9.5, 9.0, 10],
+            [4.0, 5.0, 3.5],
+            [7.5, 8.0, 7.0]
+        ];
+
+        function runDemo() {
+            demoStudents = [];
+            for (let i = 0; i < 4; i++) {
+                addDemoStudent(i);
+            }
+        }
+
+        function addDemoStudent(index) {
+            const i = index !== undefined ? index : demoStudents.length;
+            if (i >= demoNames.length) return;
+            
+            const notas = demoGrades[i];
+            const soma = notas.reduce((a, b) => a + b, 0);
+            const media = (soma / notas.length).toFixed(1);
+            const situacao = media >= 7 ? 'Aprovado' : media >= 5 ? 'Recuperação' : 'Reprovado';
+            
+            const student = {
+                nome: demoNames[i],
+                notas: notas,
+                media: media,
+                situacao: situacao
+            };
+            
+            demoStudents.push(student);
+            renderDemo();
+        }
+
+        function renderDemo() {
+            const list = document.getElementById('studentList');
+            list.innerHTML = '';
+            
+            demoStudents.forEach((s, i) => {
+                const gradeClass = s.media >= 7 ? 'grade-high' : s.media >= 5 ? 'grade-medium' : 'grade-low';
+                
+                const card = document.createElement('div');
+                card.className = 'student-card';
+                card.innerHTML = `
+                    <div class="student-info">
+                        <h4>${i + 1}. ${s.nome}</h4>
+                        <p>Notas: ${s.notas.join(', ')}</p>
+                    </div>
+                    <div class="student-grade ${gradeClass}">
+                        ${s.media}
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+            
+            // Update stats
+            document.getElementById('totalStudents').textContent = demoStudents.length;
+            
+            if (demoStudents.length > 0) {
+                const medias = demoStudents.map(s => parseFloat(s.media));
+                const avg = (medias.reduce((a, b) => a + b, 0) / medias.length).toFixed(1);
+                const aprovados = demoStudents.filter(s => s.situacao === 'Aprovado').length;
+                const taxa = ((aprovados / demoStudents.length) * 100).toFixed(0);
+                
+                document.getElementById('avgGrade').textContent = avg;
+                document.getElementById('approvedCount').textContent = aprovados;
+                document.getElementById('approvalRate').textContent = taxa + '%';
+            }
+        }
+
+        function clearDemo() {
+            demoStudents = [];
+            document.getElementById('studentList').innerHTML = '';
+            document.getElementById('totalStudents').textContent = '0';
+            document.getElementById('avgGrade').textContent = '-';
+            document.getElementById('approvedCount').textContent = '0';
+            document.getElementById('approvalRate').textContent = '0%';
+        }
+
+        // Copy code functionality
+        function copyCode(btn) {
+            const codeBlock = btn.closest('.code-block').querySelector('pre');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const original = btn.textContent;
+                btn.textContent = '✓ Copiado!';
+                setTimeout(() => {
+                    btn.textContent = original;
+                }, 2000);
+            });
+        }
+
+        // Exercise checking
+        function checkExercise1() {
+            document.getElementById('success1').style.display = 'block';
+            updateProgress();
+        }
+
+        function checkExercise2() {
+            document.getElementById('success2').style.display = 'block';
+            updateProgress();
+        }
+
+        function checkExercise3() {
+            document.getElementById('success3').style.display = 'block';
+            updateProgress();
+        }
+
+        // Complete course
+        function completeCourse() {
+            alert('🎉 PARABÉNS! Você completou o curso de JavaScript para Iniciantes!\n\nVocê aprendeu:\n✅ Variáveis e Tipos de Dados\n✅ Operadores\n✅ Condicionais (if/else)\n✅ Loops (for/while)\n✅ Funções\n✅ Arrays e Objetos\n✅ Projeto Prático\n\nContinue praticando e construindo projetos!');
+            document.getElementById('progressFill').style.width = '100%';
+            document.getElementById('progressText').textContent = '100% Completo';
+        }
+
+        // Add fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.lesson-section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
