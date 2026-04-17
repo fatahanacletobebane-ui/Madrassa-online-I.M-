@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="pt" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madrassa Online - Islam Moçambique</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a5f2a;
+            --primary-light: #2d8a3e;
+            --primary-dark: #0d3d18;
+            --accent: #d4af37;
+            --accent-light: #f4d03f;
+            --bg: #f8f9f5;
+            --card-bg: #ffffff;
+            --text: #2c3e2d;
+            --text-light: #5a6b5c;
+            --border: #c8d6c9;
+            --shadow: rgba(26, 95, 42, 0.1);
+            --success: #27ae60;
+            --warning: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Islamic Pattern Background */
+        .pattern-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231a5f2a' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+            color: white;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .header-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0L40 20L20 40L0 20L20 0z' fill='%23ffffff' fill-opacity='0.4'/%3E%3C/svg%3E");
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+            font-weight: 300;
+        }
+
+        .arabic-title {
+            font-family: 'Amiri', serif;
+            font-size: 2rem;
+            margin-top: 0.5rem;
+            color: var(--accent-light);
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--border);
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .nav-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-btn {
+            padding: 1rem 1.2rem;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            position: relative;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-btn:hover {
+            color: var(--primary);
+            background: rgba(26, 95, 42, 0.05);
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--accent);
+        }
+
+        .nav-btn .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--primary-dark);
+            font-size: 0.7rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 10px;
+            margin-left: 0.3rem;
+            font-weight: 700;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--card-bg) 0%, #f0f4f0 100%);
+            border-radius: 20px;
+            border: 2px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            opacity: 0.05;
+            border-radius: 50%;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+
+        .section-header p {
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Lesson Cards Grid */
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .lesson-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.8rem;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--shadow);
+            border-color: var(--primary-light);
+        }
+
+        .lesson-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .lesson-number {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .lesson-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .lesson-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Interactive Lesson View */
+        .lesson-view {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 2px solid var(--border);
+            overflow: hidden;
+            display: none;
+        }
+
+        .lesson-view.active {
+            display: block;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .lesson-toolbar {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .lesson-toolbar h3 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .lesson-content {
+            padding: 2.5rem;
+        }
+
+        .arabic-text {
+            font-family: 'Amiri', serif;
+            font-size: 2.5rem;
+            line-height: 3.5rem;
+            text-align: center;
+            color: var(--primary-dark);
+            margin: 2rem 0;
+            direction: rtl;
+        }
+
+        .transliteration {
+            text-align: center;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .letter-box {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8f9f5, #e8f0e8);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-family: 'Amiri', serif;
+            font-size: 2rem;
+            color: var(--primary-dark);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .letter-box:hover {
+            transform: scale(1.1);
+            border-color: var(--primary);
+            box-shadow: 0 5px 20px var(--shadow);
+            z-index: 2;
+        }
+
+        .letter-box .pronunciation {
+            position: absolute;
+            bottom: 5px;
+            font-size: 0.7rem;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-light);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .letter-box:hover .pronunciation {
+            opacity: 1;
+        }
+
+        /* Progress Tracking */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* Quiz Section */
+        .quiz-container {
+            background: linear-gradient(135deg, #f8f9f5, #e8f0e8);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 2px dashed var(--border);
+        }
+
+        .quiz-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .quiz-option {
+            padding: 1rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            font-family: 'Amiri', serif;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: var(--success);
+            color: #155724;
+        }
+
+        .quiz-option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        /* Audio Player Simulation */
+        .audio-player {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            border-radius: 50px;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: white;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .audio-wave {
+            flex: 1;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .wave-bar {
+            width: 4px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 2px;
+            animation: wave 1s ease-in-out infinite;
+        }
+
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; height: 60%; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; height: 80%; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; height: 40%; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; height: 70%; }
+        .wave-bar:nth-child(6) { animation-delay: 0.5s; height: 50%; }
+        .wave-bar:nth-child(7) { animation-delay: 0.6s; height: 90%; }
+        .wave-bar:nth-child(8) { animation-delay: 0.7s; height: 30%; }
+
+        @keyframes wave {
+            0%, 100% { height: 30%; }
+            50% { height: 100%; }
+        }
+
+        /* Contact Section */
+        .contact-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+        }
+
+        .contact-card h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-dark);
+            color: rgba(255,255,255,0.8);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            position: relative;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.5rem; }
+            .arabic-title { font-size: 1.5rem; }
+            .lessons-grid { grid-template-columns: 1fr; }
+            .quiz-options { grid-template-columns: 1fr; }
+            .lesson-toolbar { flex-direction: column; text-align: center; }
+            .arabic-text { font-size: 1.8rem; }
+            .contact-info { gap: 1.5rem; }
+        }
+
+        /* Special styling for different lesson types */
+        .dots-exercise {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .dot-group {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            border: 2px solid var(--border);
+            min-width: 120px;
+        }
+
+        .dot-group h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .dots {
+            font-size: 2rem;
+            letter-spacing: 0.3rem;
+        }
+
+        .joint-forms-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .joint-forms-table th,
+        .joint-forms-table td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--border);
+            font-family: 'Amiri', serif;
+            font-size: 1.5rem;
+        }
+
+        .joint-forms-table th {
+            background: var(--primary);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .joint-forms-table tr:hover {
+            background: #f8f9f5;
+        }
+
+        .haraqat-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .haraqat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            border: 2px solid var(--border);
+            min-width: 150px;
+        }
+
+        .haraqat-symbol {
+            font-family: 'Amiri', serif;
+            font-size: 3rem;
+            color: var(--primary-dark);
+        }
+
+        .haraqat-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .haraqat-desc {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* Loading animation */
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid var(--border);
+            border-bottom-color: var(--primary);
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: translateX(400px);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+            font-weight: 600;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="pattern-bg"></div>
+
+    <header>
+        <div class="header-pattern"></div>
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">☪</div>
+                <div>
+                    <h1>Madrassa Online</h1>
+                    <div class="arabic-title">مدرسة الإسلام موزمبيق</div>
+                </div>
+            </div>
+            <p class="subtitle">Islam Moçambique - Ensino do Alcorão (Yassarnal Qur'aan Parte 1)</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="nav-container">
+            <button class="nav-btn active" onclick="showSection('dashboard')">📊 Início</button>
+            <button class="nav-btn" onclick="showSection('alphabet')">🔤 Alfabeto Árabe <span class="badge">10</span></button>
+            <button class="nav-btn" onclick="showSection('joints')">🔗 Formas Ligadas <span class="badge">8</span></button>
+            <button class="nav-btn" onclick="showSection('haraqat')">📖 Hurrakaat <span class="badge">7</span></button>
+            <button class="nav-btn" onclick="showSection('words')">✍️ Palavras <span class="badge">6</span></button>
+            <button class="nav-btn" onclick="showSection('progress')">📈 Progresso</button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <div class="section-header">
+                <h2>🌟 Bem-vindo à Madrassa Online</h2>
+                <p>Comece sua jornada de aprendizado do Alcorão com o método Yassarnal Qur'aan. Siga as lições em ordem para melhor progresso.</p>
+            </div>
+
+            <div class="lessons-grid">
+                <div class="lesson-card" onclick="startLesson('intro')">
+                    <div class="lesson-number">1</div>
+                    <div class="lesson-title">Ad-ieyah (Orações)</div>
+                    <div class="lesson-desc">Orações para recitar antes de começar as aulas de Ta'lim (ensino)</div>
+                    <div class="lesson-meta">
+                        <span>⏱️ 5 min</span>
+                        <span>🎯 Iniciante</span>
+                    </div>
+                </div>
+
+                <div class="lesson-card" onclick="showSection('alphabet')">
+                    <div class="lesson-number">2</div>
+                    <div class="lesson-title">Nouq'tah (Pontos)</div>
+                    <div class="lesson-desc">Aprenda sobre os pontos (nuqtas) no alfabeto árabe e suas posições</div>
+                    <div class="lesson-meta">
+                        <span>⏱️ 10 min</span>
+                        <span>🎯 Iniciante</span>
+                    </div>
+                </div>
+
+                <div class="lesson-card" onclick="showSection('alphabet')">
+                    <div class="lesson-number">3</div>
+                    <div class="lesson-title">Letras Individuais</div>
+                    <div class="lesson-desc">Alif, Baa, Taa, Thaa - As primeiras letras do alfabeto árabe</div>
+                    <div class="lesson-meta">
+                        <span>⏱️ 15 min</span>
+                        <span>🎯 Iniciante</span>
+                    </div>
+                </div>
+
+                <div class="lesson-card" onclick="showSection('joints')">
+                    <div class="lesson-number">11</div>
+                    <div class="lesson-title">Formas Ligadas</div>
+                    <div class="lesson-desc">Aprenda como as letras se conectam no início, meio e fim das palavras</div>
+                    <div class="lesson-meta">
+                        <span>⏱️ 20 min</span>
+                        <span>🎯 Intermediário</span>
+                    </div>
+                </div>
+
+                <div class="lesson-card" onclick="showSection('haraqat')">
+                    <div class="lesson-number">19</div>
+                    <div class="lesson-title">Hurrakaat (Vogais)</div>
+                    <div class="lesson-desc">Fut-hah (Zabarr), Kusrah (Zerr), Dhummah (Pesh) - Os sinais de vogal</div>
+                    <div class="lesson-meta">
+                        <span>⏱️ 25 min</span>
+                        <span>🎯 Intermediário</span>
+                    </div>
+                </div>
+
+                <div class="lesson-card" onclick="showSection('words')">
+                    <div class="lesson-number">25</div>
+                    <div class="lesson-title">Palavras com Hurrakaat</div>
+                    <div class="lesson-desc">Leitura de palavras de 2, 3, 4 e 5 letras com sinais de vogal</div>
+                    <div class="lesson-meta">
+                        <span>⏱️ 30 min</span>
+                        <span>🎯 Avançado</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-card">
+                <h2>📞 Contacto de Suporte</h2>
+                <p>Islam Moçambique - Estamos aqui para ajudar no seu aprendizado</p>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">📱</div>
+                        <div>WhatsApp</div>
+                        <div style="font-size: 1.2rem; font-weight: 700;">860407269</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">✉️</div>
+                        <div>Email</div>
+                        <div style="font-size: 0.9rem; font-weight: 600;">Islammocambique@gmail.com</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Alphabet Section -->
+        <section id="alphabet" class="section">
+            <div class="section-header">
+                <h2>🔤 Alfabeto Árabe - Letras Individuais</h2>
+                <p>Lições 1-10: Aprenda o alfabeto árabe começando com os pontos (Nouq'tah) e as letras individuais</p>
+            </div>
+
+            <div id="alphabet-lessons">
+                <!-- Lesson 1: Nouq'tah -->
+                <div class="lesson-view active" id="lesson-1">
+                    <div class="lesson-toolbar">
+                        <h3><span>1</span> Lição 1: Nouq'tah (Pontos)</h3>
+                        <div class="toolbar-actions">
+                            <button class="btn btn-secondary" onclick="playAudio('lesson1')">🔊 Ouvir</button>
+                            <button class="btn btn-primary" onclick="nextLesson()">Próxima →</button>
+                        </div>
+                    </div>
+                    <div class="lesson-content">
+                        <p style="text-align: center; margin-bottom: 2rem; color: var(--text-light);">
+                            O alfabeto árabe tem letras com pontos (Nouqu't) e sem pontos. 
+                            É importante reconhecer o número de pontos em cada letra.
+                        </p>
+
+                        <div class="dots-exercise">
+                            <div class="dot-group">
+                                <h4>Um Ponto</h4>
+                                <div class="dots">•</div>
+                                <p style="margin-top: 0.5rem; font-size: 0.9rem;">Ex: ب ن ق</p>
+                            </div>
+                            <div class="dot-group">
+                                <h4>Dois Pontos</h4>
+                                <div class="dots">• •</div>
+                                <p style="margin-top: 0.5rem; font-size: 0.9rem;">Ex: ت ق</p>
+                            </div>
+                            <div class="dot-group">
+                                <h4>Três Pontos</h4>
+                                <div class="dots">• • •</div>
+                                <p style="margin-top: 0.5rem; font-size: 0.9rem;">Ex: ث ش پ</p>
+                            </div>
+                        </div>
+
+                        <div class="audio-player">
+                            <button class="play-btn" onclick="togglePlay(this)">▶</button>
+                            <div class="audio-wave">
+                                <div class="wave-bar" style="height: 40%"></div>
+                                <div class="wave-bar" style="height: 60%"></div>
+                                <div class="wave-bar" style="height: 80%"></div>
+                                <div class="wave-bar" style="height: 40%"></div>
+                                <div class="wave-bar" style="height: 70%"></div>
+                                <div class="wave-bar" style="height: 50%"></div>
+                                <div class="wave-bar" style="height: 90%"></div>
+                                <div class="wave-bar" style="height: 30%"></div>
+                            </div>
+                            <span style="font-size: 0.9rem;">00:45</span>
+                        </div>
+
+                        <div class="quiz-container">
+                            <div class="quiz-question">Quantos pontos tem a letra ث (Thaa)?</div>
+                            <div class="quiz-options">
+                                <div class="quiz-option" onclick="checkAnswer(this, false)">۱<br><small>Um</small></div>
+                                <div class="quiz-option" onclick="checkAnswer(this, false)">۲<br><small>Dois</small></div>
+                                <div class="quiz-option" onclick="checkAnswer(this, true)">۳<br><small>Três</small></div>
+                                <div class="quiz-option" onclick="checkAnswer(this, false)">۰<br><small>Nenhum</small></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lesson 2: Single Letters Alif-Baa -->
+                <div class="lesson-view" id="lesson-2">
+                    <div class="lesson-toolbar">
+                        <h3><span>2</span> Lição 2: Alif, Baa, Taa, Thaa</h3>
+                        <div class="toolbar-actions">
+                            <button class="btn btn-secondary" onclick="prevLesson()">← Anterior</button>
+                            <button class="btn btn-secondary" onclick="playAudio('lesson2')">🔊 Ouvir</button>
+                            <button class="btn btn-primary" onclick="nextLesson()">Próxima →</button>
+                        </div>
+                    </div>
+                    <div class="lesson-content">
+                        <p style="text-align: center; margin-bottom: 1rem;">
+                            <strong>Leitura da direita para a esquerda</strong> ←
+                        </p>
+                        
+                        <div class="arabic-text">
+                            ا &nbsp;&nbsp; ب &nbsp;&nbsp; ت &nbsp;&nbsp; ث
+                        </div>
+                        <div class="transliteration">Alif &nbsp;&nbsp; Baa &nbsp;&nbsp; Taa &nbsp;&nbsp; Thaa</div>
+
+                        <div class="exercise-grid">
+                            <div class="letter-box" onclick="playLetter('alif')">
+                                ا
+                                <span class="pronunciation">Alif</span>
+                            </div>
+                            <div class="letter-box" onclick="playLetter('baa')">
+                                ب
+                                <span class="pronunciation">Baa</span>
+                            </div>
+                            <div class="letter-box" onclick="playLetter('taa')">
+                                ت
+                                <span class="pronunciation">Taa</span>
+                            </div>
+                            <div class="letter-box" onclick="playLetter('thaa')">
+                                ث
+                                <span class="pronunciation">Thaa</span>
+                            </div>
+                        </div>
+
+                        <div style="background: #e8f5e9; padding: 1.5rem; border-radius: 12px; margin-top: 2rem;">
+                            <h4 style="color: var(--primary); margin-bottom: 1rem;">📝 Notas para o Oestaath (Professor):</h4>
+                            <ul style="margin-left: 1.5rem; color: var(--text);">
+                                <li>Enfatize a pronúncia correta de cada letra</li>
+                                <li>Alif é uma letra de som longo (aa)</li>
+                                <li>Baa tem um ponto abaixo (•)</li>
+                                <li>Taa tem dois pontos acima (••)</li>
+                                <li>Thaa tem três pontos acima (•••)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lesson 3: Jeem-Haa-Khaa -->
+                <div class="lesson-view" id="lesson-3">
+                    <div class="lesson-toolbar">
+                        <h3><span>3</span> Lição 3: Jeem, Haa, Khaa</h3>
+                        <div class="toolbar-actions">
+                            <button class="btn btn-secondary" onclick="prevLesson()">← Anterior</button>
+                            <button class="btn btn-secondary" onclick="playAudio('lesson3')">🔊 Ouvir</button>
+                            <button class="btn btn-primary" onclick="nextLesson()">Próxima →</button>
+                        </div>
+                    </div>
+                    <div class="lesson-content">
+                        <div class="arabic-text">
+                            ج &nbsp;&nbsp; ح &nbsp;&nbsp; خ
+                        </div>
+                        <div class="transliteration">Jeem &nbsp;&nbsp; Haa &nbsp;&nbsp; Khaa</div>
+
+                        <div class="exercise-grid">
+                            <div class="letter-box" onclick="playLetter('jeem')">
+                                ج
+                                <span class="pronunciation">Jeem</span>
+                            </div>
+                            <div class="letter-box" onclick="playLetter('haa-heavy')">
+                                ح
+                                <span class="pronunciation">Haa (pesado)</span>
+                            </div>
+                            <div class="letter-box" onclick="playLetter('khaa')">
+                                خ
+                                <span class="pronunciation">Khaa</span>
+                            </div>
+                        </div>
+
+                        <div class="quiz-container">
+                            <div class="quiz-question">Qual letra tem um ponto acima?</div>
+                            <div class="quiz-options">
+                                <div class="quiz-option" onclick="checkAnswer(this, true)">ج<br><small>Jeem</small></div>
+                                <div class="quiz-option" onclick="checkAnswer(this, false)">ح<br><small>Haa</small></div>
+                                <div class="quiz-option" onclick="checkAnswer(this, false)">خ<br><small>Khaa</small></div>
+                                <div class="quiz-option" onclick="checkAnswer(this, false)">ه<br><small>Ha</small></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More lessons placeholder -->
+                <div class="lesson-view" id="lesson-4">
+                    <div class="lesson-toolbar">
+                        <h3><span>4</span> Lição 4: Dal, Dhal, Ra, Za</h3>
+                        <div class="toolbar-actions">
+                            <button class="btn btn-secondary" onclick="prevLesson()">← Anterior</button>
+                            <button class="btn btn-secondary" onclick="playAudio('lesson4')">🔊 Ouvir</button>
+                            <button class="btn btn-primary" onclick="nextLesson()">Próxima →</button>
+                        </div>
+                    </div>
+                    <div class="lesson-content">
+                        <div class="arabic-text">
+                            د &nbsp;&nbsp; ذ &nbsp;&nbsp; ر &nbsp;&nbsp; ز
+                        </div>
+                        <div class="transliteration">Dal &nbsp;&nbsp; Dhal &nbsp;&nbsp; Ra &nbsp;&nbsp; Za</div>
+                        
+                        <div class="exercise-grid">
+                            <div class="letter-box" onclick="playLetter('dal')">د<span class="pronunciation">Dal</span></div>
+                            <div class="letter-box" onclick="playLetter('dhal')">ذ<span class="pronunciation">Dhal</span></div>
+                            <div class="letter-box" onclick="playLetter('ra')">ر<span class="pronunciation">Ra</span></div>
+                            <div class="letter-box" onclick="playLetter('za')">ز<span class="pronunciation">Za</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-view" id="lesson-5">
+                    <div class="lesson-toolbar">
+                        <h3><span>5</span> Lição 5: Seen, Sheen, Sad, Dad</h3>
+                        <div class="toolbar-actions">
+                            <button class="btn btn-secondary" onclick="prevLesson()">← Anterior</button>
+                            <button class="btn btn-secondary" onclick="playAudio('lesson5')">🔊 Ouvir</button>
+                            <button class="btn btn-primary" onclick="nextLesson()">Próxima →</button>
+                        </div>
+                    </div>
+                    <div class="lesson-content">
+                        <div class="arabic-text">
+                            س &nbsp;&nbsp; ش &nbsp;&nbsp; ص &nbsp;&nbsp; ض
+                        </div>
+                        <div class="transliteration">Seen &nbsp;&nbsp; Sheen &nbsp;&nbsp; Sad &nbsp;&nbsp; Dad</div>
+                        
+                        <div class="exercise-grid">
+                            <div class="letter-box" onclick="playLetter('seen')">س<span class="pronunciation">Seen</span></div>
+                            <div class="letter-box" onclick="playLetter('sheen')">ش<span class="pronunciation">Sheen</span></div>
+                            <div class="letter-box" onclick="playLetter('sad')">ص<span class="pronunciation">Sad</span></div>
+                            <div class="letter-box" onclick="playLetter('dad')">ض<span class="pronunciation">Dad</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Joint Forms Section -->
+        <section id="joints" class="section">
+            <div class="section-header">
+                <h2>🔗 Formas Ligadas das Letras</h2>
+                <p>Lições 11-18: Como as letras mudam de forma no início, meio e fim das palavras</p>
+            </div>
+
+            <div class="lesson-view active">
+                <div class="lesson-toolbar">
+                    <h3><span>11</span> Formas Ligadas (Prefixes, Middle, Suffixes)</h3>
+                    <div class="toolbar-actions">
+                        <button class="btn btn-secondary" onclick="playAudio('joints')">🔊 Ouvir</button>
+                    </div>
+                </div>
+                <div class="lesson-content">
+                    <p style="margin-bottom: 2rem; text-align: center;">
+                        As letras árabes têm formas diferentes dependendo da posição na palavra:
+                        <strong>Isolada</strong>, <strong>Início</strong>, <strong>Meio</strong>, <strong>Fim</strong>
+                    </p>
+
+                    <table class="joint-forms-table">
+                        <thead>
+                            <tr>
+                                <th>Letra</th>
+                                <th>Isolada</th>
+                                <th>Início</th>
+                                <th>Meio</th>
+                                <th>Fim</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-family: 'Poppins'; font-size: 1rem;">Baa</td>
+                                <td>ب</td>
+                                <td>بـ</td>
+                                <td>ـبـ</td>
+                                <td>ـب</td>
+                            </tr>
+                            <tr>
+                                <td style="font-family: 'Poppins'; font-size: 1rem;">Taa</td>
+                                <td>ت</td>
+                                <td>تـ</td>
+                                <td>ـتـ</td>
+                                <td>ـت</td>
+                            </tr>
+                            <tr>
+                                <td style="font-family: 'Poppins'; font-size: 1rem;">Thaa</td>
+                                <td>ث</td>
+                                <td>ثـ</td>
+                                <td>ـثـ</td>
+                                <td>ـث</td>
+                            </tr>
+                            <tr>
+                                <td style="font-family: 'Poppins'; font-size: 1rem;">Jeem</td>
+                                <td>ج</td>
+                                <td>جـ</td>
+                                <td>ـجـ</td>
+                                <td>ـج</td>
+                            </tr>
+                            <tr>
+                                <td style="font-family: 'Poppins'; font-size: 1rem;">Haa</td>
+                                <td>ح</td>
+                                <td>حـ</td>
+                                <td>ـحـ</td>
+                                <td>ـح</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="quiz-container">
+                        <div class="quiz-question">Qual é a forma do meio da letra ب (Baa)?</div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">بـ</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, true)">ـبـ</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">ـب</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">ب</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hurrakaat Section -->
+        <section id="haraqat" class="section">
+            <div class="section-header">
+                <h2>📖 Hurrakaat (Sinais de Vogal)</h2>
+                <p>Lições 19-24: Fut-hah, Kusrah, Dhummah - Os três sinais de vogal básicos</p>
+            </div>
+
+            <div class="lesson-view active">
+                <div class="lesson-toolbar">
+                    <h3><span>19</span> Letras com Hurrakaat</h3>
+                    <div class="toolbar-actions">
+                        <button class="btn btn-secondary" onclick="playAudio('haraqat')">🔊 Ouvir</button>
+                    </div>
+                </div>
+                <div class="lesson-content">
+                    <div class="haraqat-legend">
+                        <div class="haraqat-item">
+                            <div class="haraqat-symbol">َ</div>
+                            <div class="haraqat-name">Fut-hah (Zabarr)</div>
+                            <div class="haraqat-desc">Som "a" como em "bat"</div>
+                            <div style="font-family: 'Amiri'; font-size: 1.5rem; margin-top: 0.5rem;">بَ = Ba</div>
+                        </div>
+                        <div class="haraqat-item">
+                            <div class="haraqat-symbol">ِ</div>
+                            <div class="haraqat-name">Kusrah (Zerr)</div>
+                            <div class="haraqat-desc">Som "i" como em "bit"</div>
+                            <div style="font-family: 'Amiri'; font-size: 1.5rem; margin-top: 0.5rem;">بِ = Bi</div>
+                        </div>
+                        <div class="haraqat-item">
+                            <div class="haraqat-symbol">ُ</div>
+                            <div class="haraqat-name">Dhummah (Pesh)</div>
+                            <div class="haraqat-desc">Som "u" como em "put"</div>
+                            <div style="font-family: 'Amiri'; font-size: 1.5rem; margin-top: 0.5rem;">بُ = Bu</div>
+                        </div>
+                    </div>
+
+                    <div class="arabic-text" style="font-size: 2rem;">
+                        بَ &nbsp; بِ &nbsp; بُ &nbsp;&nbsp;&nbsp; تَ &nbsp; تِ &nbsp; تُ &nbsp;&nbsp;&nbsp; ثَ &nbsp; ثِ &nbsp; ثُ
+                    </div>
+                    <div class="transliteration">
+                        Ba Bi Bu &nbsp;&nbsp;&nbsp; Ta Ti Tu &nbsp;&nbsp;&nbsp; Tha Thi Thu
+                    </div>
+
+                    <div class="exercise-grid" style="max-width: 600px; margin: 2rem auto;">
+                        <div class="letter-box" style="font-size: 2.5rem;">حَ<span class="pronunciation">Ha</span></div>
+                        <div class="letter-box" style="font-size: 2.5rem;">حِ<span class="pronunciation">Hi</span></div>
+                        <div class="letter-box" style="font-size: 2.5rem;">حُ<span class="pronunciation">Hu</span></div>
+                        <div class="letter-box" style="font-size: 2.5rem;">خَ<span class="pronunciation">Kha</span></div>
+                        <div class="letter-box" style="font-size: 2.5rem;">خِ<span class="pronunciation">Khi</span></div>
+                        <div class="letter-box" style="font-size: 2.5rem;">خُ<span class="pronunciation">Khu</span></div>
+                    </div>
+
+                    <div class="quiz-container">
+                        <div class="quiz-question">Qual é o som de كُ (Kaf com Dhummah)?</div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Ka</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Ki</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, true)">Ku</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Ko</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Words Section -->
+        <section id="words" class="section">
+            <div class="section-header">
+                <h2>✍️ Palavras com Hurrakaat</h2>
+                <p>Lições 25-30: Leitura de palavras completas com sinais de vogal</p>
+            </div>
+
+            <div class="lesson-view active">
+                <div class="lesson-toolbar">
+                    <h3><span>25</span> Palavras de 2 Letras</h3>
+                    <div class="toolbar-actions">
+                        <button class="btn btn-secondary" onclick="playAudio('words2')">🔊 Ouvir</button>
+                    </div>
+                </div>
+                <div class="lesson-content">
+                    <div style="background: #e8f5e9; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+                        <p><strong>Regra:</strong> Se o aluno não entender alguma letra ou Hurrakah, 
+                        o professor deve ensinar a lição anterior novamente. Treine a leitura com Hiejaa' (soletração) rapidamente.</p>
+                    </div>
+
+                    <div class="arabic-text" style="font-size: 2rem; line-height: 4rem;">
+                        بَ &nbsp; + &nbsp; هَ &nbsp; = &nbsp; بَهَ
+                    </div>
+                    <div class="transliteration">Ba + Ha = Baha</div>
+
+                    <div class="exercise-grid" style="grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));">
+                        <div class="letter-box" style="font-size: 1.8rem;">بَ<h4>+</h4>هَ<h4>=</h4>بَهَ</div>
+                        <div class="letter-box" style="font-size: 1.8rem;">بِ<h4>+</h4>هِ<h4>=</h4>بِهِ</div>
+                        <div class="letter-box" style="font-size: 1.8rem;">بُ<h4>+</h4>هُ<h4>=</h4>بُهُ</div>
+                    </div>
+
+                    <h3 style="text-align: center; margin: 2rem 0; color: var(--primary);">Palavras de 3 Letras</h3>
+                    
+                    <div class="arabic-text" style="font-size: 1.8rem;">
+                        فَعَلَ &nbsp;&nbsp; رَسُلُ &nbsp;&nbsp; خَرَجَ
+                    </div>
+                    <div class="transliteration">Fa'ala &nbsp;&nbsp; Rasulu &nbsp;&nbsp; Khara ja</div>
+
+                    <div class="quiz-container">
+                        <div class="quiz-question">Como se lê كَتَبَ (Kaf-Taa-Baa)?</div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, true)">Kataba</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Kutiba</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Kitaba</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false)">Kutuba</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section id="progress" class="section">
+            <div class="section-header">
+                <h2>📈 Seu Progresso</h2>
+                <p>Acompanhe seu desenvolvimento no aprendizado do Alcorão</p>
+            </div>
+
+            <div class="lessons-grid">
+                <div class="lesson-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div class="lesson-number">1</div>
+                        <span style="color: var(--success); font-weight: 700;">✓ Completo</span>
+                    </div>
+                    <div class="lesson-title">Nouq'tah (Pontos)</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div class="lesson-number">2</div>
+                        <span style="color: var(--success); font-weight: 700;">✓ Completo</span>
+                    </div>
+                    <div class="lesson-title">Alif, Baa, Taa, Thaa</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div class="lesson-number">3</div>
+                        <span style="color: var(--warning); font-weight: 700;">→ Em andamento</span>
+                    </div>
+                    <div class="lesson-title">Jeem, Haa, Khaa</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%"></div>
+                    </div>
+                </div>
+
+                <div class="lesson-card" style="opacity: 0.6;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div class="lesson-number">4</div>
+                        <span style="color: var(--text-light); font-weight: 700;">🔒 Bloqueado</span>
+                    </div>
+                    <div class="lesson-title">Dal, Dhal, Ra, Za</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-card" style="margin-top: 2rem;">
+                <h2>🎯 Continue Aprendendo!</h2>
+                <p>Você completou 2 de 30 lições. Mantenha a consistência!</p>
+                <div style="margin-top: 1.5rem; font-size: 3rem;">⭐⭐⭐☆☆</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">Islam Moçambique</p>
+            <p style="font-size: 0.9rem; opacity: 0.8;">
+                Madrassa Online - Yassarnal Qur'aan Part One<br>
+                Contacto: 860407269 | Islammocambique@gmail.com
+            </p>
+            <p style="margin-top: 1rem; font-size: 0.8rem; opacity: 0.6;">
+                © 2024 - Desenvolvido para a comunidade islâmica de Moçambique
+            </p>
+        </div>
+    </footer>
+
+    <div class="notification" id="notification">Resposta correta! Muito bem! 🎉</div>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Lesson Navigation within Alphabet section
+        let currentLesson = 1;
+        const totalLessons = 5;
+
+        function nextLesson() {
+            document.getElementById(`lesson-${currentLesson}`).classList.remove('active');
+            currentLesson = Math.min(currentLesson + 1, totalLessons);
+            document.getElementById(`lesson-${currentLesson}`).classList.add('active');
+        }
+
+        function prevLesson() {
+            document.getElementById(`lesson-${currentLesson}`).classList.remove('active');
+            currentLesson = Math.max(currentLesson - 1, 1);
+            document.getElementById(`lesson-${currentLesson}`).classList.add('active');
+        }
+
+        function startLesson(lessonId) {
+            showSection('alphabet');
+            // In a real app, this would open the specific lesson
+        }
+
+        // Audio Simulation
+        function playAudio(lesson) {
+            showNotification('🔊 Reproduzindo áudio da lição...');
+            
+            // Simulate audio wave animation
+            const waves = document.querySelectorAll('.wave-bar');
+            waves.forEach(wave => {
+                wave.style.animationPlayState = 'running';
+            });
+            
+            setTimeout(() => {
+                waves.forEach(wave => {
+                    wave.style.animationPlayState = 'paused';
+                });
+            }, 3000);
+        }
+
+        function playLetter(letter) {
+            showNotification(`🔊 Pronúncia: ${letter}`);
+            
+            // Visual feedback
+            const boxes = document.querySelectorAll('.letter-box');
+            boxes.forEach(box => {
+                if(box.textContent.includes(letter) || box.getAttribute('onclick')?.includes(letter)) {
+                    box.style.transform = 'scale(1.2)';
+                    box.style.background = 'linear-gradient(135deg, var(--primary-light), var(--primary))';
+                    box.style.color = 'white';
+                    setTimeout(() => {
+                        box.style.transform = '';
+                        box.style.background = '';
+                        box.style.color = '';
+                    }, 500);
+                }
+            });
+        }
+
+        function togglePlay(btn) {
+            if (btn.textContent === '▶') {
+                btn.textContent = '⏸';
+                showNotification('▶ Reproduzindo...');
+            } else {
+                btn.textContent = '▶';
+                showNotification('⏸ Pausado');
+            }
+        }
+
+        // Quiz System
+        function checkAnswer(element, isCorrect) {
+            // Remove previous classes
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('correct', 'wrong');
+                opt.style.pointerEvents = 'none';
+            });
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                showNotification('🎉 Correto! Muito bem!');
+                updateProgress();
+            } else {
+                element.classList.add('wrong');
+                showNotification('❌ Tente novamente na próxima!');
+                // Highlight correct answer
+                document.querySelectorAll('.quiz-option').forEach(opt => {
+                    if (opt.getAttribute('onclick').includes('true')) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+            
+            // Re-enable after delay
+            setTimeout(() => {
+                document.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.style.pointerEvents = 'auto';
+                    opt.classList.remove('correct', 'wrong');
+                });
+            }, 2000);
+        }
+
+        function updateProgress() {
+            // In a real app, this would save to localStorage or backend
+            console.log('Progress updated!');
+        }
+
+        // Notification System
+        function showNotification(message) {
+            const notif = document.getElementById('notification');
+            notif.textContent = message;
+            notif.classList.add('show');
+            
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Simulate loading progress
+            setTimeout(() => {
+                document.querySelectorAll('.progress-fill').forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 500);
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextLesson();
+            if (e.key === 'ArrowLeft') prevLesson();
+        });
+    </script>
+</body>
+</html>
