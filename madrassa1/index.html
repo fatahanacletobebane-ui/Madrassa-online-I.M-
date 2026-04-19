@@ -3,578 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Madrassa Online - Nível 1</title>
+    <title>Madrassa Online Nivel 1</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
-            color: #333;
         }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-
         header {
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px;
             color: white;
         }
-
-        header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-
-        .auth-section {
+        .box {
             background: white;
-            border-radius: 15px;
+            border-radius: 10px;
             padding: 30px;
             max-width: 500px;
             margin: 20px auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .form-group input {
+        input {
             width: 100%;
             padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
-            transition: border-color 0.3s;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #2a5298;
-        }
-
-        .btn {
+        button {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: bold;
+            border-radius: 5px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 16px;
         }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
-        }
-
-        .modules-grid {
+        .green { background: #43e97b; }
+        .red { background: #ff4757; }
+        .hidden { display: none; }
+        .modules {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
         }
-
-        .module-card {
+        .card {
             background: white;
-            border-radius: 15px;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
         }
-
-        .module-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-        }
-
-        .module-header {
+        .card-header {
             padding: 20px;
             color: white;
-            font-size: 1.3em;
             font-weight: bold;
         }
-
-        .module-header.yassarna { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .module-header.makharij { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .module-header.duas { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-        .module-header.salat { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
-        .module-header.exercicios { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; }
-        .module-header.exame { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #333; }
-
-        .module-body {
+        .card-body {
             padding: 20px;
         }
-
-        .module-body p {
-            color: #666;
-            margin-bottom: 15px;
-        }
-
-        .module-link {
+        .card a {
             display: inline-block;
-            padding: 10px 25px;
+            padding: 10px 20px;
             background: #2a5298;
             color: white;
             text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: background 0.3s;
+            border-radius: 20px;
         }
-
-        .module-link:hover {
-            background: #1e3c72;
-        }
-
-        .user-info {
+        .yassarna { background: #f5576c; }
+        .makharij { background: #4facfe; }
+        .duas { background: #43e97b; }
+        .salat { background: #fa709a; }
+        .exercicios { background: #a8edea; color: #333; }
+        .exame { background: #fcb69f; color: #333; }
+        .user-bar {
             background: white;
-            border-radius: 15px;
             padding: 20px;
-            margin-bottom: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
         }
-
-        .balance-display {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #2a5298;
-        }
-
-        .logout-btn {
-            padding: 10px 20px;
-            background: #ff4757;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .confirmation-box {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            border-left: 4px solid #2a5298;
-        }
-
-        .confirmation-box p {
-            margin: 8px 0;
-            font-size: 1.1em;
-        }
-
-        .confirmation-box strong {
-            color: #2a5298;
-        }
-
-        .payment-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .payment-content {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            max-width: 450px;
-            text-align: center;
-            animation: slideIn 0.3s;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .payment-content h2 {
-            margin-bottom: 20px;
-            color: #2a5298;
-        }
-
-        .payment-amount {
-            font-size: 3em;
-            color: #667eea;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-
-        .payment-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .btn-confirm {
-            flex: 1;
-        }
-
-        .btn-cancel {
-            flex: 1;
-            background: #ff4757;
-        }
-
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .alert-warning {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #eee;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.5s;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .course-info {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 20px auto;
-            max-width: 600px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            text-align: center;
-        }
-
-        .course-info h2 {
-            color: #2a5298;
-            margin-bottom: 15px;
-        }
-
-        .course-price {
-            font-size: 2.5em;
-            color: #667eea;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-
-        .course-features {
-            text-align: left;
-            margin: 20px 0;
-            padding: 0 20px;
-        }
-
-        .course-features li {
-            margin: 10px 0;
-            color: #555;
-        }
-
         footer {
             text-align: center;
-            padding: 30px;
             color: white;
-            opacity: 0.8;
-        }
-
-        .support-info {
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-paid {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        @media (max-width: 768px) {
-            header h1 { font-size: 1.8em; }
-            .modules-grid { grid-template-columns: 1fr; }
-            .payment-buttons { flex-direction: column; }
-            .user-info { flex-direction: column; text-align: center; }
+            padding: 30px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🕌 Madrassa Online</h1>
-            <p>Educação Islâmica - Nível 1</p>
+            <h1>Madrassa Online</h1>
+            <p>Nivel 1</p>
         </header>
 
-        <!-- Alert Messages -->
-        <div id="alertBox" class="alert"></div>
+        <div id="msg" class="box hidden" style="background: #ffebee; color: #c62828;"></div>
 
-        <!-- Login Section -->
-        <div id="loginSection" class="auth-section">
-            <h2 style="text-align: center; margin-bottom: 20px; color: #2a5298;">Acesso ao Curso</h2>
-            <p style="text-align: center; color: #666; margin-bottom: 20px;">
-                Digite seus dados de login da plataforma
-            </p>
-            
+        <!-- Login -->
+        <div id="loginBox" class="box">
+            <h2 style="text-align: center; margin-bottom: 20px;">Acesso ao Curso</h2>
             <form id="loginForm">
-                <div class="form-group">
-                    <label>Email ou Telefone</label>
-                    <input type="text" id="loginIdentifier" required placeholder="Digite seu email ou número (84xxxxxxx)">
-                </div>
-                <div class="form-group">
-                    <label>PIN (4 dígitos)</label>
-                    <input type="password" id="loginPin" required maxlength="4" placeholder="****">
-                </div>
-                <button type="submit" class="btn">Entrar</button>
+                <input type="text" id="userId" placeholder="Email ou Telefone" required>
+                <input type="password" id="pin" placeholder="PIN (4 digitos)" maxlength="4" required>
+                <button type="submit">Entrar</button>
             </form>
         </div>
 
-        <!-- Payment Confirmation Section -->
-        <div id="paymentSection" class="hidden">
-            <div class="course-info">
-                <h2>📚 Curso: Madrassa Online Nível 1</h2>
-                <p style="color: #666; margin-bottom: 20px;">
-                    Confirme seus dados e realize o pagamento para acessar o curso
-                </p>
-
-                <div class="confirmation-box">
-                    <p><strong>Nome:</strong> <span id="confirmName">-</span></p>
-                    <p><strong>Email:</strong> <span id="confirmEmail">-</span></p>
-                    <p><strong>Telefone:</strong> <span id="confirmPhone">-</span></p>
-                    <p><strong>Saldo Disponível:</strong> <span id="confirmBalance" style="color: #2a5298; font-weight: bold;">0</span> MTN</p>
-                </div>
-
-                <div class="course-price">150 MTN</div>
-
-                <div class="course-features">
-                    <h3 style="color: #2a5298; margin-bottom: 15px;">Conteúdo do Curso:</h3>
-                    <ul>
-                        <li>📖 Yassarna - Alfabeto Árabe</li>
-                        <li>🎯 Makharijul Huruf - Pontos de Articulação</li>
-                        <li>🤲 Duãs e Rituais Diários</li>
-                        <li>🧎 Salat - Guia de Oração</li>
-                        <li>✏️ Exercícios Interativos</li>
-                        <li>📝 Exame Final de Avaliação</li>
-                    </ul>
-                </div>
-
-                <div id="paymentStatus"></div>
-
-                <button id="payButton" onclick="showPaymentModal()" class="btn btn-success" style="margin-top: 20px;">
-                    💳 Confirmar e Pagar 150 MTN
-                </button>
-
-                <button onclick="logout()" class="btn btn-danger" style="margin-top: 10px;">
-                    Cancelar
-                </button>
+        <!-- Pagamento -->
+        <div id="payBox" class="box hidden">
+            <h2 style="text-align: center;">Confirmar Inscricao</h2>
+            <div style="background: #f5f5f5; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <p><strong>Nome:</strong> <span id="pName"></span></p>
+                <p><strong>Email:</strong> <span id="pEmail"></span></p>
+                <p><strong>Telefone:</strong> <span id="pPhone"></span></p>
+                <p><strong>Saldo:</strong> <span id="pBalance"></span> MTN</p>
             </div>
+            <h1 style="text-align: center; color: #667eea;">150 MTN</h1>
+            <button id="btnPay" onclick="pagar()" class="green">Pagar 150 MTN</button>
+            <button onclick="sair()" class="red" style="margin-top: 10px;">Cancelar</button>
         </div>
 
-        <!-- Dashboard (After Payment) -->
-        <div id="dashboard" class="hidden">
-            <div class="user-info">
+        <!-- Dashboard -->
+        <div id="dashBox" class="hidden">
+            <div class="user-bar">
                 <div>
-                    <h3 id="userName">Bem-vindo!</h3>
-                    <p id="userPhone" style="color: #666; font-size: 0.9em;"></p>
+                    <h3 id="dName"></h3>
+                    <p id="dPhone"></p>
                 </div>
-                <div class="balance-display">
-                    Saldo: <span id="userBalance">0</span> MTN
+                <div>
+                    <strong>Saldo: <span id="dBalance"></span> MTN</strong>
+                    <button onclick="sair()" style="width: auto; margin-left: 10px; padding: 8px 15px;">Sair</button>
                 </div>
-                <button class="logout-btn" onclick="logout()">Sair</button>
             </div>
 
-            <div class="modules-grid">
-                <!-- Módulo 1: Yassarna -->
-                <div class="module-card" id="mod-yassarna">
-                    <div class="module-header yassarna">📖 Yassarna</div>
-                    <div class="module-body">
-                        <p>Aprenda o alfabeto árabe básico com exercícios interativos.</p>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="prog-yassarna" style="width: 0%"></div>
-                        </div>
-                        <a href="yassarna1/index.html" class="module-link">Acessar Aulas</a>
+            <div class="modules">
+                <div class="card">
+                    <div class="card-header yassarna">Yassarna</div>
+                    <div class="card-body">
+                        <p>Alfabeto arabe</p>
+                        <a href="yassarna1/index.html">Acessar</a>
                     </div>
                 </div>
 
-                <!-- Módulo 2: Makharijul Huruf -->
-                <div class="module-card" id="mod-makharij">
-                    <div class="module-header makharij">🎯 Makharijul Huruf</div>
-                    <div class="module-body">
-                        <p>Estudo dos pontos de articulação das letras árabes.</p>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="prog-makharij" style="width: 0%"></div>
-                        </div>
-                        <a href="makharijul_huruf1/index.html" class="module-link">Acessar Aulas</a>
+                <div class="card">
+                    <div class="card-header makharij">Makharijul Huruf</div>
+                    <div class="card-body">
+                        <p>Pontos de articulacao</p>
+                        <a href="makharijul_huruf1/index.html">Acessar</a>
                     </div>
                 </div>
 
-                <!-- Módulo 3: Duãs e Rituais -->
-                <div class="module-card" id="mod-duas">
-                    <div class="module-header duas">🤲 Duãs e Rituais</div>
-                    <div class="module-body">
-                        <p>Aprenda as orações diárias e rituais islâmicos essenciais.</p>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="prog-duas" style="width: 0%"></div>
-                        </div>
-                        <a href="duas_e_rituais/index.html" class="module-link">Acessar Aulas</a>
+                <div class="card">
+                    <div class="card-header duas">Duas e Rituais</div>
+                    <div class="card-body">
+                        <p>Oraçoes diarias</p>
+                        <a href="duas_e_rituais/index.html">Acessar</a>
                     </div>
                 </div>
 
-                <!-- Módulo 4: Salat -->
-                <div class="module-card" id="mod-salat">
-                    <div class="module-header salat">🧎 Salat (Oração)</div>
-                    <div class="module-body">
-                        <p>Guia completo sobre como realizar a oração islâmica corretamente.</p>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="prog-salat" style="width: 0%"></div>
-                        </div>
-                        <a href="salat/index.html" class="module-link">Acessar Aulas</a>
+                <div class="card">
+                    <div class="card-header salat">Salat</div>
+                    <div class="card-body">
+                        <p>Guia de oraçao</p>
+                        <a href="salat/index.html">Acessar</a>
                     </div>
                 </div>
 
-                <!-- Módulo 5: Exercícios -->
-                <div class="module-card" id="mod-exercicios">
-                    <div class="module-header exercicios">✏️ Exercícios</div>
-                    <div class="module-body">
-                        <p>Pratique com exercícios interativos para fixar o aprendizado.</p>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="prog-exercicios" style="width: 0%"></div>
-                        </div>
-                        <a href="exercicios/index.html" class="module-link">Acessar Exercícios</a>
+                <div class="card">
+                    <div class="card-header exercicios">Exercicios</div>
+                    <div class="card-body">
+                        <p>Pratica</p>
+                        <a href="exercicios/index.html">Acessar</a>
                     </div>
                 </div>
 
-                <!-- Módulo 6: Exame -->
-                <div class="module-card" id="mod-exame">
-                    <div class="module-header exame">📝 Exame Final</div>
-                    <div class="module-body">
-                        <p>Exame de avaliação do Nível 1. Custo para refazer: 50 MTN</p>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="prog-exame" style="width: 0%"></div>
-                        </div>
-                        <button onclick="checkExamAccess()" class="module-link" style="border: none; cursor: pointer;">
-                            Acessar Exame
-                        </button>
+                <div class="card">
+                    <div class="card-header exame">Exame Final</div>
+                    <div class="card-body">
+                        <p>Avaliaçao</p>
+                        <button onclick="verExame()" style="width: auto; display: inline-block;">Acessar Exame</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <footer>
-            <div class="support-info">
-                <p>Suporte: 860407269 | Email: Islammocambique@gmail.com</p>
-                <p>Moz1vendas - Criação de Websites e Hospedagem</p>
-            </div>
-            <p>&copy; 2026 Madrassa Online. Todos os direitos reservados.</p>
+            <p>Suporte: 860407269</p>
+            <p>Islammocambique@gmail.com</p>
         </footer>
     </div>
 
-    <!-- Payment Modal -->
-    <div id="paymentModal" class="payment-modal">
-        <div class="payment-content">
-            <h2>Confirmar Pagamento</h2>
-            <p>Você está prestes a pagar:</p>
-            <div class="payment-amount">150 MTN</div>
-            <p>Curso: Madrassa Online Nível 1</p>
-            <p>Saldo atual: <span id="modalBalance" style="font-weight: bold;">0</span> MTN</p>
-            <p>Saldo após pagamento: <span id="modalAfterBalance" style="font-weight: bold; color: #ff4757;">0</span> MTN</p>
-            
-            <div class="payment-buttons">
-                <button class="btn btn-confirm" onclick="confirmPayment()">✅ Confirmar Pagamento</button>
-                <button class="btn btn-cancel" onclick="closePaymentModal()">❌ Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // Firebase Configuration
+        // Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
             authDomain: "madrassa-online-b851c.firebaseapp.com",
@@ -586,366 +220,153 @@
             measurementId: "G-RV9GD4S22T"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        // Global Variables
+        const db = firebase.database();
+        
         let currentUser = null;
-        let userData = null;
 
-        // Show Alert
-        function showAlert(message, type = 'success') {
-            const alertBox = document.getElementById('alertBox');
-            alertBox.textContent = message;
-            alertBox.className = `alert alert-${type}`;
-            alertBox.style.display = 'block';
-            setTimeout(() => {
-                alertBox.style.display = 'none';
-            }, 5000);
+        function showMsg(text, erro) {
+            const m = document.getElementById('msg');
+            m.textContent = text;
+            m.classList.remove('hidden');
+            if (erro) m.style.background = '#ffebee';
+            else m.style.background = '#e8f5e9';
+            setTimeout(() => m.classList.add('hidden'), 5000);
         }
 
-        // Find user by email or phone
-        async function findUser(identifier) {
-            const usersRef = database.ref('users');
-            let snapshot;
-            
-            // Try email first
-            snapshot = await usersRef.orderByChild('email').equalTo(identifier).once('value');
-            if (snapshot.exists()) {
-                const userId = Object.keys(snapshot.val())[0];
-                return { userId, userData: snapshot.val()[userId] };
+        // Buscar usuario
+        async function buscarUsuario(id) {
+            let r = await db.ref('users').orderByChild('email').equalTo(id).once('value');
+            if (r.exists()) {
+                let k = Object.keys(r.val())[0];
+                return {uid: k, dados: r.val()[k]};
             }
-            
-            // Try phone
-            snapshot = await usersRef.orderByChild('phone').equalTo(identifier).once('value');
-            if (snapshot.exists()) {
-                const userId = Object.keys(snapshot.val())[0];
-                return { userId, userData: snapshot.val()[userId] };
+            r = await db.ref('users').orderByChild('phone').equalTo(id).once('value');
+            if (r.exists()) {
+                let k = Object.keys(r.val())[0];
+                return {uid: k, dados: r.val()[k]};
             }
-            
             return null;
         }
 
-        // Login Handler
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const identifier = document.getElementById('loginIdentifier').value.trim();
-            const pin = document.getElementById('loginPin').value;
-
-            try {
-                const result = await findUser(identifier);
-                
-                if (!result) {
-                    showAlert('Usuário não encontrado. Verifique seu email ou telefone.', 'error');
-                    return;
-                }
-
-                const { userId, userData: foundUser } = result;
-
-                // Verify PIN
-                if (foundUser.pin !== pin) {
-                    showAlert('PIN incorreto!', 'error');
-                    return;
-                }
-
-                // Check if approved
-                if (!foundUser.approved) {
-                    showAlert('Sua conta está pendente de aprovação pelo administrador.', 'error');
-                    return;
-                }
-
-                // Set current user
-                currentUser = { uid: userId, ...foundUser };
-                userData = foundUser;
-
-                // Check if already paid for this course
-                const enrollmentRef = database.ref(`enrollments/${userId}/madrassa_nivel1`);
-                const enrollmentSnap = await enrollmentRef.once('value');
-                
-                if (enrollmentSnap.exists() && enrollmentSnap.val().paid) {
-                    // Already paid, go to dashboard
-                    loadDashboard();
-                    showAlert(`Bem-vindo de volta, ${foundUser.name}!`);
-                } else {
-                    // Show payment confirmation
-                    showPaymentSection();
-                }
-
-            } catch (error) {
-                showAlert('Erro ao fazer login: ' + error.message, 'error');
+            const id = document.getElementById('userId').value.trim();
+            const pin = document.getElementById('pin').value;
+            
+            const u = await buscarUsuario(id);
+            if (!u) { showMsg('Usuario nao encontrado', true); return; }
+            if (u.dados.pin !== pin) { showMsg('PIN incorreto', true); return; }
+            if (!u.dados.approved) { showMsg('Conta nao aprovada', true); return; }
+            
+            currentUser = {uid: u.uid, ...u.dados};
+            
+            // Verificar matricula
+            const mat = await db.ref('enrollments/' + u.uid + '/madrassa_nivel1').once('value');
+            if (mat.exists() && mat.val().pago) {
+                mostrarDashboard();
+            } else {
+                mostrarPagamento();
             }
         });
 
-        // Show Payment Section
-        function showPaymentSection() {
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('paymentSection').classList.remove('hidden');
-
-            // Fill user data
-            document.getElementById('confirmName').textContent = currentUser.name || '-';
-            document.getElementById('confirmEmail').textContent = currentUser.email || '-';
-            document.getElementById('confirmPhone').textContent = currentUser.phone || '-';
-            document.getElementById('confirmBalance').textContent = currentUser.balance || 0;
-
-            // Check if enough balance
-            const balance = currentUser.balance || 0;
-            const payButton = document.getElementById('payButton');
+        function mostrarPagamento() {
+            document.getElementById('loginBox').classList.add('hidden');
+            document.getElementById('payBox').classList.remove('hidden');
+            document.getElementById('pName').textContent = currentUser.name || '-';
+            document.getElementById('pEmail').textContent = currentUser.email || '-';
+            document.getElementById('pPhone').textContent = currentUser.phone || '-';
+            document.getElementById('pBalance').textContent = currentUser.balance || 0;
             
-            if (balance < 150) {
-                payButton.disabled = true;
-                payButton.textContent = 'Saldo Insuficiente';
-                payButton.style.background = '#ccc';
-                
-                const statusDiv = document.getElementById('paymentStatus');
-                statusDiv.innerHTML = `
-                    <div class="status-badge status-pending">
-                        ⚠️ Saldo insuficiente. Você tem ${balance} MTN. Necessário: 150 MTN.
-                    </div>
-                `;
-            } else {
-                payButton.disabled = false;
-                payButton.textContent = '💳 Confirmar e Pagar 150 MTN';
-                payButton.style.background = '';
-                
-                const statusDiv = document.getElementById('paymentStatus');
-                statusDiv.innerHTML = `
-                    <div class="status-badge status-paid">
-                        ✅ Saldo suficiente para pagamento
-                    </div>
-                `;
+            if ((currentUser.balance || 0) < 150) {
+                document.getElementById('btnPay').disabled = true;
+                document.getElementById('btnPay').textContent = 'Saldo Insuficiente';
             }
         }
 
-        // Show Payment Modal
-        function showPaymentModal() {
-            const balance = currentUser.balance || 0;
+        async function pagar() {
+            const saldo = currentUser.balance || 0;
+            if (saldo < 150) { showMsg('Saldo insuficiente', true); return; }
             
-            if (balance < 150) {
-                showAlert('Saldo insuficiente para realizar o pagamento!', 'error');
+            try {
+                const novoSaldo = saldo - 150;
+                await db.ref('users/' + currentUser.uid + '/balance').set(novoSaldo);
+                await db.ref('enrollments/' + currentUser.uid + '/madrassa_nivel1').set({
+                    pago: true,
+                    valor: 150,
+                    data: Date.now()
+                });
+                await db.ref('payments').push({
+                    userId: currentUser.uid,
+                    tipo: 'inscricao',
+                    valor: 150,
+                    data: Date.now()
+                });
+                
+                currentUser.balance = novoSaldo;
+                showMsg('Pagamento realizado com sucesso!');
+                setTimeout(mostrarDashboard, 1000);
+            } catch (err) {
+                showMsg('Erro no pagamento', true);
+            }
+        }
+
+        function mostrarDashboard() {
+            document.getElementById('loginBox').classList.add('hidden');
+            document.getElementById('payBox').classList.add('hidden');
+            document.getElementById('dashBox').classList.remove('hidden');
+            document.getElementById('dName').textContent = 'Bem-vindo, ' + currentUser.name + '!';
+            document.getElementById('dPhone').textContent = 'Tel: ' + currentUser.phone;
+            document.getElementById('dBalance').textContent = currentUser.balance || 0;
+        }
+
+        async function verExame() {
+            const ex = await db.ref('exames/' + currentUser.uid).once('value');
+            const dados = ex.val();
+            
+            if (!dados || !dados.completo) {
+                window.location.href = 'exame/index.html';
                 return;
             }
-
-            document.getElementById('modalBalance').textContent = balance;
-            document.getElementById('modalAfterBalance').textContent = balance - 150;
-            document.getElementById('paymentModal').style.display = 'flex';
-        }
-
-        // Close Payment Modal
-        function closePaymentModal() {
-            document.getElementById('paymentModal').style.display = 'none';
-        }
-
-        // Confirm Payment
-        async function confirmPayment() {
+            
+            if (dados.aprovado) {
+                showMsg('Voce ja foi aprovado!', false);
+                return;
+            }
+            
+            // Refazer - 50 MTN
+            const saldo = currentUser.balance || 0;
+            if (saldo < 50) {
+                showMsg('Saldo insuficiente. Necessario: 50 MTN', true);
+                return;
+            }
+            
+            if (!confirm('Refazer exame custa 50 MTN. Confirmar?')) return;
+            
             try {
-                const userId = currentUser.uid;
-                const currentBalance = currentUser.balance || 0;
-                
-                if (currentBalance < 150) {
-                    showAlert('Saldo insuficiente!', 'error');
-                    return;
-                }
-
-                const newBalance = currentBalance - 150;
-
-                // Update user balance in users node
-                await database.ref(`users/${userId}/balance`).set(newBalance);
-
-                // Create enrollment record
-                await database.ref(`enrollments/${userId}/madrassa_nivel1`).set({
-                    paid: true,
-                    amount: 150,
-                    paidAt: firebase.database.ServerValue.TIMESTAMP,
-                    course: 'Madrassa Online Nível 1'
+                const novoSaldo = saldo - 50;
+                await db.ref('users/' + currentUser.uid + '/balance').set(novoSaldo);
+                await db.ref('payments').push({
+                    userId: currentUser.uid,
+                    tipo: 'exame_refazer',
+                    valor: 50,
+                    data: Date.now()
                 });
-
-                // Record payment in payments node
-                await database.ref('payments').push({
-                    userId: userId,
-                    userName: currentUser.name,
-                    userPhone: currentUser.phone,
-                    type: 'course_enrollment',
-                    course: 'madrassa_nivel1',
-                    amount: 150,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
-
-                // Update local data
-                currentUser.balance = newBalance;
-                
-                closePaymentModal();
-                showAlert('Pagamento realizado com sucesso! Bem-vindo ao curso!');
-                
-                // Load dashboard after short delay
-                setTimeout(() => {
-                    loadDashboard();
-                }, 1500);
-
-            } catch (error) {
-                showAlert('Erro ao processar pagamento: ' + error.message, 'error');
+                await db.ref('exames/' + currentUser.uid).update({completo: false, refazer: true});
+                currentUser.balance = novoSaldo;
+                window.location.href = 'exame/index.html';
+            } catch (err) {
+                showMsg('Erro', true);
             }
         }
 
-        // Load Dashboard
-        async function loadDashboard() {
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('paymentSection').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-
-            document.getElementById('userName').textContent = `Bem-vindo, ${currentUser.name}!`;
-            document.getElementById('userPhone').textContent = `Tel: ${currentUser.phone}`;
-            document.getElementById('userBalance').textContent = currentUser.balance || 0;
-
-            // Load progress
-            const progressRef = database.ref(`progress/${currentUser.uid}/madrassa_nivel1`);
-            const progressSnap = await progressRef.once('value');
-            const progress = progressSnap.val() || {};
-
-            document.getElementById('prog-yassarna').style.width = (progress.yassarna || 0) + '%';
-            document.getElementById('prog-makharij').style.width = (progress.makharij || 0) + '%';
-            document.getElementById('prog-duas').style.width = (progress.duas || 0) + '%';
-            document.getElementById('prog-salat').style.width = (progress.salat || 0) + '%';
-            document.getElementById('prog-exercicios').style.width = (progress.exercicios || 0) + '%';
-            document.getElementById('prog-exame').style.width = (progress.exame || 0) + '%';
-        }
-
-        // Check Exam Access
-        async function checkExamAccess() {
-            try {
-                const examRef = database.ref(`exams/${currentUser.uid}/madrassa_nivel1`);
-                const snapshot = await examRef.once('value');
-                
-                // First time or not completed
-                if (!snapshot.exists() || !snapshot.val().completed) {
-                    window.location.href = 'exame/index.html';
-                    return;
-                }
-
-                const examData = snapshot.val();
-                
-                // If passed, just show results
-                if (examData.passed) {
-                    showAlert('Você já foi aprovado no exame! Parabéns!', 'success');
-                    return;
-                }
-
-                // Need to pay 50 MTN to retake
-                const currentBalance = currentUser.balance || 0;
-                
-                if (currentBalance < 50) {
-                    showAlert(`Saldo insuficiente! Você tem ${currentBalance} MTN. Necessário: 50 MTN para refazer o exame.`, 'error');
-                    return;
-                }
-
-                // Show payment modal for retake
-                document.getElementById('paymentTitle').textContent = 'Refazer Exame';
-                document.querySelector('.payment-content p').textContent = 'Custo para refazer o exame:';
-                document.querySelector('.payment-amount').textContent = '50 MTN';
-                document.getElementById('modalBalance').textContent = currentBalance;
-                document.getElementById('modalAfterBalance').textContent = currentBalance - 50;
-                
-                // Store retake callback
-                window.currentPaymentCallback = async () => {
-                    try {
-                        const newBalance = currentBalance - 50;
-                        
-                        // Update balance
-                        await database.ref(`users/${currentUser.uid}/balance`).set(newBalance);
-                        currentUser.balance = newBalance;
-
-                        // Record payment
-                        await database.ref('payments').push({
-                            userId: currentUser.uid,
-                            userName: currentUser.name,
-                            userPhone: currentUser.phone,
-                            type: 'exam_retake',
-                            course: 'madrassa_nivel1',
-                            amount: 50,
-                            timestamp: firebase.database.ServerValue.TIMESTAMP
-                        });
-
-                        // Reset exam
-                        await examRef.update({
-                            completed: false,
-                            retakePaid: true,
-                            retakeTimestamp: firebase.database.ServerValue.TIMESTAMP,
-                            attempts: (examData.attempts || 0) + 1
-                        });
-
-                        closePaymentModal();
-                        window.location.href = 'exame/index.html';
-                        
-                    } catch (error) {
-                        showAlert('Erro: ' + error.message, 'error');
-                    }
-                };
-
-                document.getElementById('paymentModal').style.display = 'flex';
-                
-            } catch (error) {
-                showAlert('Erro ao verificar exame: ' + error.message, 'error');
-            }
-        }
-
-        // Override confirmPayment for exam retake
-        const originalConfirmPayment = confirmPayment;
-        confirmPayment = async function() {
-            if (window.currentPaymentCallback) {
-                await window.currentPaymentCallback();
-                window.currentPaymentCallback = null;
-            } else {
-                await originalConfirmPayment();
-            }
-        };
-
-        // Logout
-        function logout() {
+        function sair() {
             currentUser = null;
-            userData = null;
-            window.currentPaymentCallback = null;
-            document.getElementById('dashboard').classList.add('hidden');
-            document.getElementById('paymentSection').classList.add('hidden');
-            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('dashBox').classList.add('hidden');
+            document.getElementById('payBox').classList.add('hidden');
+            document.getElementById('loginBox').classList.remove('hidden');
             document.getElementById('loginForm').reset();
-            showAlert('Sessão encerrada.');
-        }
-
-        // Check for existing session
-        window.addEventListener('load', () => {
-            const savedSession = localStorage.getItem('madrassa_session');
-            if (savedSession) {
-                try {
-                    const session = JSON.parse(savedSession);
-                    database.ref(`users/${session.uid}`).once('value').then(snapshot => {
-                        if (snapshot.exists()) {
-                            currentUser = { uid: session.uid, ...snapshot.val() };
-                            userData = snapshot.val();
-                            
-                            // Check enrollment
-                            database.ref(`enrollments/${session.uid}/madrassa_nivel1`).once('value').then(enrollSnap => {
-                                if (enrollSnap.exists() && enrollSnap.val().paid) {
-                                    loadDashboard();
-                                } else {
-                                    showPaymentSection();
-                                }
-                            });
-                        }
-                    });
-                } catch (e) {
-                    localStorage.removeItem('madrassa_session');
-                }
-            }
-        });
-
-        // Save session
-        function saveSession() {
-            if (currentUser) {
-                localStorage.setItem('madrassa_session', JSON.stringify({
-                    uid: currentUser.uid,
-                    timestamp: Date.now()
-                }));
-            }
         }
     </script>
 </body>
