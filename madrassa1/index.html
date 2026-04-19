@@ -50,29 +50,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #666;
-            transition: all 0.3s;
-        }
-
-        .auth-tab.active {
-            color: #2a5298;
-            border-bottom: 3px solid #2a5298;
-        }
-
         .form-group {
             margin-bottom: 20px;
         }
@@ -122,6 +99,14 @@
             transform: none;
         }
 
+        .btn-success {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+        }
+
         .modules-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -135,33 +120,11 @@
             overflow: hidden;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
         }
 
         .module-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-        }
-
-        .module-card.locked {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        .module-card.locked::after {
-            content: '🔒';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3em;
-            background: rgba(255,255,255,0.9);
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .module-header {
@@ -230,6 +193,23 @@
             font-weight: 600;
         }
 
+        .confirmation-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #2a5298;
+        }
+
+        .confirmation-box p {
+            margin: 8px 0;
+            font-size: 1.1em;
+        }
+
+        .confirmation-box strong {
+            color: #2a5298;
+        }
+
         .payment-modal {
             display: none;
             position: fixed;
@@ -247,7 +227,7 @@
             background: white;
             padding: 40px;
             border-radius: 20px;
-            max-width: 400px;
+            max-width: 450px;
             text-align: center;
             animation: slideIn 0.3s;
         }
@@ -263,7 +243,7 @@
         }
 
         .payment-amount {
-            font-size: 2.5em;
+            font-size: 3em;
             color: #667eea;
             font-weight: bold;
             margin: 20px 0;
@@ -277,7 +257,6 @@
 
         .btn-confirm {
             flex: 1;
-            background: #43e97b;
         }
 
         .btn-cancel {
@@ -304,6 +283,12 @@
             border: 1px solid #f5c6cb;
         }
 
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
         .progress-bar {
             width: 100%;
             height: 8px;
@@ -323,6 +308,39 @@
             display: none !important;
         }
 
+        .course-info {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .course-info h2 {
+            color: #2a5298;
+            margin-bottom: 15px;
+        }
+
+        .course-price {
+            font-size: 2.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .course-features {
+            text-align: left;
+            margin: 20px 0;
+            padding: 0 20px;
+        }
+
+        .course-features li {
+            margin: 10px 0;
+            color: #555;
+        }
+
         footer {
             text-align: center;
             padding: 30px;
@@ -337,10 +355,30 @@
             margin-top: 20px;
         }
 
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-paid {
+            background: #d4edda;
+            color: #155724;
+        }
+
         @media (max-width: 768px) {
             header h1 { font-size: 1.8em; }
             .modules-grid { grid-template-columns: 1fr; }
             .payment-buttons { flex-direction: column; }
+            .user-info { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -354,18 +392,17 @@
         <!-- Alert Messages -->
         <div id="alertBox" class="alert"></div>
 
-        <!-- Authentication Section -->
-        <div id="authSection" class="auth-section">
-            <div class="auth-tabs">
-                <button class="auth-tab active" onclick="switchTab('login')">Entrar</button>
-                <button class="auth-tab" onclick="switchTab('register')">Inscrever-se</button>
-            </div>
-
-            <!-- Login Form -->
+        <!-- Login Section -->
+        <div id="loginSection" class="auth-section">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #2a5298;">Acesso ao Curso</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">
+                Digite seus dados de login da plataforma
+            </p>
+            
             <form id="loginForm">
                 <div class="form-group">
-                    <label>Email ou Número</label>
-                    <input type="text" id="loginEmail" required placeholder="Digite seu email ou número">
+                    <label>Email ou Telefone</label>
+                    <input type="text" id="loginIdentifier" required placeholder="Digite seu email ou número (84xxxxxxx)">
                 </div>
                 <div class="form-group">
                     <label>PIN (4 dígitos)</label>
@@ -373,38 +410,55 @@
                 </div>
                 <button type="submit" class="btn">Entrar</button>
             </form>
-
-            <!-- Registration Form -->
-            <form id="registerForm" class="hidden">
-                <div class="form-group">
-                    <label>Nome Completo</label>
-                    <input type="text" id="regName" required placeholder="Seu nome completo">
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="regEmail" required placeholder="seu@email.com">
-                </div>
-                <div class="form-group">
-                    <label>Número de Telefone</label>
-                    <input type="tel" id="regPhone" required placeholder="+258 84 XXX XXXX">
-                </div>
-                <div class="form-group">
-                    <label>Criar PIN (4 dígitos)</label>
-                    <input type="password" id="regPin" required maxlength="4" placeholder="****">
-                </div>
-                <button type="submit" class="btn">Inscrever-se (150 MTN)</button>
-                <p style="margin-top: 15px; color: #666; font-size: 0.9em; text-align: center;">
-                    💳 Será debitado 150 MTN do seu saldo
-                </p>
-            </form>
         </div>
 
-        <!-- User Dashboard -->
+        <!-- Payment Confirmation Section -->
+        <div id="paymentSection" class="hidden">
+            <div class="course-info">
+                <h2>📚 Curso: Madrassa Online Nível 1</h2>
+                <p style="color: #666; margin-bottom: 20px;">
+                    Confirme seus dados e realize o pagamento para acessar o curso
+                </p>
+
+                <div class="confirmation-box">
+                    <p><strong>Nome:</strong> <span id="confirmName">-</span></p>
+                    <p><strong>Email:</strong> <span id="confirmEmail">-</span></p>
+                    <p><strong>Telefone:</strong> <span id="confirmPhone">-</span></p>
+                    <p><strong>Saldo Disponível:</strong> <span id="confirmBalance" style="color: #2a5298; font-weight: bold;">0</span> MTN</p>
+                </div>
+
+                <div class="course-price">150 MTN</div>
+
+                <div class="course-features">
+                    <h3 style="color: #2a5298; margin-bottom: 15px;">Conteúdo do Curso:</h3>
+                    <ul>
+                        <li>📖 Yassarna - Alfabeto Árabe</li>
+                        <li>🎯 Makharijul Huruf - Pontos de Articulação</li>
+                        <li>🤲 Duãs e Rituais Diários</li>
+                        <li>🧎 Salat - Guia de Oração</li>
+                        <li>✏️ Exercícios Interativos</li>
+                        <li>📝 Exame Final de Avaliação</li>
+                    </ul>
+                </div>
+
+                <div id="paymentStatus"></div>
+
+                <button id="payButton" onclick="showPaymentModal()" class="btn btn-success" style="margin-top: 20px;">
+                    💳 Confirmar e Pagar 150 MTN
+                </button>
+
+                <button onclick="logout()" class="btn btn-danger" style="margin-top: 10px;">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+
+        <!-- Dashboard (After Payment) -->
         <div id="dashboard" class="hidden">
             <div class="user-info">
                 <div>
                     <h3 id="userName">Bem-vindo!</h3>
-                    <p id="userEmail"></p>
+                    <p id="userPhone" style="color: #666; font-size: 0.9em;"></p>
                 </div>
                 <div class="balance-display">
                     Saldo: <span id="userBalance">0</span> MTN
@@ -501,20 +555,22 @@
     <!-- Payment Modal -->
     <div id="paymentModal" class="payment-modal">
         <div class="payment-content">
-            <h2 id="paymentTitle">Confirmação de Pagamento</h2>
-            <p id="paymentDescription">Para continuar, confirme o pagamento:</p>
-            <div class="payment-amount" id="paymentAmount">150 MTN</div>
-            <p>Seu saldo atual: <span id="currentBalance">0</span> MTN</p>
+            <h2>Confirmar Pagamento</h2>
+            <p>Você está prestes a pagar:</p>
+            <div class="payment-amount">150 MTN</div>
+            <p>Curso: Madrassa Online Nível 1</p>
+            <p>Saldo atual: <span id="modalBalance" style="font-weight: bold;">0</span> MTN</p>
+            <p>Saldo após pagamento: <span id="modalAfterBalance" style="font-weight: bold; color: #ff4757;">0</span> MTN</p>
+            
             <div class="payment-buttons">
-                <button class="btn btn-confirm" onclick="confirmPayment()">Confirmar</button>
-                <button class="btn btn-cancel" onclick="closePaymentModal()">Cancelar</button>
+                <button class="btn btn-confirm" onclick="confirmPayment()">✅ Confirmar Pagamento</button>
+                <button class="btn btn-cancel" onclick="closePaymentModal()">❌ Cancelar</button>
             </div>
         </div>
     </div>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
@@ -532,33 +588,11 @@
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
         const database = firebase.database();
 
         // Global Variables
         let currentUser = null;
         let userData = null;
-        let pendingPayment = null;
-        let paymentCallback = null;
-
-        // Tab Switching
-        function switchTab(tab) {
-            const tabs = document.querySelectorAll('.auth-tab');
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-
-            tabs.forEach(t => t.classList.remove('active'));
-            
-            if (tab === 'login') {
-                tabs[0].classList.add('active');
-                loginForm.classList.remove('hidden');
-                registerForm.classList.add('hidden');
-            } else {
-                tabs[1].classList.add('active');
-                loginForm.classList.add('hidden');
-                registerForm.classList.remove('hidden');
-            }
-        }
 
         // Show Alert
         function showAlert(message, type = 'success') {
@@ -571,265 +605,348 @@
             }, 5000);
         }
 
+        // Find user by email or phone
+        async function findUser(identifier) {
+            const usersRef = database.ref('users');
+            let snapshot;
+            
+            // Try email first
+            snapshot = await usersRef.orderByChild('email').equalTo(identifier).once('value');
+            if (snapshot.exists()) {
+                const userId = Object.keys(snapshot.val())[0];
+                return { userId, userData: snapshot.val()[userId] };
+            }
+            
+            // Try phone
+            snapshot = await usersRef.orderByChild('phone').equalTo(identifier).once('value');
+            if (snapshot.exists()) {
+                const userId = Object.keys(snapshot.val())[0];
+                return { userId, userData: snapshot.val()[userId] };
+            }
+            
+            return null;
+        }
+
         // Login Handler
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
+            const identifier = document.getElementById('loginIdentifier').value.trim();
             const pin = document.getElementById('loginPin').value;
 
             try {
-                // Check if user exists in database
-                const usersRef = database.ref('users');
-                const snapshot = await usersRef.orderByChild('email').equalTo(email).once('value');
+                const result = await findUser(identifier);
                 
-                if (!snapshot.exists()) {
-                    // Try by phone number
-                    const phoneSnapshot = await usersRef.orderByChild('phone').equalTo(email).once('value');
-                    if (!phoneSnapshot.exists()) {
-                        showAlert('Usuário não encontrado. Por favor, inscreva-se.', 'error');
-                        return;
-                    }
+                if (!result) {
+                    showAlert('Usuário não encontrado. Verifique seu email ou telefone.', 'error');
+                    return;
                 }
 
-                const userData = snapshot.val() || phoneSnapshot.val();
-                const userId = Object.keys(userData)[0];
-                const user = userData[userId];
+                const { userId, userData: foundUser } = result;
 
                 // Verify PIN
-                if (user.pin !== pin) {
+                if (foundUser.pin !== pin) {
                     showAlert('PIN incorreto!', 'error');
                     return;
                 }
 
-                // Check if user is approved and has paid
-                if (!user.approved) {
+                // Check if approved
+                if (!foundUser.approved) {
                     showAlert('Sua conta está pendente de aprovação pelo administrador.', 'error');
                     return;
                 }
 
-                if (!user.paid) {
-                    showAlert('Por favor, complete o pagamento de inscrição (150 MTN).', 'error');
-                    return;
-                }
+                // Set current user
+                currentUser = { uid: userId, ...foundUser };
+                userData = foundUser;
 
-                currentUser = { uid: userId, ...user };
-                loadDashboard();
-                showAlert('Login realizado com sucesso!');
+                // Check if already paid for this course
+                const enrollmentRef = database.ref(`enrollments/${userId}/madrassa_nivel1`);
+                const enrollmentSnap = await enrollmentRef.once('value');
+                
+                if (enrollmentSnap.exists() && enrollmentSnap.val().paid) {
+                    // Already paid, go to dashboard
+                    loadDashboard();
+                    showAlert(`Bem-vindo de volta, ${foundUser.name}!`);
+                } else {
+                    // Show payment confirmation
+                    showPaymentSection();
+                }
 
             } catch (error) {
                 showAlert('Erro ao fazer login: ' + error.message, 'error');
             }
         });
 
-        // Registration Handler
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // Show Payment Section
+        function showPaymentSection() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('paymentSection').classList.remove('hidden');
+
+            // Fill user data
+            document.getElementById('confirmName').textContent = currentUser.name || '-';
+            document.getElementById('confirmEmail').textContent = currentUser.email || '-';
+            document.getElementById('confirmPhone').textContent = currentUser.phone || '-';
+            document.getElementById('confirmBalance').textContent = currentUser.balance || 0;
+
+            // Check if enough balance
+            const balance = currentUser.balance || 0;
+            const payButton = document.getElementById('payButton');
             
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const phone = document.getElementById('regPhone').value;
-            const pin = document.getElementById('regPin').value;
-
-            // Check if user already exists
-            const usersRef = database.ref('users');
-            const emailCheck = await usersRef.orderByChild('email').equalTo(email).once('value');
-            
-            if (emailCheck.exists()) {
-                showAlert('Este email já está registrado!', 'error');
-                return;
-            }
-
-            // Check balance for payment
-            const balanceRef = database.ref(`balances/${phone}`);
-            const balanceSnapshot = await balanceRef.once('value');
-            const balance = balanceSnapshot.val() || 0;
-
             if (balance < 150) {
-                showAlert(`Saldo insuficiente! Você tem ${balance} MTN. Necessário: 150 MTN`, 'error');
+                payButton.disabled = true;
+                payButton.textContent = 'Saldo Insuficiente';
+                payButton.style.background = '#ccc';
+                
+                const statusDiv = document.getElementById('paymentStatus');
+                statusDiv.innerHTML = `
+                    <div class="status-badge status-pending">
+                        ⚠️ Saldo insuficiente. Você tem ${balance} MTN. Necessário: 150 MTN.
+                    </div>
+                `;
+            } else {
+                payButton.disabled = false;
+                payButton.textContent = '💳 Confirmar e Pagar 150 MTN';
+                payButton.style.background = '';
+                
+                const statusDiv = document.getElementById('paymentStatus');
+                statusDiv.innerHTML = `
+                    <div class="status-badge status-paid">
+                        ✅ Saldo suficiente para pagamento
+                    </div>
+                `;
+            }
+        }
+
+        // Show Payment Modal
+        function showPaymentModal() {
+            const balance = currentUser.balance || 0;
+            
+            if (balance < 150) {
+                showAlert('Saldo insuficiente para realizar o pagamento!', 'error');
                 return;
             }
 
-            // Show payment confirmation
-            pendingPayment = {
-                type: 'registration',
-                amount: 150,
-                userData: { name, email, phone, pin }
-            };
-            
-            document.getElementById('paymentTitle').textContent = 'Confirmar Inscrição';
-            document.getElementById('paymentDescription').textContent = 'Pagamento de inscrição no curso:';
-            document.getElementById('paymentAmount').textContent = '150 MTN';
-            document.getElementById('currentBalance').textContent = balance;
-            
-            paymentCallback = async () => {
-                // Deduct balance
-                await balanceRef.set(balance - 150);
+            document.getElementById('modalBalance').textContent = balance;
+            document.getElementById('modalAfterBalance').textContent = balance - 150;
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
 
-                // Create user record
-                const newUserRef = usersRef.push();
-                await newUserRef.set({
-                    name,
-                    email,
-                    phone,
-                    pin,
-                    balance: balance - 150,
+        // Close Payment Modal
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        // Confirm Payment
+        async function confirmPayment() {
+            try {
+                const userId = currentUser.uid;
+                const currentBalance = currentUser.balance || 0;
+                
+                if (currentBalance < 150) {
+                    showAlert('Saldo insuficiente!', 'error');
+                    return;
+                }
+
+                const newBalance = currentBalance - 150;
+
+                // Update user balance in users node
+                await database.ref(`users/${userId}/balance`).set(newBalance);
+
+                // Create enrollment record
+                await database.ref(`enrollments/${userId}/madrassa_nivel1`).set({
                     paid: true,
-                    approved: true, // Auto-approve for now, or set to false for manual approval
-                    createdAt: firebase.database.ServerValue.TIMESTAMP,
-                    level: 1,
-                    progress: {
-                        yassarna: 0,
-                        makharij: 0,
-                        duas: 0,
-                        salat: 0,
-                        exercicios: 0,
-                        exame: 0
-                    }
+                    amount: 150,
+                    paidAt: firebase.database.ServerValue.TIMESTAMP,
+                    course: 'Madrassa Online Nível 1'
                 });
 
-                // Record payment
+                // Record payment in payments node
                 await database.ref('payments').push({
-                    userId: newUserRef.key,
-                    type: 'registration',
+                    userId: userId,
+                    userName: currentUser.name,
+                    userPhone: currentUser.phone,
+                    type: 'course_enrollment',
+                    course: 'madrassa_nivel1',
                     amount: 150,
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
 
-                currentUser = { uid: newUserRef.key, name, email, phone, balance: balance - 150, paid: true };
+                // Update local data
+                currentUser.balance = newBalance;
+                
                 closePaymentModal();
-                loadDashboard();
-                showAlert('Inscrição realizada com sucesso! Bem-vindo à Madrassa Online!');
-            };
+                showAlert('Pagamento realizado com sucesso! Bem-vindo ao curso!');
+                
+                // Load dashboard after short delay
+                setTimeout(() => {
+                    loadDashboard();
+                }, 1500);
 
-            document.getElementById('paymentModal').style.display = 'flex';
-        });
-
-        // Payment Functions
-        function closePaymentModal() {
-            document.getElementById('paymentModal').style.display = 'none';
-            pendingPayment = null;
-            paymentCallback = null;
-        }
-
-        async function confirmPayment() {
-            if (paymentCallback) {
-                try {
-                    await paymentCallback();
-                } catch (error) {
-                    showAlert('Erro no pagamento: ' + error.message, 'error');
-                }
+            } catch (error) {
+                showAlert('Erro ao processar pagamento: ' + error.message, 'error');
             }
         }
 
         // Load Dashboard
         async function loadDashboard() {
-            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('paymentSection').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
 
             document.getElementById('userName').textContent = `Bem-vindo, ${currentUser.name}!`;
-            document.getElementById('userEmail').textContent = currentUser.email || currentUser.phone;
+            document.getElementById('userPhone').textContent = `Tel: ${currentUser.phone}`;
+            document.getElementById('userBalance').textContent = currentUser.balance || 0;
 
-            // Load fresh user data
-            const userRef = database.ref(`users/${currentUser.uid}`);
-            const snapshot = await userRef.once('value');
-            userData = snapshot.val();
+            // Load progress
+            const progressRef = database.ref(`progress/${currentUser.uid}/madrassa_nivel1`);
+            const progressSnap = await progressRef.once('value');
+            const progress = progressSnap.val() || {};
 
-            document.getElementById('userBalance').textContent = userData.balance || 0;
-
-            // Update progress bars
-            if (userData.progress) {
-                document.getElementById('prog-yassarna').style.width = (userData.progress.yassarna || 0) + '%';
-                document.getElementById('prog-makharij').style.width = (userData.progress.makharij || 0) + '%';
-                document.getElementById('prog-duas').style.width = (userData.progress.duas || 0) + '%';
-                document.getElementById('prog-salat').style.width = (userData.progress.salat || 0) + '%';
-                document.getElementById('prog-exercicios').style.width = (userData.progress.exercicios || 0) + '%';
-                document.getElementById('prog-exame').style.width = (userData.progress.exame || 0) + '%';
-            }
-
-            // Check if exam was already taken
-            const examRef = database.ref(`exams/${currentUser.uid}`);
-            const examSnapshot = await examRef.once('value');
-            if (examSnapshot.exists()) {
-                const examData = examSnapshot.val();
-                if (examData.completed) {
-                    document.querySelector('#mod-exame .module-link').textContent = 'Refazer Exame (50 MTN)';
-                }
-            }
+            document.getElementById('prog-yassarna').style.width = (progress.yassarna || 0) + '%';
+            document.getElementById('prog-makharij').style.width = (progress.makharij || 0) + '%';
+            document.getElementById('prog-duas').style.width = (progress.duas || 0) + '%';
+            document.getElementById('prog-salat').style.width = (progress.salat || 0) + '%';
+            document.getElementById('prog-exercicios').style.width = (progress.exercicios || 0) + '%';
+            document.getElementById('prog-exame').style.width = (progress.exame || 0) + '%';
         }
 
         // Check Exam Access
         async function checkExamAccess() {
-            const examRef = database.ref(`exams/${currentUser.uid}`);
-            const snapshot = await examRef.once('value');
-            
-            if (!snapshot.exists() || !snapshot.val().completed) {
-                // First time - free
-                window.location.href = 'exame/index.html';
-            } else {
-                // Need to pay 50 MTN to retake
-                const balance = userData.balance || 0;
+            try {
+                const examRef = database.ref(`exams/${currentUser.uid}/madrassa_nivel1`);
+                const snapshot = await examRef.once('value');
                 
-                if (balance < 50) {
-                    showAlert(`Saldo insuficiente! Você tem ${balance} MTN. Necessário: 50 MTN para refazer o exame.`, 'error');
+                // First time or not completed
+                if (!snapshot.exists() || !snapshot.val().completed) {
+                    window.location.href = 'exame/index.html';
                     return;
                 }
 
-                pendingPayment = {
-                    type: 'exam_retake',
-                    amount: 50
-                };
+                const examData = snapshot.val();
+                
+                // If passed, just show results
+                if (examData.passed) {
+                    showAlert('Você já foi aprovado no exame! Parabéns!', 'success');
+                    return;
+                }
 
+                // Need to pay 50 MTN to retake
+                const currentBalance = currentUser.balance || 0;
+                
+                if (currentBalance < 50) {
+                    showAlert(`Saldo insuficiente! Você tem ${currentBalance} MTN. Necessário: 50 MTN para refazer o exame.`, 'error');
+                    return;
+                }
+
+                // Show payment modal for retake
                 document.getElementById('paymentTitle').textContent = 'Refazer Exame';
-                document.getElementById('paymentDescription').textContent = 'Custo para refazer o exame:';
-                document.getElementById('paymentAmount').textContent = '50 MTN';
-                document.getElementById('currentBalance').textContent = balance;
+                document.querySelector('.payment-content p').textContent = 'Custo para refazer o exame:';
+                document.querySelector('.payment-amount').textContent = '50 MTN';
+                document.getElementById('modalBalance').textContent = currentBalance;
+                document.getElementById('modalAfterBalance').textContent = currentBalance - 50;
+                
+                // Store retake callback
+                window.currentPaymentCallback = async () => {
+                    try {
+                        const newBalance = currentBalance - 50;
+                        
+                        // Update balance
+                        await database.ref(`users/${currentUser.uid}/balance`).set(newBalance);
+                        currentUser.balance = newBalance;
 
-                paymentCallback = async () => {
-                    // Deduct balance
-                    const newBalance = balance - 50;
-                    await database.ref(`users/${currentUser.uid}/balance`).set(newBalance);
-                    await database.ref(`balances/${userData.phone}`).set(newBalance);
+                        // Record payment
+                        await database.ref('payments').push({
+                            userId: currentUser.uid,
+                            userName: currentUser.name,
+                            userPhone: currentUser.phone,
+                            type: 'exam_retake',
+                            course: 'madrassa_nivel1',
+                            amount: 50,
+                            timestamp: firebase.database.ServerValue.TIMESTAMP
+                        });
 
-                    // Record payment
-                    await database.ref('payments').push({
-                        userId: currentUser.uid,
-                        type: 'exam_retake',
-                        amount: 50,
-                        timestamp: firebase.database.ServerValue.TIMESTAMP
-                    });
+                        // Reset exam
+                        await examRef.update({
+                            completed: false,
+                            retakePaid: true,
+                            retakeTimestamp: firebase.database.ServerValue.TIMESTAMP,
+                            attempts: (examData.attempts || 0) + 1
+                        });
 
-                    // Reset exam status
-                    await examRef.update({
-                        completed: false,
-                        retakePaid: true,
-                        retakeTimestamp: firebase.database.ServerValue.TIMESTAMP
-                    });
-
-                    userData.balance = newBalance;
-                    document.getElementById('userBalance').textContent = newBalance;
-                    
-                    closePaymentModal();
-                    window.location.href = 'exame/index.html';
+                        closePaymentModal();
+                        window.location.href = 'exame/index.html';
+                        
+                    } catch (error) {
+                        showAlert('Erro: ' + error.message, 'error');
+                    }
                 };
 
                 document.getElementById('paymentModal').style.display = 'flex';
+                
+            } catch (error) {
+                showAlert('Erro ao verificar exame: ' + error.message, 'error');
             }
         }
+
+        // Override confirmPayment for exam retake
+        const originalConfirmPayment = confirmPayment;
+        confirmPayment = async function() {
+            if (window.currentPaymentCallback) {
+                await window.currentPaymentCallback();
+                window.currentPaymentCallback = null;
+            } else {
+                await originalConfirmPayment();
+            }
+        };
 
         // Logout
         function logout() {
             currentUser = null;
             userData = null;
+            window.currentPaymentCallback = null;
             document.getElementById('dashboard').classList.add('hidden');
-            document.getElementById('authSection').classList.remove('hidden');
-            switchTab('login');
+            document.getElementById('paymentSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('loginForm').reset();
             showAlert('Sessão encerrada.');
         }
 
-        // Check for existing session on load
+        // Check for existing session
         window.addEventListener('load', () => {
-            // You can implement persistent session here if needed
+            const savedSession = localStorage.getItem('madrassa_session');
+            if (savedSession) {
+                try {
+                    const session = JSON.parse(savedSession);
+                    database.ref(`users/${session.uid}`).once('value').then(snapshot => {
+                        if (snapshot.exists()) {
+                            currentUser = { uid: session.uid, ...snapshot.val() };
+                            userData = snapshot.val();
+                            
+                            // Check enrollment
+                            database.ref(`enrollments/${session.uid}/madrassa_nivel1`).once('value').then(enrollSnap => {
+                                if (enrollSnap.exists() && enrollSnap.val().paid) {
+                                    loadDashboard();
+                                } else {
+                                    showPaymentSection();
+                                }
+                            });
+                        }
+                    });
+                } catch (e) {
+                    localStorage.removeItem('madrassa_session');
+                }
+            }
         });
+
+        // Save session
+        function saveSession() {
+            if (currentUser) {
+                localStorage.setItem('madrassa_session', JSON.stringify({
+                    uid: currentUser.uid,
+                    timestamp: Date.now()
+                }));
+            }
+        }
     </script>
 </body>
 </html>
