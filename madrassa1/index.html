@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madrassa Online - Nível 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .auth-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            margin: 20px auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            color: #2a5298;
+            border-bottom: 3px solid #2a5298;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .module-card.locked {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .module-card.locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+            background: rgba(255,255,255,0.9);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .module-header {
+            padding: 20px;
+            color: white;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .module-header.yassarna { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .module-header.makharij { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .module-header.duas { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .module-header.salat { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .module-header.exercicios { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; }
+        .module-header.exame { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #333; }
+
+        .module-body {
+            padding: 20px;
+        }
+
+        .module-body p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .module-link {
+            display: inline-block;
+            padding: 10px 25px;
+            background: #2a5298;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .module-link:hover {
+            background: #1e3c72;
+        }
+
+        .user-info {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .balance-display {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .payment-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 400px;
+            text-align: center;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .payment-content h2 {
+            margin-bottom: 20px;
+            color: #2a5298;
+        }
+
+        .payment-amount {
+            font-size: 2.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .payment-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-confirm {
+            flex: 1;
+            background: #43e97b;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: #ff4757;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .support-info {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8em; }
+            .modules-grid { grid-template-columns: 1fr; }
+            .payment-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🕌 Madrassa Online</h1>
+            <p>Educação Islâmica - Nível 1</p>
+        </header>
+
+        <!-- Alert Messages -->
+        <div id="alertBox" class="alert"></div>
+
+        <!-- Authentication Section -->
+        <div id="authSection" class="auth-section">
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchTab('login')">Entrar</button>
+                <button class="auth-tab" onclick="switchTab('register')">Inscrever-se</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email ou Número</label>
+                    <input type="text" id="loginEmail" required placeholder="Digite seu email ou número">
+                </div>
+                <div class="form-group">
+                    <label>PIN (4 dígitos)</label>
+                    <input type="password" id="loginPin" required maxlength="4" placeholder="****">
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+            </form>
+
+            <!-- Registration Form -->
+            <form id="registerForm" class="hidden">
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="regName" required placeholder="Seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="regEmail" required placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Número de Telefone</label>
+                    <input type="tel" id="regPhone" required placeholder="+258 84 XXX XXXX">
+                </div>
+                <div class="form-group">
+                    <label>Criar PIN (4 dígitos)</label>
+                    <input type="password" id="regPin" required maxlength="4" placeholder="****">
+                </div>
+                <button type="submit" class="btn">Inscrever-se (150 MTN)</button>
+                <p style="margin-top: 15px; color: #666; font-size: 0.9em; text-align: center;">
+                    💳 Será debitado 150 MTN do seu saldo
+                </p>
+            </form>
+        </div>
+
+        <!-- User Dashboard -->
+        <div id="dashboard" class="hidden">
+            <div class="user-info">
+                <div>
+                    <h3 id="userName">Bem-vindo!</h3>
+                    <p id="userEmail"></p>
+                </div>
+                <div class="balance-display">
+                    Saldo: <span id="userBalance">0</span> MTN
+                </div>
+                <button class="logout-btn" onclick="logout()">Sair</button>
+            </div>
+
+            <div class="modules-grid">
+                <!-- Módulo 1: Yassarna -->
+                <div class="module-card" id="mod-yassarna">
+                    <div class="module-header yassarna">📖 Yassarna</div>
+                    <div class="module-body">
+                        <p>Aprenda o alfabeto árabe básico com exercícios interativos.</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="prog-yassarna" style="width: 0%"></div>
+                        </div>
+                        <a href="yassarna1/index.html" class="module-link">Acessar Aulas</a>
+                    </div>
+                </div>
+
+                <!-- Módulo 2: Makharijul Huruf -->
+                <div class="module-card" id="mod-makharij">
+                    <div class="module-header makharij">🎯 Makharijul Huruf</div>
+                    <div class="module-body">
+                        <p>Estudo dos pontos de articulação das letras árabes.</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="prog-makharij" style="width: 0%"></div>
+                        </div>
+                        <a href="makharijul_huruf1/index.html" class="module-link">Acessar Aulas</a>
+                    </div>
+                </div>
+
+                <!-- Módulo 3: Duãs e Rituais -->
+                <div class="module-card" id="mod-duas">
+                    <div class="module-header duas">🤲 Duãs e Rituais</div>
+                    <div class="module-body">
+                        <p>Aprenda as orações diárias e rituais islâmicos essenciais.</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="prog-duas" style="width: 0%"></div>
+                        </div>
+                        <a href="duas_e_rituais/index.html" class="module-link">Acessar Aulas</a>
+                    </div>
+                </div>
+
+                <!-- Módulo 4: Salat -->
+                <div class="module-card" id="mod-salat">
+                    <div class="module-header salat">🧎 Salat (Oração)</div>
+                    <div class="module-body">
+                        <p>Guia completo sobre como realizar a oração islâmica corretamente.</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="prog-salat" style="width: 0%"></div>
+                        </div>
+                        <a href="salat/index.html" class="module-link">Acessar Aulas</a>
+                    </div>
+                </div>
+
+                <!-- Módulo 5: Exercícios -->
+                <div class="module-card" id="mod-exercicios">
+                    <div class="module-header exercicios">✏️ Exercícios</div>
+                    <div class="module-body">
+                        <p>Pratique com exercícios interativos para fixar o aprendizado.</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="prog-exercicios" style="width: 0%"></div>
+                        </div>
+                        <a href="exercicios/index.html" class="module-link">Acessar Exercícios</a>
+                    </div>
+                </div>
+
+                <!-- Módulo 6: Exame -->
+                <div class="module-card" id="mod-exame">
+                    <div class="module-header exame">📝 Exame Final</div>
+                    <div class="module-body">
+                        <p>Exame de avaliação do Nível 1. Custo para refazer: 50 MTN</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="prog-exame" style="width: 0%"></div>
+                        </div>
+                        <button onclick="checkExamAccess()" class="module-link" style="border: none; cursor: pointer;">
+                            Acessar Exame
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="support-info">
+                <p>Suporte: 860407269 | Email: Islammocambique@gmail.com</p>
+                <p>Moz1vendas - Criação de Websites e Hospedagem</p>
+            </div>
+            <p>&copy; 2026 Madrassa Online. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="payment-modal">
+        <div class="payment-content">
+            <h2 id="paymentTitle">Confirmação de Pagamento</h2>
+            <p id="paymentDescription">Para continuar, confirme o pagamento:</p>
+            <div class="payment-amount" id="paymentAmount">150 MTN</div>
+            <p>Seu saldo atual: <span id="currentBalance">0</span> MTN</p>
+            <div class="payment-buttons">
+                <button class="btn btn-confirm" onclick="confirmPayment()">Confirmar</button>
+                <button class="btn btn-cancel" onclick="closePaymentModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
+            authDomain: "madrassa-online-b851c.firebaseapp.com",
+            databaseURL: "https://madrassa-online-b851c-default-rtdb.firebaseio.com",
+            projectId: "madrassa-online-b851c",
+            storageBucket: "madrassa-online-b851c.firebasestorage.app",
+            messagingSenderId: "360782668012",
+            appId: "1:360782668012:web:d501ef187911db632445c9",
+            measurementId: "G-RV9GD4S22T"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Global Variables
+        let currentUser = null;
+        let userData = null;
+        let pendingPayment = null;
+        let paymentCallback = null;
+
+        // Tab Switching
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.auth-tab');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            if (tab === 'login') {
+                tabs[0].classList.add('active');
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+            } else {
+                tabs[1].classList.add('active');
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+            }
+        }
+
+        // Show Alert
+        function showAlert(message, type = 'success') {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.textContent = message;
+            alertBox.className = `alert alert-${type}`;
+            alertBox.style.display = 'block';
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
+
+        // Login Handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const pin = document.getElementById('loginPin').value;
+
+            try {
+                // Check if user exists in database
+                const usersRef = database.ref('users');
+                const snapshot = await usersRef.orderByChild('email').equalTo(email).once('value');
+                
+                if (!snapshot.exists()) {
+                    // Try by phone number
+                    const phoneSnapshot = await usersRef.orderByChild('phone').equalTo(email).once('value');
+                    if (!phoneSnapshot.exists()) {
+                        showAlert('Usuário não encontrado. Por favor, inscreva-se.', 'error');
+                        return;
+                    }
+                }
+
+                const userData = snapshot.val() || phoneSnapshot.val();
+                const userId = Object.keys(userData)[0];
+                const user = userData[userId];
+
+                // Verify PIN
+                if (user.pin !== pin) {
+                    showAlert('PIN incorreto!', 'error');
+                    return;
+                }
+
+                // Check if user is approved and has paid
+                if (!user.approved) {
+                    showAlert('Sua conta está pendente de aprovação pelo administrador.', 'error');
+                    return;
+                }
+
+                if (!user.paid) {
+                    showAlert('Por favor, complete o pagamento de inscrição (150 MTN).', 'error');
+                    return;
+                }
+
+                currentUser = { uid: userId, ...user };
+                loadDashboard();
+                showAlert('Login realizado com sucesso!');
+
+            } catch (error) {
+                showAlert('Erro ao fazer login: ' + error.message, 'error');
+            }
+        });
+
+        // Registration Handler
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const phone = document.getElementById('regPhone').value;
+            const pin = document.getElementById('regPin').value;
+
+            // Check if user already exists
+            const usersRef = database.ref('users');
+            const emailCheck = await usersRef.orderByChild('email').equalTo(email).once('value');
+            
+            if (emailCheck.exists()) {
+                showAlert('Este email já está registrado!', 'error');
+                return;
+            }
+
+            // Check balance for payment
+            const balanceRef = database.ref(`balances/${phone}`);
+            const balanceSnapshot = await balanceRef.once('value');
+            const balance = balanceSnapshot.val() || 0;
+
+            if (balance < 150) {
+                showAlert(`Saldo insuficiente! Você tem ${balance} MTN. Necessário: 150 MTN`, 'error');
+                return;
+            }
+
+            // Show payment confirmation
+            pendingPayment = {
+                type: 'registration',
+                amount: 150,
+                userData: { name, email, phone, pin }
+            };
+            
+            document.getElementById('paymentTitle').textContent = 'Confirmar Inscrição';
+            document.getElementById('paymentDescription').textContent = 'Pagamento de inscrição no curso:';
+            document.getElementById('paymentAmount').textContent = '150 MTN';
+            document.getElementById('currentBalance').textContent = balance;
+            
+            paymentCallback = async () => {
+                // Deduct balance
+                await balanceRef.set(balance - 150);
+
+                // Create user record
+                const newUserRef = usersRef.push();
+                await newUserRef.set({
+                    name,
+                    email,
+                    phone,
+                    pin,
+                    balance: balance - 150,
+                    paid: true,
+                    approved: true, // Auto-approve for now, or set to false for manual approval
+                    createdAt: firebase.database.ServerValue.TIMESTAMP,
+                    level: 1,
+                    progress: {
+                        yassarna: 0,
+                        makharij: 0,
+                        duas: 0,
+                        salat: 0,
+                        exercicios: 0,
+                        exame: 0
+                    }
+                });
+
+                // Record payment
+                await database.ref('payments').push({
+                    userId: newUserRef.key,
+                    type: 'registration',
+                    amount: 150,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+
+                currentUser = { uid: newUserRef.key, name, email, phone, balance: balance - 150, paid: true };
+                closePaymentModal();
+                loadDashboard();
+                showAlert('Inscrição realizada com sucesso! Bem-vindo à Madrassa Online!');
+            };
+
+            document.getElementById('paymentModal').style.display = 'flex';
+        });
+
+        // Payment Functions
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            pendingPayment = null;
+            paymentCallback = null;
+        }
+
+        async function confirmPayment() {
+            if (paymentCallback) {
+                try {
+                    await paymentCallback();
+                } catch (error) {
+                    showAlert('Erro no pagamento: ' + error.message, 'error');
+                }
+            }
+        }
+
+        // Load Dashboard
+        async function loadDashboard() {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+
+            document.getElementById('userName').textContent = `Bem-vindo, ${currentUser.name}!`;
+            document.getElementById('userEmail').textContent = currentUser.email || currentUser.phone;
+
+            // Load fresh user data
+            const userRef = database.ref(`users/${currentUser.uid}`);
+            const snapshot = await userRef.once('value');
+            userData = snapshot.val();
+
+            document.getElementById('userBalance').textContent = userData.balance || 0;
+
+            // Update progress bars
+            if (userData.progress) {
+                document.getElementById('prog-yassarna').style.width = (userData.progress.yassarna || 0) + '%';
+                document.getElementById('prog-makharij').style.width = (userData.progress.makharij || 0) + '%';
+                document.getElementById('prog-duas').style.width = (userData.progress.duas || 0) + '%';
+                document.getElementById('prog-salat').style.width = (userData.progress.salat || 0) + '%';
+                document.getElementById('prog-exercicios').style.width = (userData.progress.exercicios || 0) + '%';
+                document.getElementById('prog-exame').style.width = (userData.progress.exame || 0) + '%';
+            }
+
+            // Check if exam was already taken
+            const examRef = database.ref(`exams/${currentUser.uid}`);
+            const examSnapshot = await examRef.once('value');
+            if (examSnapshot.exists()) {
+                const examData = examSnapshot.val();
+                if (examData.completed) {
+                    document.querySelector('#mod-exame .module-link').textContent = 'Refazer Exame (50 MTN)';
+                }
+            }
+        }
+
+        // Check Exam Access
+        async function checkExamAccess() {
+            const examRef = database.ref(`exams/${currentUser.uid}`);
+            const snapshot = await examRef.once('value');
+            
+            if (!snapshot.exists() || !snapshot.val().completed) {
+                // First time - free
+                window.location.href = 'exame/index.html';
+            } else {
+                // Need to pay 50 MTN to retake
+                const balance = userData.balance || 0;
+                
+                if (balance < 50) {
+                    showAlert(`Saldo insuficiente! Você tem ${balance} MTN. Necessário: 50 MTN para refazer o exame.`, 'error');
+                    return;
+                }
+
+                pendingPayment = {
+                    type: 'exam_retake',
+                    amount: 50
+                };
+
+                document.getElementById('paymentTitle').textContent = 'Refazer Exame';
+                document.getElementById('paymentDescription').textContent = 'Custo para refazer o exame:';
+                document.getElementById('paymentAmount').textContent = '50 MTN';
+                document.getElementById('currentBalance').textContent = balance;
+
+                paymentCallback = async () => {
+                    // Deduct balance
+                    const newBalance = balance - 50;
+                    await database.ref(`users/${currentUser.uid}/balance`).set(newBalance);
+                    await database.ref(`balances/${userData.phone}`).set(newBalance);
+
+                    // Record payment
+                    await database.ref('payments').push({
+                        userId: currentUser.uid,
+                        type: 'exam_retake',
+                        amount: 50,
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+
+                    // Reset exam status
+                    await examRef.update({
+                        completed: false,
+                        retakePaid: true,
+                        retakeTimestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+
+                    userData.balance = newBalance;
+                    document.getElementById('userBalance').textContent = newBalance;
+                    
+                    closePaymentModal();
+                    window.location.href = 'exame/index.html';
+                };
+
+                document.getElementById('paymentModal').style.display = 'flex';
+            }
+        }
+
+        // Logout
+        function logout() {
+            currentUser = null;
+            userData = null;
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('authSection').classList.remove('hidden');
+            switchTab('login');
+            showAlert('Sessão encerrada.');
+        }
+
+        // Check for existing session on load
+        window.addEventListener('load', () => {
+            // You can implement persistent session here if needed
+        });
+    </script>
+</body>
+</html>
