@@ -42,12 +42,13 @@ const ADMIN_PHONE = "860407269";
 const ADMIN_NAME = "ANACLETO BEBANE";
 const ADMIN_PIN = "0000"; // ALTERE ESTE PIN!
 
-// GitHub Pages base URL (substitua pelo seu)
+// GitHub Pages base URL
 const GITHUB_BASE_URL = "https://seu-usuario.github.io/madrassa-online";
 
 // ==================== STATE ====================
 let currentUser = null;
 let isAdmin = false;
+let currentFilter = 'all';
 
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
@@ -128,7 +129,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     showToast('success', `Bem-vindo, ${user.name}!`);
 });
 
-// ==================== REGISTER ====================
+// ==================== REGISTER (PÚBLICO) ====================
 document.getElementById('register-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('reg-name').value.trim();
@@ -184,6 +185,70 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
         showPendingModal();
         showToast('warning', 'Aguarde aprovação do administrador.');
     }
+});
+
+// ==================== ADMIN REGISTER (NOVO!) ====================
+function openAdminRegister() {
+    document.getElementById('admin-register-modal').classList.add('active');
+}
+
+function closeAdminRegister() {
+    document.getElementById('admin-register-modal').classList.remove('active');
+    document.getElementById('admin-register-form').reset();
+}
+
+document.getElementById('admin-register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    if (!isAdmin) {
+        showToast('error', 'Apenas administradores podem registrar alunos!');
+        return;
+    }
+    
+    const name = document.getElementById('admin-reg-name').value.trim();
+    const phone = document.getElementById('admin-reg-phone').value.trim();
+    const pin = document.getElementById('admin-reg-pin').value;
+    const level = parseInt(document.getElementById('admin-reg-level').value);
+    const receipt = document.getElementById('admin-reg-receipt').value.trim();
+    const contrib = document.getElementById('admin-reg-contrib').checked;
+    
+    if (pin.length !== 4) {
+        showToast('error', 'O PIN deve ter 4 dígitos!');
+        return;
+    }
+    
+    if (!level) {
+        showToast('error', 'Selecione um nível!');
+        return;
+    }
+    
+    // Check if phone exists
+    const snapshot = await db.ref('users/' + phone).once('value');
+    if (snapshot.exists()) {
+        showToast('error', 'Este número já está registado!');
+        return;
+    }
+    
+    const userData = {
+        name,
+        phone,
+        pin,
+        level,
+        receipt: receipt || null,
+        contrib,
+        approved: true, // Aprovado automaticamente pelo admin
+        createdAt: Date.now(),
+        lastLogin: Date.now(),
+        registeredBy: ADMIN_NAME,
+        registrationType: 'admin'
+    };
+    
+    await db.ref('users/' + phone).set(userData);
+    
+    showToast('success', `Aluno ${name} registrado e aprovado com sucesso!`);
+    closeAdminRegister();
+    loadAdminData();
+    updateTotalUsers();
 });
 
 // ==================== VIEW NAVIGATION ====================
@@ -302,11 +367,30 @@ function toggleSidebar() {
 }
 
 // ==================== ADMIN PANEL ====================
+function filterUsers(filter) {
+    currentFilter = filter;
+    
+    // Update tabs
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    loadAdminData();
+}
+
 function loadAdminData() {
     db.ref('users').once('value').then(snapshot => {
         const users = snapshot.val() || {};
         const allUsers = Object.entries(users);
         
+        // Filter users
+        let filteredUsers = allUsers;
+        if (currentFilter === 'pending') {
+            filteredUsers = allUsers.filter(([_, u]) => !u.approved);
+        } else if (currentFilter === 'approved') {
+            filteredUsers = allUsers.filter(([_, u]) => u.approved);
+        }
+        
+        // Update stats
         const pending = allUsers.filter(([_, u]) => !u.approved);
         const approved = allUsers.filter(([_, u]) => u.approved);
         
@@ -314,29 +398,47 @@ function loadAdminData() {
         document.getElementById('admin-pending').textContent = pending.length;
         document.getElementById('admin-approved').textContent = approved.length;
         
-        // Render pending list
-        const list = document.getElementById('pending-list');
+        // Render users list
+        const list = document.getElementById('users-list');
         list.innerHTML = '';
         
-        if (pending.length === 0) {
-            list.innerHTML = '<p style="text-align:center;color:var(--text-secondary);padding:20px;">Nenhum pedido pendente</p>';
+        if (filteredUsers.length === 0) {
+            list.innerHTML = '<p style="text-align:center;color:var(--text-secondary);padding:40px;">Nenhum aluno encontrado</p>';
             return;
         }
         
-        pending.forEach(([phone, user]) => {
+        filteredUsers.forEach(([phone, user]) => {
             const item = document.createElement('div');
-            item.className = 'pending-item';
+            item.className = 'user-item';
+            
+            const isApproved = user.approved;
+            const badgeClass = isApproved ? 'approved' : 'pending';
+            const badgeText = isApproved ? 'Aprovado' : 'Pendente';
+            
             item.innerHTML = `
-                <div class="pending-info">
-                    <h4>${user.name}</h4>
-                    <p>${phone} • Registado em ${new Date(user.createdAt).toLocaleDateString()}</p>
+                <div class="user-info-admin">
+                    <div class="user-avatar-admin">${user.name ? user.name.charAt(0).toUpperCase() : '?'}</div>
+                    <div class="user-details-admin">
+                        <span class="name">${user.name || 'Sem nome'}</span>
+                        <div class="meta">
+                            <span><i class="fas fa-phone"></i> ${phone}</span>
+                            <span><i class="fas fa-layer-group"></i> Nível ${user.level || '-'}</span>
+                            ${user.receipt ? `<span><i class="fas fa-receipt"></i> ${user.receipt}</span>` : ''}
+                            <span class="badge ${badgeClass}">${badgeText}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="pending-actions">
-                    <button class="btn-approve" onclick="approveUser('${phone}')">
-                        <i class="fas fa-check"></i> Aprovar
+                <div class="user-actions">
+                    ${!isApproved ? `
+                        <button class="btn-approve" onclick="approveUser('${phone}')">
+                            <i class="fas fa-check"></i> Aprovar
+                        </button>
+                    ` : ''}
+                    <button class="btn-edit" onclick="editUser('${phone}')">
+                        <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn-reject" onclick="rejectUser('${phone}')">
-                        <i class="fas fa-times"></i> Rejeitar
+                    <button class="btn-reject" onclick="deleteUser('${phone}')">
+                        <i class="fas fa-trash"></i>
                     </button>
                 </div>
             `;
@@ -353,11 +455,51 @@ function approveUser(phone) {
     });
 }
 
-function rejectUser(phone) {
+function deleteUser(phone) {
+    if (!confirm('Tem certeza que deseja remover este aluno?')) return;
+    
     db.ref('users/' + phone).remove().then(() => {
-        showToast('success', 'Utilizador rejeitado e removido.');
+        showToast('success', 'Utilizador removido.');
         loadAdminData();
         updateTotalUsers();
+    });
+}
+
+function editUser(phone) {
+    // Implementar edição se necessário
+    showToast('warning', 'Função de edição em desenvolvimento.');
+}
+
+function exportData() {
+    db.ref('users').once('value').then(snapshot => {
+        const users = snapshot.val() || {};
+        const data = Object.entries(users).map(([phone, user]) => ({
+            Telefone: phone,
+            Nome: user.name,
+            Nível: user.level,
+            Recibo: user.receipt,
+            Contribuição: user.contrib ? 'Sim' : 'Não',
+            Aprovado: user.approved ? 'Sim' : 'Não',
+            'Data Registo': new Date(user.createdAt).toLocaleDateString()
+        }));
+        
+        // Create CSV
+        const headers = Object.keys(data[0] || {});
+        const csv = [
+            headers.join(','),
+            ...data.map(row => headers.map(h => `"${row[h] || ''}"`).join(','))
+        ].join('\n');
+        
+        // Download
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `madrassa-alunos-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        showToast('success', 'Dados exportados com sucesso!');
     });
 }
 
