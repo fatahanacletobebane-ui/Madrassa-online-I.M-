@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exame - Madrassa Online</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a0a1a, #5f1a3c);
+            min-height: 100vh;
+            color: white;
+        }
+        .header {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            padding: 20px 35px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .back-btn {
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        .header h1 { font-size: 1.4rem; display: flex; align-items: center; gap: 12px; }
+        .timer {
+            margin-left: auto;
+            background: rgba(239, 68, 68, 0.2);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .timer.warning { background: rgba(245, 158, 11, 0.3); }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .exam-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 35px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .question { font-size: 1.15rem; margin-bottom: 20px; font-weight: 500; }
+        .question-type {
+            display: inline-block;
+            background: #d4af37;
+            color: #1a1a1a;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option {
+            padding: 18px 22px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option:hover { background: rgba(255,255,255,0.1); }
+        .option input { width: 20px; height: 20px; accent-color: #d4af37; }
+        .option.selected { border-color: #d4af37; background: rgba(212, 175, 55, 0.1); }
+        
+        .text-input {
+            width: 100%;
+            padding: 18px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+        }
+        .text-input:focus { outline: none; border-color: #d4af37; }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #d4af37, #f0d878);
+            color: #1a1a1a;
+            border: none;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); }
+        
+        .result-card {
+            text-align: center;
+            padding: 50px;
+        }
+        .result-icon { font-size: 5rem; margin-bottom: 20px; }
+        .result-score { font-size: 5rem; font-weight: 700; color: #d4af37; }
+        .result-message { font-size: 1.3rem; margin-top: 15px; }
+        
+        .certificate {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.05));
+            border: 2px solid #d4af37;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .certificate h3 { color: #d
