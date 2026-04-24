@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercícios - Madrassa Online</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a1f0a, #1a5f3c);
+            min-height: 100vh;
+            color: white;
+        }
+        .header {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            padding: 20px 35px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .back-btn {
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        .header h1 { font-size: 1.4rem; display: flex; align-items: center; gap: 12px; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .exercise-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 35px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .question { font-size: 1.15rem; margin-bottom: 20px; font-weight: 500; }
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option {
+            padding: 18px 22px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .option:hover { background: rgba(255,255,255,0.1); }
+        .option.correct { border-color: #10b981; background: rgba(16, 185, 129, 0.15); }
+        .option.wrong { border-color: #ef4444; background: rgba(239, 68, 68, 0.15); }
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #d4af37, #f0d878);
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
+        .score { text-align: center; margin-top: 40px; font-size: 1.3rem; }
+        .score-number { font-size: 4rem; font-weight: 700; color: #d4af37; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+        <h1><i class="fas fa-book-open"></i> Exercícios - Nível 1</h1>
+    </div>
+    
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress" style="width: 0%"></div>
+        </div>
+        
+        <div id="quiz-container"></div>
+        
+        <div class="score hidden" id="score-display">
+            <div class="score-number" id="score-value">0/5</div>
+            <p>Parabéns! Continue estudando!</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "Qual é o primeiro pilar do Islão?",
+                options: ["Salah (Oração)", "Shahada (Testemunho)", "Zakat (Caridade)", "Sawm (Jejum)"],
+                correct: 1
+            },
+            {
+                q: "Quantas vezes por dia um muçulmano deve orar?",
+                options: ["3 vezes", "4 vezes", "5 vezes", "7 vezes"],
+                correct: 2
+            },
+            {
+                q: "Quem é o último profeta enviado por Allah?",
+                options: ["Moisés (Musa)", "Jesus (Isa)", "Muhammad (SWT)", "Abraham (Ibrahim)"],
+                correct: 2
+            },
+            {
+                q: "Qual é o nome do livro sagrado do Islão?",
+                options: ["Bíblia", "Torah", "Alcorão", "Vedas"],
+                correct: 2
+            },
+            {
+                q: "Em que cidade nasceu o Profeta Muhammad (SWT)?",
+                options: ["Meca", "Medina", "Jerusalém", "Cairo"],
+                correct: 0
+            }
+        ];
+
+        let current = 0;
+        let score = 0;
+        const container = document.getElementById('quiz-container');
+
+        function renderQuestion() {
+            if (current >= questions.length) {
+                showScore();
+                return;
+            }
+            
+            const q = questions[current];
+            container.innerHTML = `
+                <div class="exercise-card">
+                    <div class="question"><span style="color:#d4af37">Questão ${current + 1}/${questions.length}:</span> ${q.q}</div>
+                    <div class="options">
+                        ${q.options.map((opt, i) => `
+                            <div class="option" onclick="checkAnswer(${i})">${opt}</div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('progress').style.width = `${(current / questions.length) * 100}%`;
+        }
+
+        function checkAnswer(selected) {
+            const q = questions[current];
+            const options = document.querySelectorAll('.option');
+            
+            options[selected].classList.add(selected === q.correct ? 'correct' : 'wrong');
+            if (selected === q.correct) score++;
+            options[q.correct].classList.add('correct');
+            
+            options.forEach(o => o.style.pointerEvents = 'none');
+            
+            setTimeout(() => {
+                current++;
+                renderQuestion();
+            }, 1500);
+        }
+
+        function showScore() {
+            container.innerHTML = '';
+            document.getElementById('progress').style.width = '100%';
+            document.getElementById('score-display').classList.remove('hidden');
+            document.getElementById('score-value').textContent = `${score}/${questions.length}`;
+        }
+
+        renderQuestion();
+    </script>
+</body>
+</html>
