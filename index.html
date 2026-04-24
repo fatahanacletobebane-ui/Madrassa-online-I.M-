@@ -83,6 +83,52 @@
         </div>
     </div>
 
+    <!-- Admin Register Modal (Novo!) -->
+    <div id="admin-register-modal" class="modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> Registrar Novo Aluno</h2>
+                <button onclick="closeAdminRegister()" class="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="admin-register-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="admin-reg-name" placeholder="Nome completo" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="admin-reg-phone" placeholder="Número de telefone" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="admin-reg-pin" placeholder="PIN (4 dígitos)" maxlength="4" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-layer-group"></i>
+                    <select id="admin-reg-level" required>
+                        <option value="">Selecionar Nível</option>
+                        <option value="1">Nível 1</option>
+                        <option value="2">Nível 2</option>
+                        <option value="3">Nível 3</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-receipt"></i>
+                    <input type="text" id="admin-reg-receipt" placeholder="Número do recibo (opcional)">
+                </div>
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" id="admin-reg-contrib" checked>
+                        <span>Contribuição em dia</span>
+                    </label>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-check"></i> Registrar e Aprovar
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Main App -->
     <div id="main-app" class="hidden">
         <!-- Sidebar -->
@@ -213,11 +259,7 @@
                     <h2><i class="fas fa-book-open"></i> Exercícios</h2>
                 </div>
                 <div class="iframe-container">
-                    <iframe src="https://seu-usuario.github.io/madrassa-online/exercicios11/" 
-                            id="exercicios-frame"
-                            frameborder="0" 
-                            allowfullscreen>
-                    </iframe>
+                    <iframe src="" id="exercicios-frame" frameborder="0" allowfullscreen></iframe>
                 </div>
             </div>
 
@@ -228,11 +270,7 @@
                     <h2><i class="fas fa-graduation-cap"></i> Exame</h2>
                 </div>
                 <div class="iframe-container">
-                    <iframe src="https://seu-usuario.github.io/madrassa-online/exame11/" 
-                            id="exame-frame"
-                            frameborder="0" 
-                            allowfullscreen>
-                    </iframe>
+                    <iframe src="" id="exame-frame" frameborder="0" allowfullscreen></iframe>
                 </div>
             </div>
 
@@ -242,6 +280,17 @@
                     <button onclick="showView('dashboard')" class="back-btn"><i class="fas fa-arrow-left"></i></button>
                     <h2><i class="fas fa-shield-alt"></i> Painel Administrativo</h2>
                 </div>
+                
+                <!-- Botão Registrar Novo Aluno -->
+                <div class="admin-actions">
+                    <button onclick="openAdminRegister()" class="btn-register-new">
+                        <i class="fas fa-user-plus"></i> Registrar Novo Aluno
+                    </button>
+                    <button onclick="exportData()" class="btn-export">
+                        <i class="fas fa-download"></i> Exportar Dados
+                    </button>
+                </div>
+
                 <div class="admin-stats">
                     <div class="stat-card">
                         <i class="fas fa-users"></i>
@@ -259,7 +308,15 @@
                         <label>Aprovados</label>
                     </div>
                 </div>
-                <div class="pending-list" id="pending-list"></div>
+
+                <!-- Tabs para filtrar -->
+                <div class="admin-tabs">
+                    <button class="admin-tab active" onclick="filterUsers('all')">Todos</button>
+                    <button class="admin-tab" onclick="filterUsers('pending')">Pendentes</button>
+                    <button class="admin-tab" onclick="filterUsers('approved')">Aprovados</button>
+                </div>
+
+                <div class="users-list" id="users-list"></div>
             </div>
         </main>
     </div>
