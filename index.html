@@ -1,328 +1,121 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Madrassa Online - Educação Islâmica</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <title>Madrassa Online</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-        <div class="loader">
-            <div class="crescent"></div>
-            <p>Madrassa Online</p>
+
+    <div id="auth-container">
+        <h2>Madrassa Online - Login</h2>
+        <input type="text" id="nome" placeholder="Nome Completo">
+        <input type="tel" id="celular" placeholder="Número de Celular">
+        <input type="password" id="pin" placeholder="PIN">
+        <button onclick="fazerLogin()">Entrar / Registar</button>
+    </div>
+
+    <div id="main-content" style="display: none;">
+        <h1 id="welcome-msg">Bem-vindo</h1>
+        
+        <div class="ads-banner">
+            <p>Anúncio: Conheça nossos novos cursos e serviços!</p>
+        </div>
+
+        <div class="menu-grid">
+            <button onclick="window.location.href='#videoaulas'">Video Aulas</button>
+            <button onclick="window.location.href='https://chat.whatsapp.com/2eKBlqoeaaJ50WtWwRkpb7?mode=gi_t'">WhatsApp Aulas</button>
+            <button onclick="window.location.href='./exercicios11/'">Exercícios</button>
+            <button onclick="window.location.href='./exame11/'">Exame</button>
+        </div>
+
+        <div id="admin-panel" style="display: none; margin-top: 20px; border: 1px solid red; padding: 10px;">
+            <h3>Painel de Aprovação (Admin)</h3>
+            <div id="lista-pendentes"></div>
         </div>
     </div>
 
-    <!-- Login/Register Modal -->
-    <div id="auth-modal" class="modal active">
-        <div class="modal-content glass">
-            <div class="auth-tabs">
-                <button class="tab-btn active" onclick="showTab('login')">Entrar</button>
-                <button class="tab-btn" onclick="showTab('register')">Registar</button>
-            </div>
-            
-            <form id="login-form" class="auth-form active">
-                <h2><i class="fas fa-mosque"></i> Bem-vindo</h2>
-                <div class="input-group">
-                    <i class="fas fa-phone"></i>
-                    <input type="tel" id="login-phone" placeholder="Número de telefone" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="login-pin" placeholder="PIN (4 dígitos)" maxlength="4" required>
-                </div>
-                <button type="submit" class="btn-primary">
-                    <i class="fas fa-sign-in-alt"></i> Entrar
-                </button>
-                <p class="hint">Administrador: ANACLETO BEBANE</p>
-            </form>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
+            authDomain: "madrassa-online-b851c.firebaseapp.com",
+            databaseURL: "https://madrassa-online-b851c-default-rtdb.firebaseio.com",
+            projectId: "madrassa-online-b851c",
+            storageBucket: "madrassa-online-b851c.firebasestorage.app",
+            messagingSenderId: "360782668012",
+            appId: "1:360782668012:web:d501ef187911db632445c9"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-            <form id="register-form" class="auth-form">
-                <h2><i class="fas fa-user-plus"></i> Novo Aluno</h2>
-                <div class="input-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="reg-name" placeholder="Nome completo" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-phone"></i>
-                    <input type="tel" id="reg-phone" placeholder="Número de telefone" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="reg-pin" placeholder="Criar PIN (4 dígitos)" maxlength="4" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-check-circle"></i>
-                    <input type="password" id="reg-pin-confirm" placeholder="Confirmar PIN" maxlength="4" required>
-                </div>
-                <button type="submit" class="btn-primary">
-                    <i class="fas fa-paper-plane"></i> Solicitar Aprovação
-                </button>
-                <p class="note">⚠️ Aguarde aprovação do administrador após o registo.</p>
-            </form>
-        </div>
-    </div>
+        // Lista de números da imagem que não precisam de aprovação
+        const automaticos = ["258849235361", "258864133620", "258844030404", "258847859222", "258844906524"]; 
 
-    <!-- Pending Approval Modal -->
-    <div id="pending-modal" class="modal">
-        <div class="modal-content glass">
-            <div class="pending-icon">
-                <i class="fas fa-clock fa-spin"></i>
-            </div>
-            <h2>Aguardando Aprovação</h2>
-            <p>O seu registo foi submetido com sucesso.</p>
-            <p>O administrador <strong>ANACLETO BEBANE</strong> irá analisar a sua solicitação.</p>
-            <div class="countdown">Verificando...</div>
-            <button onclick="logout()" class="btn-secondary">Sair</button>
-        </div>
-    </div>
+        function fazerLogin() {
+            const nome = document.getElementById('nome').value;
+            const celular = document.getElementById('celular').value;
+            const pin = document.getElementById('pin').value;
 
-    <!-- Admin Register Modal (Novo!) -->
-    <div id="admin-register-modal" class="modal">
-        <div class="modal-content glass">
-            <div class="modal-header">
-                <h2><i class="fas fa-user-plus"></i> Registrar Novo Aluno</h2>
-                <button onclick="closeAdminRegister()" class="close-btn"><i class="fas fa-times"></i></button>
-            </div>
-            <form id="admin-register-form">
-                <div class="input-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="admin-reg-name" placeholder="Nome completo" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-phone"></i>
-                    <input type="tel" id="admin-reg-phone" placeholder="Número de telefone" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="admin-reg-pin" placeholder="PIN (4 dígitos)" maxlength="4" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-layer-group"></i>
-                    <select id="admin-reg-level" required>
-                        <option value="">Selecionar Nível</option>
-                        <option value="1">Nível 1</option>
-                        <option value="2">Nível 2</option>
-                        <option value="3">Nível 3</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-receipt"></i>
-                    <input type="text" id="admin-reg-receipt" placeholder="Número do recibo (opcional)">
-                </div>
-                <div class="checkbox-group">
-                    <label>
-                        <input type="checkbox" id="admin-reg-contrib" checked>
-                        <span>Contribuição em dia</span>
-                    </label>
-                </div>
-                <button type="submit" class="btn-primary">
-                    <i class="fas fa-check"></i> Registrar e Aprovar
-                </button>
-            </form>
-        </div>
-    </div>
+            if(celular === "860407269" && nome.toUpperCase() === "ANACLETO BEBANE") {
+                entrarComoUser(nome, "admin");
+                return;
+            }
 
-    <!-- Main App -->
-    <div id="main-app" class="hidden">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="logo">
-                <div class="crescent-icon">☪</div>
-                <span>Madrassa Online</span>
-            </div>
-            
-            <div class="user-info">
-                <div class="avatar" id="user-avatar">A</div>
-                <div class="user-details">
-                    <span id="user-name" class="name">Aluno</span>
-                    <span id="user-status" class="status"><i class="fas fa-circle"></i> Online</span>
-                </div>
-            </div>
+            const userRef = database.ref('usuarios/' + celular);
+            userRef.once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    if(userData.pin === pin) {
+                        if(userData.status === "aprovado") {
+                            entrarComoUser(nome, "aluno");
+                        } else {
+                            alert("Aguarde a aprovação do administrador.");
+                        }
+                    } else {
+                        alert("PIN incorreto.");
+                    }
+                } else {
+                    // Novo Registro
+                    let statusInicial = automaticos.includes(celular) ? "aprovado" : "pendente";
+                    userRef.set({
+                        nome: nome,
+                        pin: pin,
+                        status: statusInicial
+                    }).then(() => {
+                        alert(statusInicial === "aprovado" ? "Conta criada! Faça login." : "Registro enviado para aprovação.");
+                    });
+                }
+            });
+        }
 
-            <ul class="nav-links">
-                <li class="active">
-                    <a href="#" onclick="showView('dashboard')"><i class="fas fa-home"></i> Início</a>
-                </li>
-                <li>
-                    <a href="https://chat.whatsapp.com/2eKBlqoeaaJ50WtWwRkpb7?mode=gi_t" target="_blank">
-                        <i class="fab fa-whatsapp"></i> WhatsApp Aulas
-                    </a>
-                </li>
-                <li>
-                    <a href="#" onclick="showView('video')"><i class="fas fa-video"></i> Vídeo Aulas</a>
-                </li>
-                <li>
-                    <a href="#" onclick="showView('exercicios')"><i class="fas fa-book-open"></i> Exercícios</a>
-                </li>
-                <li>
-                    <a href="#" onclick="showView('exame')"><i class="fas fa-graduation-cap"></i> Exame</a>
-                </li>
-                <li class="admin-only hidden">
-                    <a href="#" onclick="showView('admin')"><i class="fas fa-shield-alt"></i> Painel Admin</a>
-                </li>
-            </ul>
+        function entrarComoUser(nome, cargo) {
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            document.getElementById('welcome-msg').innerText = "Olá, " + nome;
+            if(cargo === "admin") {
+                document.getElementById('admin-panel').style.display = 'block';
+                carregarPendentes();
+            }
+        }
 
-            <div class="stats-card">
-                <i class="fas fa-users"></i>
-                <div>
-                    <span class="stats-number" id="total-users">0</span>
-                    <span class="stats-label">Alunos na Madrassa</span>
-                </div>
-            </div>
+        function carregarPendentes() {
+            database.ref('usuarios').orderByChild('status').equalTo('pendente').on('value', (snapshot) => {
+                const lista = document.getElementById('lista-pendentes');
+                lista.innerHTML = "";
+                snapshot.forEach((childSnapshot) => {
+                    const user = childSnapshot.val();
+                    const key = childSnapshot.key;
+                    lista.innerHTML += `<p>${user.nome} (${key}) <button onclick="aprovar('${key}')">Aprovar</button></p>`;
+                });
+            });
+        }
 
-            <button onclick="logout()" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> Sair
-            </button>
-        </nav>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Header -->
-            <header class="top-bar">
-                <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Pesquisar...">
-                </div>
-                <div class="header-actions">
-                    <button class="icon-btn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
-                    <button class="icon-btn"><i class="fas fa-bell"></i></button>
-                </div>
-            </header>
-
-            <!-- Dashboard View -->
-            <div class="view-section" id="dashboard-view">
-                <div class="welcome-banner">
-                    <div class="banner-content">
-                        <h1>Assalamu Alaikum, <span id="welcome-name">Aluno</span>!</h1>
-                        <p>Continue a sua jornada de aprendizado islâmico.</p>
-                    </div>
-                    <div class="banner-decoration">
-                        <i class="fas fa-mosque"></i>
-                    </div>
-                </div>
-
-                <div class="quick-actions">
-                    <a href="https://chat.whatsapp.com/2eKBlqoeaaJ50WtWwRkpb7?mode=gi_t" target="_blank" class="action-card whatsapp">
-                        <div class="icon"><i class="fab fa-whatsapp"></i></div>
-                        <h3>WhatsApp Aulas</h3>
-                        <p>Junte-se ao grupo de estudos</p>
-                    </a>
-                    <a href="#" onclick="showView('video')" class="action-card video">
-                        <div class="icon"><i class="fas fa-video"></i></div>
-                        <h3>Vídeo Aulas</h3>
-                        <p>Assista às aulas gravadas</p>
-                    </a>
-                    <a href="#" onclick="showView('exercicios')" class="action-card exercises">
-                        <div class="icon"><i class="fas fa-book-open"></i></div>
-                        <h3>Exercícios</h3>
-                        <p>Pratique com exercícios</p>
-                    </a>
-                    <a href="#" onclick="showView('exame')" class="action-card exam">
-                        <div class="icon"><i class="fas fa-graduation-cap"></i></div>
-                        <h3>Exame</h3>
-                        <p>Teste os seus conhecimentos</p>
-                    </a>
-                </div>
-
-                <div class="section-title">
-                    <h2><i class="fas fa-ad"></i> Publicidade</h2>
-                </div>
-                <div class="ads-container" id="ads-container"></div>
-
-                <div class="live-users-section">
-                    <h3><i class="fas fa-signal"></i> Alunos Online Agora</h3>
-                    <div class="users-avatars" id="live-avatars"></div>
-                </div>
-            </div>
-
-            <!-- Video Lessons View -->
-            <div class="view-section hidden" id="video-view">
-                <div class="view-header">
-                    <button onclick="showView('dashboard')" class="back-btn"><i class="fas fa-arrow-left"></i></button>
-                    <h2><i class="fas fa-video"></i> Vídeo Aulas</h2>
-                </div>
-                <div class="video-grid" id="video-grid"></div>
-            </div>
-
-            <!-- Exercícios View (iframe) -->
-            <div class="view-section hidden" id="exercicios-view">
-                <div class="view-header">
-                    <button onclick="showView('dashboard')" class="back-btn"><i class="fas fa-arrow-left"></i></button>
-                    <h2><i class="fas fa-book-open"></i> Exercícios</h2>
-                </div>
-                <div class="iframe-container">
-                    <iframe src="" id="exercicios-frame" frameborder="0" allowfullscreen></iframe>
-                </div>
-            </div>
-
-            <!-- Exame View (iframe) -->
-            <div class="view-section hidden" id="exame-view">
-                <div class="view-header">
-                    <button onclick="showView('dashboard')" class="back-btn"><i class="fas fa-arrow-left"></i></button>
-                    <h2><i class="fas fa-graduation-cap"></i> Exame</h2>
-                </div>
-                <div class="iframe-container">
-                    <iframe src="" id="exame-frame" frameborder="0" allowfullscreen></iframe>
-                </div>
-            </div>
-
-            <!-- Admin Panel -->
-            <div class="view-section hidden" id="admin-view">
-                <div class="view-header">
-                    <button onclick="showView('dashboard')" class="back-btn"><i class="fas fa-arrow-left"></i></button>
-                    <h2><i class="fas fa-shield-alt"></i> Painel Administrativo</h2>
-                </div>
-                
-                <!-- Botão Registrar Novo Aluno -->
-                <div class="admin-actions">
-                    <button onclick="openAdminRegister()" class="btn-register-new">
-                        <i class="fas fa-user-plus"></i> Registrar Novo Aluno
-                    </button>
-                    <button onclick="exportData()" class="btn-export">
-                        <i class="fas fa-download"></i> Exportar Dados
-                    </button>
-                </div>
-
-                <div class="admin-stats">
-                    <div class="stat-card">
-                        <i class="fas fa-users"></i>
-                        <span id="admin-total">0</span>
-                        <label>Total Alunos</label>
-                    </div>
-                    <div class="stat-card pending">
-                        <i class="fas fa-clock"></i>
-                        <span id="admin-pending">0</span>
-                        <label>Pendentes</label>
-                    </div>
-                    <div class="stat-card approved">
-                        <i class="fas fa-check"></i>
-                        <span id="admin-approved">0</span>
-                        <label>Aprovados</label>
-                    </div>
-                </div>
-
-                <!-- Tabs para filtrar -->
-                <div class="admin-tabs">
-                    <button class="admin-tab active" onclick="filterUsers('all')">Todos</button>
-                    <button class="admin-tab" onclick="filterUsers('pending')">Pendentes</button>
-                    <button class="admin-tab" onclick="filterUsers('approved')">Aprovados</button>
-                </div>
-
-                <div class="users-list" id="users-list"></div>
-            </div>
-        </main>
-    </div>
-
-    <div id="toast-container"></div>
-
-    <script src="js/app.js"></script>
+        function aprovar(key) {
+            database.ref('usuarios/' + key).update({ status: "aprovado" });
+        }
+    </script>
 </body>
 </html>
