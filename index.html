@@ -2,44 +2,471 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Madrassa Online</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; background: #f4f4f4; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        input { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; margin: 5px 0; }
-        .admin-section { border: 2px solid red; padding: 10px; margin-top: 20px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0d3d26 0%, #1a5f3c 50%, #2d8a5e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+            animation: entrar 0.6s ease;
+        }
+
+        @keyframes entrar {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo i {
+            font-size: 3.5rem;
+            color: #1a5f3c;
+            margin-bottom: 10px;
+        }
+
+        .logo h1 {
+            color: #1a5f3c;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo p {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #1a5f3c;
+            font-size: 1rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 14px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1a5f3c;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #1a5f3c, #2d8a5e);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(26,95,60,0.3);
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25d366, #128c7e);
+        }
+
+        .btn-video {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+        }
+
+        .btn-exercicios {
+            background: linear-gradient(135deg, #4ecdc4, #44b3ab);
+        }
+
+        .btn-exame {
+            background: linear-gradient(135deg, #d4af37, #c9a000);
+            color: #1a1a1a;
+        }
+
+        .stats {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(26,95,60,0.08);
+            border-radius: 14px;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a5f3c;
+        }
+
+        .stats-label {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        /* APP */
+        #app-box { display: none; }
+        
+        .welcome {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 {
+            color: #1a5f3c;
+            font-size: 1.5rem;
+        }
+
+        .welcome span {
+            color: #d4af37;
+            font-weight: 700;
+        }
+
+        .menu-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .menu-btn {
+            padding: 18px;
+            border-radius: 16px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .menu-btn:hover {
+            transform: translateX(5px);
+        }
+
+        .menu-btn i {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+
+        /* ADMIN */
+        .admin-box {
+            margin-top: 25px;
+            padding: 20px;
+            border: 2px solid #d4af37;
+            border-radius: 16px;
+            background: rgba(212,175,55,0.05);
+        }
+
+        .admin-box h3 {
+            color: #1a5f3c;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .admin-actions .btn {
+            margin: 0;
+            padding: 12px;
+            font-size: 0.9rem;
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .user-item button {
+            padding: 8px 16px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+        }
+
+        .user-item button.rejeitar {
+            background: #ef4444;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-pendente { background: #fef3c7; color: #d97706; }
+        .badge-aprovado { background: #d1fae5; color: #059669; }
+
+        .logout {
+            margin-top: 20px;
+            background: #ef4444 !important;
+        }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<div class="card">
+<div class="card" id="tela">
+    <!-- LOGIN -->
     <div id="auth-box">
-        <h2>Madrassa Online - Login</h2>
-        <input type="text" id="nome" placeholder="Nome Completo">
-        <input type="tel" id="celular" placeholder="Número (Ex: 258...)">
-        <input type="password" id="pin" placeholder="PIN">
-        <button onclick="entrar()">ENTRAR / REGISTAR</button>
+        <div class="logo">
+            <i class="fas fa-mosque"></i>
+            <h1>Madrassa Online</h1>
+            <p>Educação Islâmica</p>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="nome" placeholder="Nome Completo">
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="celular" placeholder="Número (Ex: 258...)">
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="pin" placeholder="PIN (4 dígitos)" maxlength="4">
+        </div>
+
+        <button class="btn" onclick="entrar()">
+            <i class="fas fa-sign-in-alt"></i> Entrar / Registar
+        </button>
+
+        <div class="stats">
+            <div class="stats-number" id="total-alunos">0</div>
+            <div class="stats-label">Alunos na Madrassa</div>
+        </div>
     </div>
 
-    <div id="app-box" style="display:none;">
-        <h2 id="user-welcome">Olá</h2>
-        <button onclick="window.location.href='#vids'">Video Aulas</button>
-        <button onclick="window.location.href='https://chat.whatsapp.com/2eKBlqoeaaJ50WtWwRkpb7?mode=gi_t'">WhatsApp Aulas</button>
-        <button onclick="window.location.href='./exercicios11/'">Exercícios</button>
-        <button onclick="window.location.href='./exame11/'">Exame</button>
-        
-        <div id="admin-panel" class="admin-section" style="display:none;">
-            <h3>Painel Admin (Aprovações)</h3>
-            <div id="lista-espera"></div>
+    <!-- APP -->
+    <div id="app-box">
+        <div class="welcome">
+            <h2>Assalamu Alaikum,<br><span id="user-nome">Aluno</span></h2>
         </div>
+
+        <div class="menu-grid">
+            <a href="#" class="menu-btn btn-video" onclick="abrirVideo()">
+                <i class="fas fa-video"></i>
+                <div>
+                    <div>Vídeo Aulas</div>
+                    <small style="opacity:0.8">Assista às aulas gravadas</small>
+                </div>
+            </a>
+
+            <a href="https://chat.whatsapp.com/2eKBlqoeaaJ50WtWwRkpb7?mode=gi_t" target="_blank" class="menu-btn btn-whatsapp">
+                <i class="fab fa-whatsapp"></i>
+                <div>
+                    <div>WhatsApp Aulas</div>
+                    <small style="opacity:0.8">Grupo de estudos</small>
+                </div>
+            </a>
+
+            <a href="#" class="menu-btn btn-exercicios" onclick="abrirExercicios()">
+                <i class="fas fa-book-open"></i>
+                <div>
+                    <div>Exercícios</div>
+                    <small style="opacity:0.8">Pratique com questões</small>
+                </div>
+            </a>
+
+            <a href="#" class="menu-btn btn-exame" onclick="abrirExame()">
+                <i class="fas fa-graduation-cap"></i>
+                <div>
+                    <div>Exame</div>
+                    <small style="opacity:0.8">Teste seus conhecimentos</small>
+                </div>
+            </a>
+        </div>
+
+        <!-- ADMIN -->
+        <div id="admin-panel" class="admin-box hidden">
+            <h3><i class="fas fa-shield-alt"></i> Painel Admin</h3>
+            
+            <div class="admin-actions">
+                <button class="btn" onclick="mostrarRegistroAdmin()" style="background: linear-gradient(135deg, #d4af37, #c9a000); color: #1a1a1a;">
+                    <i class="fas fa-user-plus"></i> Novo Aluno
+                </button>
+                <button class="btn" onclick="mostrarQuestoes()" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
+                    <i class="fas fa-edit"></i> Questões
+                </button>
+            </div>
+
+            <div id="lista-pendentes"></div>
+        </div>
+
+        <button class="btn logout" onclick="sair()">
+            <i class="fas fa-sign-out-alt"></i> Sair
+        </button>
+    </div>
+
+    <!-- REGISTRO ADMIN -->
+    <div id="registro-admin-box" class="hidden">
+        <div class="logo">
+            <i class="fas fa-user-plus"></i>
+            <h1>Registrar Aluno</h1>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="admin-reg-nome" placeholder="Nome Completo">
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="admin-reg-celular" placeholder="Número">
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="admin-reg-pin" placeholder="PIN" maxlength="4">
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-layer-group"></i>
+            <select id="admin-reg-nivel">
+                <option value="1">Nível 1</option>
+                <option value="2">Nível 2</option>
+            </select>
+        </div>
+
+        <button class="btn" onclick="registrarAdmin()">
+            <i class="fas fa-check"></i> Registrar e Aprovar
+        </button>
+        <button class="btn" onclick="voltarAdmin()" style="background: #6b7280; margin-top: 10px;">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+    </div>
+
+    <!-- GESTÃO DE QUESTÕES -->
+    <div id="questoes-box" class="hidden">
+        <div class="logo">
+            <i class="fas fa-edit"></i>
+            <h1>Gerir Questões</h1>
+        </div>
+
+        <div class="admin-actions">
+            <button class="btn btn-exercicios" onclick="mostrarAddQuestao('exercicios')">
+                <i class="fas fa-book-open"></i> Exercícios
+            </button>
+            <button class="btn btn-exame" onclick="mostrarAddQuestao('exame')">
+                <i class="fas fa-graduation-cap"></i> Exame
+            </button>
+        </div>
+
+        <div id="form-questao" class="hidden" style="margin-top: 15px;">
+            <input type="hidden" id="questao-tipo">
+            
+            <div class="input-group">
+                <i class="fas fa-question-circle"></i>
+                <input type="text" id="questao-texto" placeholder="Pergunta">
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-check"></i>
+                <input type="text" id="questao-op1" placeholder="Opção A">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-circle"></i>
+                <input type="text" id="questao-op2" placeholder="Opção B">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-circle"></i>
+                <input type="text" id="questao-op3" placeholder="Opção C">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-circle"></i>
+                <input type="text" id="questao-op4" placeholder="Opção D">
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-star"></i>
+                <select id="questao-correta">
+                    <option value="0">A</option>
+                    <option value="1">B</option>
+                    <option value="2">C</option>
+                    <option value="3">D</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="salvarQuestao()">
+                <i class="fas fa-save"></i> Salvar Questão
+            </button>
+        </div>
+
+        <div id="lista-questoes" style="margin-top: 15px;"></div>
+
+        <button class="btn" onclick="voltarAdmin()" style="background: #6b7280; margin-top: 15px;">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
     </div>
 </div>
 
 <script>
-// Sua configuração oficial
+// ==================== FIREBASE ====================
 const firebaseConfig = {
     apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
     authDomain: "madrassa-online-b851c.firebaseapp.com",
@@ -53,71 +480,259 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// Números da imagem com permissão automática
-const liberados = ["258849235361", "258864133620", "258844030404", "258847859222", "258844906524", "258846152522", "258876563032", "258864388571", "258853386491", "258867947389", "258842957997", "258849118097", "258820618540", "258844117209", "258841253788", "258823033144", "258843989406"];
+// ==================== DADOS ====================
+const liberados = [
+    "258849235361", "258864133620", "258844030404", "258847859222",
+    "258844906524", "258846152522", "258876563032", "258864388571",
+    "258853386491", "258867947389", "258842957997", "258849118097",
+    "258820618540", "258844117209", "258841253788", "258823033144",
+    "258843989406", "244949310616", "258866186976"
+];
 
+let usuarioAtual = null;
+let isAdmin = false;
+
+// ==================== CONTADOR ====================
+function atualizarContador() {
+    db.ref('usuarios').on('value', snap => {
+        const total = snap.numChildren();
+        const el = document.getElementById('total-alunos');
+        if(el) el.textContent = total;
+    });
+}
+atualizarContador();
+
+// ==================== ENTRAR ====================
 function entrar() {
     const nome = document.getElementById('nome').value.trim();
     const cel = document.getElementById('celular').value.trim();
     const pin = document.getElementById('pin').value.trim();
 
-    if(!nome || !cel || !pin) return alert("Preencha tudo!");
+    if(!nome || !cel || !pin) {
+        alert("Preencha todos os campos!");
+        return;
+    }
 
-    // Verificação Admin
-    if(cel === "860407269" && nome.toUpperCase() === "ANACLETO BEBANE") {
-        abrirApp(nome, true);
+    // ADMIN
+    if(cel === "860407269" && nome.toUpperCase() === "ANACLETO BEBANE" && pin === "630000") {
+        isAdmin = true;
+        usuarioAtual = { nome: "ANACLETO BEBANE", celular: cel };
+        abrirApp("ANACLETO BEBANE");
         return;
     }
 
     const ref = db.ref('usuarios/' + cel);
-    ref.once('value', snapshot => {
+    ref.once('value').then(snapshot => {
         const dados = snapshot.val();
         
         if(dados) {
-            // Usuário já existe
+            // Já existe
             if(dados.pin === pin) {
                 if(dados.status === "aprovado") {
-                    abrirApp(dados.nome, false);
+                    usuarioAtual = dados;
+                    abrirApp(dados.nome);
                 } else {
-                    alert("Aguarde a aprovação do Administrador Anacleto.");
+                    alert("Aguarde aprovação do administrador.");
                 }
             } else {
                 alert("PIN incorreto!");
             }
         } else {
             // Novo registro
-            let status = liberados.includes(cel) ? "aprovado" : "pendente";
-            ref.set({ nome, pin, status }).then(() => {
-                alert(status === "aprovado" ? "Conta criada! Clique em Entrar." : "Registado! Aguarde aprovação.");
+            const status = liberados.includes(cel) ? "aprovado" : "pendente";
+            const nivel = liberados.includes(cel) ? 2 : 1;
+            
+            ref.set({
+                nome: nome,
+                pin: pin,
+                status: status,
+                nivel: nivel,
+                data: new Date().toISOString()
+            }).then(() => {
+                if(status === "aprovado") {
+                    usuarioAtual = { nome: nome, celular: cel, status: status, nivel: nivel };
+                    abrirApp(nome);
+                    alert("Bem-vindo! Registo aprovado automaticamente.");
+                } else {
+                    alert("Registado com sucesso! Aguarde aprovação do Anacleto.");
+                }
             });
         }
     });
 }
 
-function abrirApp(nome, isAdmin) {
-    document.getElementById('auth-box').style.display = 'none';
-    document.getElementById('app-box').style.display = 'block';
-    document.getElementById('user-welcome').innerText = "Bem-vindo, " + nome;
+// ==================== ABRIR APP ====================
+function abrirApp(nome) {
+    document.getElementById('auth-box').classList.add('hidden');
+    document.getElementById('app-box').classList.remove('hidden');
+    document.getElementById('user-nome').textContent = nome;
     
     if(isAdmin) {
-        document.getElementById('admin-panel').style.display = 'block';
+        document.getElementById('admin-panel').classList.remove('hidden');
         carregarPendentes();
     }
 }
 
+// ==================== ADMIN - PENDENTES ====================
 function carregarPendentes() {
     db.ref('usuarios').orderByChild('status').equalTo('pendente').on('value', snap => {
-        const div = document.getElementById('lista-espera');
-        div.innerHTML = "";
+        const div = document.getElementById('lista-pendentes');
+        let html = '<h4 style="margin:15px 0 10px;color:#1a5f3c;">Alunos Pendentes</h4>';
+        
+        if(!snap.hasChildren()) {
+            html += '<p style="color:#888;font-size:0.9rem;">Nenhum aluno pendente.</p>';
+        }
+        
         snap.forEach(item => {
-            div.innerHTML += `<p>${item.val().nome} (${item.key}) <button onclick="aprovar('${item.key}')">Aprovar</button></p>`;
+            const u = item.val();
+            html += `
+                <div class="user-item">
+                    <div>
+                        <strong>${u.nome}</strong><br>
+                        <small>${item.key} - Nível ${u.nivel || 1}</small>
+                    </div>
+                    <div>
+                        <button onclick="aprovar('${item.key}')">Aprovar</button>
+                        <button class="rejeitar" onclick="rejeitar('${item.key}')">X</button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        div.innerHTML = html;
+    });
+}
+
+function aprovar(celular) {
+    db.ref('usuarios/' + celular).update({ status: "aprovado" });
+}
+
+function rejeitar(celular) {
+    if(confirm("Remover este aluno?")) {
+        db.ref('usuarios/' + celular).remove();
+    }
+}
+
+// ==================== ADMIN - REGISTRAR ALUNO ====================
+function mostrarRegistroAdmin() {
+    document.getElementById('app-box').classList.add('hidden');
+    document.getElementById('registro-admin-box').classList.remove('hidden');
+}
+
+function registrarAdmin() {
+    const nome = document.getElementById('admin-reg-nome').value.trim();
+    const cel = document.getElementById('admin-reg-celular').value.trim();
+    const pin = document.getElementById('admin-reg-pin').value.trim();
+    const nivel = document.getElementById('admin-reg-nivel').value;
+
+    if(!nome || !cel || !pin) {
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    db.ref('usuarios/' + cel).set({
+        nome: nome,
+        pin: pin,
+        status: "aprovado",
+        nivel: parseInt(nivel),
+        data: new Date().toISOString(),
+        registradoPor: "admin"
+    }).then(() => {
+        alert("Aluno " + nome + " registrado e aprovado!");
+        voltarAdmin();
+    });
+}
+
+// ==================== ADMIN - QUESTÕES ====================
+function mostrarQuestoes() {
+    document.getElementById('app-box').classList.add('hidden');
+    document.getElementById('questoes-box').classList.remove('hidden');
+    listarQuestoes();
+}
+
+function mostrarAddQuestao(tipo) {
+    document.getElementById('questao-tipo').value = tipo;
+    document.getElementById('form-questao').classList.remove('hidden');
+}
+
+function salvarQuestao() {
+    const tipo = document.getElementById('questao-tipo').value;
+    const texto = document.getElementById('questao-texto').value.trim();
+    const op1 = document.getElementById('questao-op1').value.trim();
+    const op2 = document.getElementById('questao-op2').value.trim();
+    const op3 = document.getElementById('questao-op3').value.trim();
+    const op4 = document.getElementById('questao-op4').value.trim();
+    const correta = parseInt(document.getElementById('questao-correta').value);
+
+    if(!texto || !op1 || !op2) {
+        alert("Preencha pelo menos a pergunta e 2 opções!");
+        return;
+    }
+
+    const questao = {
+        pergunta: texto,
+        opcoes: [op1, op2, op3, op4].filter(o => o),
+        correta: correta,
+        data: new Date().toISOString()
+    };
+
+    db.ref(tipo + '/questoes').push(questao).then(() => {
+        alert("Questão salva!");
+        document.getElementById('questao-texto').value = '';
+        document.getElementById('questao-op1').value = '';
+        document.getElementById('questao-op2').value = '';
+        document.getElementById('questao-op3').value = '';
+        document.getElementById('questao-op4').value = '';
+        listarQuestoes();
+    });
+}
+
+function listarQuestoes() {
+    const div = document.getElementById('lista-questoes');
+    
+    db.ref('exercicios/questoes').on('value', snap => {
+        let html = '<h4 style="margin:15px 0 10px;color:#4ecdc4;">Exercícios (' + snap.numChildren() + ')</h4>';
+        snap.forEach(item => {
+            const q = item.val();
+            html += `<div class="user-item"><div><strong>${q.pergunta}</strong></div></div>`;
+        });
+        
+        db.ref('exame/questoes').on('value', snap2 => {
+            html += '<h4 style="margin:15px 0 10px;color:#d4af37;">Exame (' + snap2.numChildren() + ')</h4>';
+            snap2.forEach(item => {
+                const q = item.val();
+                html += `<div class="user-item"><div><strong>${q.pergunta}</strong></div></div>`;
+            });
+            div.innerHTML = html;
         });
     });
 }
 
-function aprovar(id) {
-    db.ref('usuarios/' + id).update({ status: "aprovado" });
+// ==================== NAVEGAÇÃO ====================
+function voltarAdmin() {
+    document.getElementById('registro-admin-box').classList.add('hidden');
+    document.getElementById('questoes-box').classList.add('hidden');
+    document.getElementById('app-box').classList.remove('hidden');
+}
+
+function abrirVideo() {
+    alert("Vídeo Aulas - Em breve!");
+}
+
+function abrirExercicios() {
+    window.location.href = './exercicios11/index.html';
+}
+
+function abrirExame() {
+    window.location.href = './exame11/index.html';
+}
+
+function sair() {
+    usuarioAtual = null;
+    isAdmin = false;
+    location.reload();
 }
 </script>
+
 </body>
 </html>
