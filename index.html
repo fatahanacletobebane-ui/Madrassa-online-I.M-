@@ -1,121 +1,123 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Madrassa Online</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; background: #f4f4f4; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; margin: 5px 0; }
+        .admin-section { border: 2px solid red; padding: 10px; margin-top: 20px; }
+    </style>
 </head>
 <body>
 
-    <div id="auth-container">
+<div class="card">
+    <div id="auth-box">
         <h2>Madrassa Online - Login</h2>
         <input type="text" id="nome" placeholder="Nome Completo">
-        <input type="tel" id="celular" placeholder="Número de Celular">
+        <input type="tel" id="celular" placeholder="Número (Ex: 258...)">
         <input type="password" id="pin" placeholder="PIN">
-        <button onclick="fazerLogin()">Entrar / Registar</button>
+        <button onclick="entrar()">ENTRAR / REGISTAR</button>
     </div>
 
-    <div id="main-content" style="display: none;">
-        <h1 id="welcome-msg">Bem-vindo</h1>
+    <div id="app-box" style="display:none;">
+        <h2 id="user-welcome">Olá</h2>
+        <button onclick="window.location.href='#vids'">Video Aulas</button>
+        <button onclick="window.location.href='https://chat.whatsapp.com/2eKBlqoeaaJ50WtWwRkpb7?mode=gi_t'">WhatsApp Aulas</button>
+        <button onclick="window.location.href='./exercicios11/'">Exercícios</button>
+        <button onclick="window.location.href='./exame11/'">Exame</button>
         
-        <div class="ads-banner">
-            <p>Anúncio: Conheça nossos novos cursos e serviços!</p>
-        </div>
-
-        <div class="menu-grid">
-            <button onclick="window.location.href='#videoaulas'">Video Aulas</button>
-            <button onclick="window.location.href='https://chat.whatsapp.com/2eKBlqoeaaJ50WtWwRkpb7?mode=gi_t'">WhatsApp Aulas</button>
-            <button onclick="window.location.href='./exercicios11/'">Exercícios</button>
-            <button onclick="window.location.href='./exame11/'">Exame</button>
-        </div>
-
-        <div id="admin-panel" style="display: none; margin-top: 20px; border: 1px solid red; padding: 10px;">
-            <h3>Painel de Aprovação (Admin)</h3>
-            <div id="lista-pendentes"></div>
+        <div id="admin-panel" class="admin-section" style="display:none;">
+            <h3>Painel Admin (Aprovações)</h3>
+            <div id="lista-espera"></div>
         </div>
     </div>
+</div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
-            authDomain: "madrassa-online-b851c.firebaseapp.com",
-            databaseURL: "https://madrassa-online-b851c-default-rtdb.firebaseio.com",
-            projectId: "madrassa-online-b851c",
-            storageBucket: "madrassa-online-b851c.firebasestorage.app",
-            messagingSenderId: "360782668012",
-            appId: "1:360782668012:web:d501ef187911db632445c9"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+<script>
+// Sua configuração oficial
+const firebaseConfig = {
+    apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
+    authDomain: "madrassa-online-b851c.firebaseapp.com",
+    databaseURL: "https://madrassa-online-b851c-default-rtdb.firebaseio.com",
+    projectId: "madrassa-online-b851c",
+    storageBucket: "madrassa-online-b851c.firebasestorage.app",
+    messagingSenderId: "360782668012",
+    appId: "1:360782668012:web:d501ef187911db632445c9"
+};
 
-        // Lista de números da imagem que não precisam de aprovação
-        const automaticos = ["258849235361", "258864133620", "258844030404", "258847859222", "258844906524"]; 
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-        function fazerLogin() {
-            const nome = document.getElementById('nome').value;
-            const celular = document.getElementById('celular').value;
-            const pin = document.getElementById('pin').value;
+// Números da imagem com permissão automática
+const liberados = ["258849235361", "258864133620", "258844030404", "258847859222", "258844906524", "258846152522", "258876563032", "258864388571", "258853386491", "258867947389", "258842957997", "258849118097", "258820618540", "258844117209", "258841253788", "258823033144", "258843989406"];
 
-            if(celular === "860407269" && nome.toUpperCase() === "ANACLETO BEBANE") {
-                entrarComoUser(nome, "admin");
-                return;
-            }
+function entrar() {
+    const nome = document.getElementById('nome').value.trim();
+    const cel = document.getElementById('celular').value.trim();
+    const pin = document.getElementById('pin').value.trim();
 
-            const userRef = database.ref('usuarios/' + celular);
-            userRef.once('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const userData = snapshot.val();
-                    if(userData.pin === pin) {
-                        if(userData.status === "aprovado") {
-                            entrarComoUser(nome, "aluno");
-                        } else {
-                            alert("Aguarde a aprovação do administrador.");
-                        }
-                    } else {
-                        alert("PIN incorreto.");
-                    }
+    if(!nome || !cel || !pin) return alert("Preencha tudo!");
+
+    // Verificação Admin
+    if(cel === "860407269" && nome.toUpperCase() === "ANACLETO BEBANE") {
+        abrirApp(nome, true);
+        return;
+    }
+
+    const ref = db.ref('usuarios/' + cel);
+    ref.once('value', snapshot => {
+        const dados = snapshot.val();
+        
+        if(dados) {
+            // Usuário já existe
+            if(dados.pin === pin) {
+                if(dados.status === "aprovado") {
+                    abrirApp(dados.nome, false);
                 } else {
-                    // Novo Registro
-                    let statusInicial = automaticos.includes(celular) ? "aprovado" : "pendente";
-                    userRef.set({
-                        nome: nome,
-                        pin: pin,
-                        status: statusInicial
-                    }).then(() => {
-                        alert(statusInicial === "aprovado" ? "Conta criada! Faça login." : "Registro enviado para aprovação.");
-                    });
+                    alert("Aguarde a aprovação do Administrador Anacleto.");
                 }
-            });
-        }
-
-        function entrarComoUser(nome, cargo) {
-            document.getElementById('auth-container').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-            document.getElementById('welcome-msg').innerText = "Olá, " + nome;
-            if(cargo === "admin") {
-                document.getElementById('admin-panel').style.display = 'block';
-                carregarPendentes();
+            } else {
+                alert("PIN incorreto!");
             }
-        }
-
-        function carregarPendentes() {
-            database.ref('usuarios').orderByChild('status').equalTo('pendente').on('value', (snapshot) => {
-                const lista = document.getElementById('lista-pendentes');
-                lista.innerHTML = "";
-                snapshot.forEach((childSnapshot) => {
-                    const user = childSnapshot.val();
-                    const key = childSnapshot.key;
-                    lista.innerHTML += `<p>${user.nome} (${key}) <button onclick="aprovar('${key}')">Aprovar</button></p>`;
-                });
+        } else {
+            // Novo registro
+            let status = liberados.includes(cel) ? "aprovado" : "pendente";
+            ref.set({ nome, pin, status }).then(() => {
+                alert(status === "aprovado" ? "Conta criada! Clique em Entrar." : "Registado! Aguarde aprovação.");
             });
         }
+    });
+}
 
-        function aprovar(key) {
-            database.ref('usuarios/' + key).update({ status: "aprovado" });
-        }
-    </script>
+function abrirApp(nome, isAdmin) {
+    document.getElementById('auth-box').style.display = 'none';
+    document.getElementById('app-box').style.display = 'block';
+    document.getElementById('user-welcome').innerText = "Bem-vindo, " + nome;
+    
+    if(isAdmin) {
+        document.getElementById('admin-panel').style.display = 'block';
+        carregarPendentes();
+    }
+}
+
+function carregarPendentes() {
+    db.ref('usuarios').orderByChild('status').equalTo('pendente').on('value', snap => {
+        const div = document.getElementById('lista-espera');
+        div.innerHTML = "";
+        snap.forEach(item => {
+            div.innerHTML += `<p>${item.val().nome} (${item.key}) <button onclick="aprovar('${item.key}')">Aprovar</button></p>`;
+        });
+    });
+}
+
+function aprovar(id) {
+    db.ref('usuarios/' + id).update({ status: "aprovado" });
+}
+</script>
 </body>
 </html>
