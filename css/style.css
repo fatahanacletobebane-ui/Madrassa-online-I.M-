@@ -102,6 +102,7 @@ body {
     max-width: 420px;
     box-shadow: var(--shadow);
     animation: slideUp 0.4s ease;
+    position: relative;
 }
 
 @keyframes slideUp {
@@ -113,6 +114,41 @@ body {
     background: var(--glass);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Modal Header with close button */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.modal-header h2 {
+    color: var(--primary);
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.close-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    transform: rotate(90deg);
 }
 
 .auth-tabs {
@@ -173,7 +209,8 @@ body {
     color: var(--primary);
 }
 
-.input-group input {
+.input-group input,
+.input-group select {
     width: 100%;
     padding: 14px 14px 14px 45px;
     border: 2px solid #e0e0e0;
@@ -185,10 +222,35 @@ body {
     color: var(--text);
 }
 
-.input-group input:focus {
+.input-group select {
+    cursor: pointer;
+    appearance: none;
+}
+
+.input-group input:focus,
+.input-group select:focus {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(26, 95, 60, 0.1);
+}
+
+/* Checkbox group */
+.checkbox-group {
+    margin-bottom: 18px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary);
 }
 
 .btn-primary {
@@ -796,7 +858,7 @@ body {
     gap: 10px;
 }
 
-/* IFRAME CONTAINER - Para Exercícios e Exame */
+/* IFRAME CONTAINER */
 .iframe-container {
     width: 100%;
     height: calc(100vh - 180px);
@@ -873,7 +935,58 @@ body {
     color: var(--text-secondary);
 }
 
-/* Admin Panel */
+/* ==================== ADMIN PANEL - NOVOS ESTILOS ==================== */
+
+/* Admin Actions Bar */
+.admin-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.btn-register-new {
+    padding: 14px 28px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-register-new:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(26, 95, 60, 0.3);
+}
+
+.btn-export {
+    padding: 14px 28px;
+    background: var(--surface);
+    color: var(--text);
+    border: 2px solid #e0e0e0;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-export:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* Admin Stats */
 .admin-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -909,35 +1022,125 @@ body {
 .stat-card.pending i { color: #f59e0b; }
 .stat-card.approved i { color: #10b981; }
 
-.pending-list {
+/* Admin Tabs */
+.admin-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.admin-tab {
+    padding: 12px 24px;
+    background: var(--surface);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--text-secondary);
+}
+
+.admin-tab.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.admin-tab:hover:not(.active) {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* Users List */
+.users-list {
     background: var(--surface);
     border-radius: 20px;
     padding: 25px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-.pending-item {
+.user-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 18px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: var(--transition);
 }
 
-.pending-item:last-child {
+.user-item:hover {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 12px;
+}
+
+.user-item:last-child {
     border-bottom: none;
 }
 
-.pending-info h4 {
-    margin-bottom: 4px;
+.user-info-admin {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.pending-info p {
+.user-avatar-admin {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.user-details-admin {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-details-admin .name {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.user-details-admin .meta {
     font-size: 0.85rem;
     color: var(--text-secondary);
+    display: flex;
+    gap: 15px;
+    margin-top: 4px;
 }
 
-.pending-actions {
+.user-details-admin .meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.badge.approved {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+}
+
+.badge.pending {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.user-actions {
     display: flex;
     gap: 10px;
 }
@@ -951,6 +1154,9 @@ body {
     cursor: pointer;
     font-family: inherit;
     transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .btn-reject {
@@ -962,9 +1168,26 @@ body {
     cursor: pointer;
     font-family: inherit;
     transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.btn-approve:hover, .btn-reject:hover {
+.btn-edit {
+    padding: 10px 20px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-approve:hover, .btn-reject:hover, .btn-edit:hover {
     transform: scale(1.05);
 }
 
@@ -1033,7 +1256,17 @@ body {
         grid-template-columns: 1fr;
     }
     
+    .admin-actions {
+        flex-direction: column;
+    }
+    
     .iframe-container {
         height: calc(100vh - 140px);
+    }
+    
+    .user-item {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
     }
 }
