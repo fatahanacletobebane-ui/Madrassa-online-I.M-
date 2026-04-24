@@ -40,7 +40,10 @@ const APPROVED_USERS = {
 // Admin config
 const ADMIN_PHONE = "860407269";
 const ADMIN_NAME = "ANACLETO BEBANE";
-const ADMIN_PIN = "0000"; // Change this to your desired PIN
+const ADMIN_PIN = "0000"; // ALTERE ESTE PIN!
+
+// GitHub Pages base URL (substitua pelo seu)
+const GITHUB_BASE_URL = "https://seu-usuario.github.io/madrassa-online";
 
 // ==================== STATE ====================
 let currentUser = null;
@@ -183,6 +186,41 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
     }
 });
 
+// ==================== VIEW NAVIGATION ====================
+function showView(viewName) {
+    // Hide all views
+    document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
+    
+    // Show selected view
+    const viewMap = {
+        'dashboard': 'dashboard-view',
+        'video': 'video-view',
+        'exercicios': 'exercicios-view',
+        'exame': 'exame-view',
+        'admin': 'admin-view'
+    };
+    
+    const viewId = viewMap[viewName];
+    if (viewId) {
+        document.getElementById(viewId).classList.remove('hidden');
+    }
+    
+    // Update iframe URLs if needed
+    if (viewName === 'exercicios') {
+        document.getElementById('exercicios-frame').src = `${GITHUB_BASE_URL}/exercicios11/`;
+    } else if (viewName === 'exame') {
+        document.getElementById('exame-frame').src = `${GITHUB_BASE_URL}/exame11/`;
+    }
+    
+    // Load admin data if admin view
+    if (viewName === 'admin') {
+        loadAdminData();
+    }
+    
+    // Update active nav
+    document.querySelectorAll('.nav-links li').forEach(li => li.classList.remove('active'));
+}
+
 // ==================== UI FUNCTIONS ====================
 function showMainApp() {
     document.getElementById('auth-modal').classList.remove('active');
@@ -259,15 +297,11 @@ function checkSession() {
     }
 }
 
-// ==================== ADMIN PANEL ====================
-function showAdminPanel() {
-    document.getElementById('dashboard-view').classList.add('hidden');
-    document.getElementById('video-view').classList.add('hidden');
-    document.getElementById('admin-view').classList.remove('hidden');
-    
-    loadAdminData();
+function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('open');
 }
 
+// ==================== ADMIN PANEL ====================
 function loadAdminData() {
     db.ref('users').once('value').then(snapshot => {
         const users = snapshot.val() || {};
@@ -325,22 +359,6 @@ function rejectUser(phone) {
         loadAdminData();
         updateTotalUsers();
     });
-}
-
-// ==================== APPS ====================
-function openApp(app) {
-    document.getElementById('dashboard-view').classList.add('hidden');
-    document.getElementById('admin-view').classList.add('hidden');
-    
-    if (app === 'video') {
-        document.getElementById('video-view').classList.remove('hidden');
-    }
-}
-
-function closeApp() {
-    document.getElementById('video-view').classList.add('hidden');
-    document.getElementById('admin-view').classList.add('hidden');
-    document.getElementById('dashboard-view').classList.remove('hidden');
 }
 
 // ==================== DATA FUNCTIONS ====================
@@ -450,11 +468,6 @@ function toggleTheme() {
 }
 
 function setupListeners() {
-    // Menu toggle for mobile
-    document.querySelector('.menu-toggle')?.addEventListener('click', () => {
-        document.querySelector('.sidebar').classList.toggle('open');
-    });
-    
     // Real-time updates
     db.ref('users').on('value', () => {
         updateTotalUsers();
