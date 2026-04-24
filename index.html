@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madrassa Online - Educação Islâmica</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader">
+            <div class="crescent"></div>
+            <p>Madrassa Online</p>
+        </div>
+    </div>
+
+    <!-- Login/Register Modal -->
+    <div id="auth-modal" class="modal active">
+        <div class="modal-content glass">
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="showTab('login')">Entrar</button>
+                <button class="tab-btn" onclick="showTab('register')">Registar</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form active">
+                <h2><i class="fas fa-mosque"></i> Bem-vindo</h2>
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="login-phone" placeholder="Número de telefone" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="login-pin" placeholder="PIN (4 dígitos)" maxlength="4" required>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+                <p class="hint">Administrador: ANACLETO BEBANE</p>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" class="auth-form">
+                <h2><i class="fas fa-user-plus"></i> Novo Aluno</h2>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="reg-name" placeholder="Nome completo" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="reg-phone" placeholder="Número de telefone" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="reg-pin" placeholder="Criar PIN (4 dígitos)" maxlength="4" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-check-circle"></i>
+                    <input type="password" id="reg-pin-confirm" placeholder="Confirmar PIN" maxlength="4" required>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-paper-plane"></i> Solicitar Aprovação
+                </button>
+                <p class="note">⚠️ Aguarde aprovação do administrador após o registo.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pending Approval Modal -->
+    <div id="pending-modal" class="modal">
+        <div class="modal-content glass">
+            <div class="pending-icon">
+                <i class="fas fa-clock fa-spin"></i>
+            </div>
+            <h2>Aguardando Aprovação</h2>
+            <p>O seu registo foi submetido com sucesso.</p>
+            <p>O administrador <strong>ANACLETO BEBANE</strong> irá analisar a sua solicitação.</p>
+            <div class="countdown">Verificando...</div>
+            <button onclick="logout()" class="btn-secondary">Sair</button>
+        </div>
+    </div>
+
+    <!-- Main App (Hidden until login) -->
+    <div id="main-app" class="hidden">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="crescent-icon">☪</div>
+                <span>Madrassa Online</span>
+            </div>
+            
+            <div class="user-info">
+                <div class="avatar" id="user-avatar">A</div>
+                <div class="user-details">
+                    <span id="user-name" class="name">Aluno</span>
+                    <span id="user-status" class="status"><i class="fas fa-circle"></i> Online</span>
+                </div>
+            </div>
+
+            <ul class="nav-links">
+                <li class="active">
+                    <a href="#dashboard"><i class="fas fa-home"></i> Início</a>
+                </li>
+                <li>
+                    <a href="https://chat.whatsapp.com/2eKBlqoeaaJ50WtWwRkpb7?mode=gi_t" target="_blank">
+                        <i class="fab fa-whatsapp"></i> WhatsApp Aulas
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="openApp('video')"><i class="fas fa-video"></i> Vídeo Aulas</a>
+                </li>
+                <li>
+                    <a href="./exercicios11/index.html"><i class="fas fa-book-open"></i> Exercícios</a>
+                </li>
+                <li>
+                    <a href="./exame11/index.html"><i class="fas fa-graduation-cap"></i> Exame</a>
+                </li>
+                <li class="admin-only hidden">
+                    <a href="#" onclick="showAdminPanel()"><i class="fas fa-shield-alt"></i> Painel Admin</a>
+                </li>
+            </ul>
+
+            <div class="stats-card">
+                <i class="fas fa-users"></i>
+                <div>
+                    <span class="stats-number" id="total-users">0</span>
+                    <span class="stats-label">Alunos na Madrassa</span>
+                </div>
+            </div>
+
+            <button onclick="logout()" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-bar">
+                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Pesquisar...">
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+                    <button class="icon-btn"><i class="fas fa-bell"></i></button>
+                </div>
+            </header>
+
+            <!-- Dashboard -->
+            <div class="dashboard" id="dashboard-view">
+                <!-- Welcome Banner -->
+                <div class="welcome-banner">
+                    <div class="banner-content">
+                        <h1>Assalamu Alaikum, <span id="welcome-name">Aluno</span>!</h1>
+                        <p>Continue a sua jornada de aprendizado islâmico.</p>
+                    </div>
+                    <div class="banner-decoration">
+                        <i class="fas fa-mosque"></i>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <a href="https://chat.whatsapp.com/2eKBlqoeaaJ50WtWwRkpb7?mode=gi_t" target="_blank" class="action-card whatsapp">
+                        <div class="icon"><i class="fab fa-whatsapp"></i></div>
+                        <h3>WhatsApp Aulas</h3>
+                        <p>Junte-se ao grupo de estudos</p>
+                    </a>
+                    <a href="#" onclick="openApp('video')" class="action-card video">
+                        <div class="icon"><i class="fas fa-video"></i></div>
+                        <h3>Vídeo Aulas</h3>
+                        <p>Assista às aulas gravadas</p>
+                    </a>
+                    <a href="./exercicios11/index.html" class="action-card exercises">
+                        <div class="icon"><i class="fas fa-book-open"></i></div>
+                        <h3>Exercícios</h3>
+                        <p>Pratique com exercícios</p>
+                    </a>
+                    <a href="./exame11/index.html" class="action-card exam">
+                        <div class="icon"><i class="fas fa-graduation-cap"></i></div>
+                        <h3>Exame</h3>
+                        <p>Teste os seus conhecimentos</p>
+                    </a>
+                </div>
+
+                <!-- Ads Section -->
+                <div class="section-title">
+                    <h2><i class="fas fa-ad"></i> Publicidade</h2>
+                </div>
+                <div class="ads-container" id="ads-container">
+                    <!-- Ads injected by JS -->
+                </div>
+
+                <!-- Live Users -->
+                <div class="live-users-section">
+                    <h3><i class="fas fa-signal"></i> Alunos Online Agora</h3>
+                    <div class="users-avatars" id="live-avatars"></div>
+                </div>
+            </div>
+
+            <!-- Video Lessons View -->
+            <div class="app-view hidden" id="video-view">
+                <div class="view-header">
+                    <button onclick="closeApp()" class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                    <h2><i class="fas fa-video"></i> Vídeo Aulas</h2>
+                </div>
+                <div class="video-grid" id="video-grid">
+                    <!-- Videos injected by JS -->
+                </div>
+            </div>
+
+            <!-- Admin Panel -->
+            <div class="app-view hidden" id="admin-view">
+                <div class="view-header">
+                    <button onclick="closeApp()" class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                    <h2><i class="fas fa-shield-alt"></i> Painel Administrativo</h2>
+                </div>
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <span id="admin-total">0</span>
+                        <label>Total Alunos</label>
+                    </div>
+                    <div class="stat-card pending">
+                        <i class="fas fa-clock"></i>
+                        <span id="admin-pending">0</span>
+                        <label>Pendentes</label>
+                    </div>
+                    <div class="stat-card approved">
+                        <i class="fas fa-check"></i>
+                        <span id="admin-approved">0</span>
+                        <label>Aprovados</label>
+                    </div>
+                </div>
+                <div class="pending-list" id="pending-list">
+                    <!-- Pending users injected by JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
