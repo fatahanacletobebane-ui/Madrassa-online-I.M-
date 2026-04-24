@@ -6,6 +6,8 @@
     <title>Exercícios - Madrassa Online</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -13,55 +15,31 @@
             background: linear-gradient(135deg, #0a1f0a, #1a5f3c);
             min-height: 100vh;
             color: white;
+            padding: 20px;
         }
         .header {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
-            padding: 20px 35px;
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .back-btn {
-            width: 42px; height: 42px;
-            border-radius: 12px;
-            border: none;
+        .back {
+            width: 45px; height: 45px;
             background: rgba(255,255,255,0.1);
-            color: white;
-            cursor: pointer;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
             text-decoration: none;
         }
-        .header h1 { font-size: 1.4rem; display: flex; align-items: center; gap: 12px; }
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        .exercise-card {
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 35px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .question { font-size: 1.15rem; margin-bottom: 20px; font-weight: 500; }
-        .options { display: flex; flex-direction: column; gap: 12px; }
-        .option {
-            padding: 18px 22px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-        .option:hover { background: rgba(255,255,255,0.1); }
-        .option.correct { border-color: #10b981; background: rgba(16, 185, 129, 0.15); }
-        .option.wrong { border-color: #ef4444; background: rgba(239, 68, 68, 0.15); }
-        .progress-bar {
-            height: 6px;
+        .progress {
+            height: 8px;
             background: rgba(255,255,255,0.1);
             border-radius: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             overflow: hidden;
         }
         .progress-fill {
@@ -70,107 +48,146 @@
             border-radius: 10px;
             transition: width 0.5s;
         }
-        .score { text-align: center; margin-top: 40px; font-size: 1.3rem; }
-        .score-number { font-size: 4rem; font-weight: 700; color: #d4af37; }
+        .questao {
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .questao h3 {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .opcao {
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .opcao:hover { background: rgba(255,255,255,0.1); }
+        .opcao.certa { border-color: #10b981; background: rgba(16,185,129,0.15); }
+        .opcao.errada { border-color: #ef4444; background: rgba(239,68,68,0.15); }
+        .resultado {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .resultado h2 { font-size: 3rem; color: #d4af37; margin-bottom: 10px; }
+        .btn {
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #d4af37, #c9a000);
+            color: #1a1a1a;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
-        <h1><i class="fas fa-book-open"></i> Exercícios - Nível 1</h1>
-    </div>
+
+<div class="header">
+    <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i></a>
+    <h1><i class="fas fa-book-open"></i> Exercícios</h1>
+</div>
+
+<div class="progress">
+    <div class="progress-fill" id="barra" style="width:0%"></div>
+</div>
+
+<div id="quiz"></div>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
+    authDomain: "madrassa-online-b851c.firebaseapp.com",
+    databaseURL: "https://madrassa-online-b851c-default-rtdb.firebaseio.com",
+    projectId: "madrassa-online-b851c",
+    storageBucket: "madrassa-online-b851c.firebasestorage.app",
+    messagingSenderId: "360782668012",
+    appId: "1:360782668012:web:d501ef187911db632445c9"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let questoes = [];
+let atual = 0;
+let acertos = 0;
+
+db.ref('exercicios/questoes').once('value').then(snap => {
+    snap.forEach(item => {
+        questoes.push(item.val());
+    });
     
-    <div class="container">
-        <div class="progress-bar">
-            <div class="progress-fill" id="progress" style="width: 0%"></div>
-        </div>
-        
-        <div id="quiz-container"></div>
-        
-        <div class="score hidden" id="score-display">
-            <div class="score-number" id="score-value">0/5</div>
-            <p>Parabéns! Continue estudando!</p>
-        </div>
-    </div>
+    if(questoes.length === 0) {
+        document.getElementById('quiz').innerHTML = 
+            '<div class="questao"><h3>Nenhuma questão cadastrada ainda.</h3></div>';
+        return;
+    }
+    
+    mostrarQuestao();
+});
 
-    <script>
-        const questions = [
-            {
-                q: "Qual é o primeiro pilar do Islão?",
-                options: ["Salah (Oração)", "Shahada (Testemunho)", "Zakat (Caridade)", "Sawm (Jejum)"],
-                correct: 1
-            },
-            {
-                q: "Quantas vezes por dia um muçulmano deve orar?",
-                options: ["3 vezes", "4 vezes", "5 vezes", "7 vezes"],
-                correct: 2
-            },
-            {
-                q: "Quem é o último profeta enviado por Allah?",
-                options: ["Moisés (Musa)", "Jesus (Isa)", "Muhammad (SWT)", "Abraham (Ibrahim)"],
-                correct: 2
-            },
-            {
-                q: "Qual é o nome do livro sagrado do Islão?",
-                options: ["Bíblia", "Torah", "Alcorão", "Vedas"],
-                correct: 2
-            },
-            {
-                q: "Em que cidade nasceu o Profeta Muhammad (SWT)?",
-                options: ["Meca", "Medina", "Jerusalém", "Cairo"],
-                correct: 0
-            }
-        ];
+function mostrarQuestao() {
+    if(atual >= questoes.length) {
+        mostrarResultado();
+        return;
+    }
+    
+    const q = questoes[atual];
+    const pct = ((atual / questoes.length) * 100);
+    document.getElementById('barra').style.width = pct + '%';
+    
+    let html = '<div class="questao">';
+    html += '<h3>Questão ' + (atual+1) + ' de ' + questoes.length + '</h3>';
+    html += '<p style="margin-bottom:20px;font-size:1.1rem;">' + q.pergunta + '</p>';
+    
+    q.opcoes.forEach((op, i) => {
+        html += '<div class="opcao" onclick="responder(' + i + ')">' + op + '</div>';
+    });
+    
+    html += '</div>';
+    document.getElementById('quiz').innerHTML = html;
+}
 
-        let current = 0;
-        let score = 0;
-        const container = document.getElementById('quiz-container');
+function responder(escolha) {
+    const q = questoes[atual];
+    const opcoes = document.querySelectorAll('.opcao');
+    
+    opcoes[escolha].classList.add(escolha === q.correta ? 'certa' : 'errada');
+    if(escolha !== q.correta) {
+        opcoes[q.correta].classList.add('certa');
+    } else {
+        acertos++;
+    }
+    
+    opcoes.forEach(o => o.style.pointerEvents = 'none');
+    
+    setTimeout(() => {
+        atual++;
+        mostrarQuestao();
+    }, 1500);
+}
 
-        function renderQuestion() {
-            if (current >= questions.length) {
-                showScore();
-                return;
-            }
-            
-            const q = questions[current];
-            container.innerHTML = `
-                <div class="exercise-card">
-                    <div class="question"><span style="color:#d4af37">Questão ${current + 1}/${questions.length}:</span> ${q.q}</div>
-                    <div class="options">
-                        ${q.options.map((opt, i) => `
-                            <div class="option" onclick="checkAnswer(${i})">${opt}</div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('progress').style.width = `${(current / questions.length) * 100}%`;
-        }
+function mostrarResultado() {
+    document.getElementById('barra').style.width = '100%';
+    const pct = Math.round((acertos / questoes.length) * 100);
+    
+    document.getElementById('quiz').innerHTML = 
+        '<div class="resultado">' +
+        '<h2>' + acertos + '/' + questoes.length + '</h2>' +
+        '<p>' + pct + '% de acerto</p><br>' +
+        '<a href="../index.html" class="btn">Voltar ao Início</a>' +
+        '</div>';
+}
+</script>
 
-        function checkAnswer(selected) {
-            const q = questions[current];
-            const options = document.querySelectorAll('.option');
-            
-            options[selected].classList.add(selected === q.correct ? 'correct' : 'wrong');
-            if (selected === q.correct) score++;
-            options[q.correct].classList.add('correct');
-            
-            options.forEach(o => o.style.pointerEvents = 'none');
-            
-            setTimeout(() => {
-                current++;
-                renderQuestion();
-            }, 1500);
-        }
-
-        function showScore() {
-            container.innerHTML = '';
-            document.getElementById('progress').style.width = '100%';
-            document.getElementById('score-display').classList.remove('hidden');
-            document.getElementById('score-value').textContent = `${score}/${questions.length}`;
-        }
-
-        renderQuestion();
-    </script>
 </body>
 </html>
