@@ -263,14 +263,16 @@
             background: #ef4444 !important;
         }
 
-        .hidden { display: none !important; }
+        /* Telas ocultas */
+        .tela-oculta { display: none; }
     </style>
 </head>
 <body>
 
-<div class="card" id="tela">
-    <!-- LOGIN -->
-    <div id="auth-box">
+<div class="card" id="tela-principal">
+    
+    <!-- ===== TELA LOGIN ===== -->
+    <div id="tela-login">
         <div class="logo">
             <i class="fas fa-mosque"></i>
             <h1>Madrassa Online</h1>
@@ -302,10 +304,10 @@
         </div>
     </div>
 
-    <!-- APP -->
-    <div id="app-box">
+    <!-- ===== TELA APP (ALUNO) ===== -->
+    <div id="tela-aluno" class="tela-oculta">
         <div class="welcome">
-            <h2>Assalamu Alaikum,<br><span id="user-nome">Aluno</span></h2>
+            <h2>Assalamu Alaikum,<br><span id="nome-aluno">Aluno</span></h2>
         </div>
 
         <div class="menu-grid">
@@ -342,20 +344,56 @@
             </a>
         </div>
 
-        <!-- ADMIN -->
-        <div id="admin-panel" class="admin-box hidden">
-            <h3><i class="fas fa-shield-alt"></i> Painel Admin</h3>
+        <button class="btn logout" onclick="sair()">
+            <i class="fas fa-sign-out-alt"></i> Sair
+        </button>
+    </div>
+
+    <!-- ===== TELA APP (ADMIN) ===== -->
+    <div id="tela-admin" class="tela-oculta">
+        <div class="welcome">
+            <h2>Painel Admin<br><span>ANACLETO BEBANE</span></h2>
+        </div>
+
+        <div class="menu-grid">
+            <a href="#" class="menu-btn btn-video" onclick="abrirVideo()">
+                <i class="fas fa-video"></i>
+                <div><div>Vídeo Aulas</div></div>
+            </a>
+            <a href="https://chat.whatsapp.com/2eKBlqoeaaJ50WtWwRkpb7?mode=gi_t" target="_blank" class="menu-btn btn-whatsapp">
+                <i class="fab fa-whatsapp"></i>
+                <div><div>WhatsApp Aulas</div></div>
+            </a>
+            <a href="#" class="menu-btn btn-exercicios" onclick="abrirExercicios()">
+                <i class="fas fa-book-open"></i>
+                <div><div>Exercícios</div></div>
+            </a>
+            <a href="#" class="menu-btn btn-exame" onclick="abrirExame()">
+                <i class="fas fa-graduation-cap"></i>
+                <div><div>Exame</div></div>
+            </a>
+        </div>
+
+        <!-- AÇÕES ADMIN -->
+        <div class="admin-box">
+            <h3><i class="fas fa-tools"></i> Ferramentas Admin</h3>
             
             <div class="admin-actions">
-                <button class="btn" onclick="mostrarRegistroAdmin()" style="background: linear-gradient(135deg, #d4af37, #c9a000); color: #1a1a1a;">
+                <button class="btn" onclick="mostrarTela('tela-registro-admin')" style="background: linear-gradient(135deg, #d4af37, #c9a000); color: #1a1a1a;">
                     <i class="fas fa-user-plus"></i> Novo Aluno
                 </button>
-                <button class="btn" onclick="mostrarQuestoes()" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
+                <button class="btn" onclick="mostrarTela('tela-questoes')" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
                     <i class="fas fa-edit"></i> Questões
                 </button>
             </div>
+        </div>
 
-            <div id="lista-pendentes"></div>
+        <!-- PENDENTES -->
+        <div class="admin-box" style="margin-top:15px;">
+            <h3><i class="fas fa-clock"></i> Alunos Pendentes</h3>
+            <div id="lista-pendentes">
+                <p style="color:#888;font-size:0.9rem;">Carregando...</p>
+            </div>
         </div>
 
         <button class="btn logout" onclick="sair()">
@@ -363,8 +401,8 @@
         </button>
     </div>
 
-    <!-- REGISTRO ADMIN -->
-    <div id="registro-admin-box" class="hidden">
+    <!-- ===== TELA REGISTRO ADMIN ===== -->
+    <div id="tela-registro-admin" class="tela-oculta">
         <div class="logo">
             <i class="fas fa-user-plus"></i>
             <h1>Registrar Aluno</h1>
@@ -374,17 +412,14 @@
             <i class="fas fa-user"></i>
             <input type="text" id="admin-reg-nome" placeholder="Nome Completo">
         </div>
-
         <div class="input-group">
             <i class="fas fa-phone"></i>
             <input type="tel" id="admin-reg-celular" placeholder="Número">
         </div>
-
         <div class="input-group">
             <i class="fas fa-lock"></i>
             <input type="password" id="admin-reg-pin" placeholder="PIN" maxlength="4">
         </div>
-
         <div class="input-group">
             <i class="fas fa-layer-group"></i>
             <select id="admin-reg-nivel">
@@ -396,35 +431,34 @@
         <button class="btn" onclick="registrarAdmin()">
             <i class="fas fa-check"></i> Registrar e Aprovar
         </button>
-        <button class="btn" onclick="voltarAdmin()" style="background: #6b7280; margin-top: 10px;">
+        <button class="btn" onclick="mostrarTela('tela-admin')" style="background: #6b7280; margin-top: 10px;">
             <i class="fas fa-arrow-left"></i> Voltar
         </button>
     </div>
 
-    <!-- GESTÃO DE QUESTÕES -->
-    <div id="questoes-box" class="hidden">
+    <!-- ===== TELA QUESTÕES ===== -->
+    <div id="tela-questoes" class="tela-oculta">
         <div class="logo">
             <i class="fas fa-edit"></i>
             <h1>Gerir Questões</h1>
         </div>
 
         <div class="admin-actions">
-            <button class="btn btn-exercicios" onclick="mostrarAddQuestao('exercicios')">
+            <button class="btn btn-exercicios" onclick="mostrarFormQuestao('exercicios')">
                 <i class="fas fa-book-open"></i> Exercícios
             </button>
-            <button class="btn btn-exame" onclick="mostrarAddQuestao('exame')">
+            <button class="btn btn-exame" onclick="mostrarFormQuestao('exame')">
                 <i class="fas fa-graduation-cap"></i> Exame
             </button>
         </div>
 
-        <div id="form-questao" class="hidden" style="margin-top: 15px;">
+        <div id="form-questao" class="tela-oculta" style="margin-top: 15px;">
             <input type="hidden" id="questao-tipo">
             
             <div class="input-group">
                 <i class="fas fa-question-circle"></i>
                 <input type="text" id="questao-texto" placeholder="Pergunta">
             </div>
-
             <div class="input-group">
                 <i class="fas fa-check"></i>
                 <input type="text" id="questao-op1" placeholder="Opção A">
@@ -441,7 +475,6 @@
                 <i class="fas fa-circle"></i>
                 <input type="text" id="questao-op4" placeholder="Opção D">
             </div>
-
             <div class="input-group">
                 <i class="fas fa-star"></i>
                 <select id="questao-correta">
@@ -459,10 +492,11 @@
 
         <div id="lista-questoes" style="margin-top: 15px;"></div>
 
-        <button class="btn" onclick="voltarAdmin()" style="background: #6b7280; margin-top: 15px;">
+        <button class="btn" onclick="mostrarTela('tela-admin')" style="background: #6b7280; margin-top: 15px;">
             <i class="fas fa-arrow-left"></i> Voltar
         </button>
     </div>
+
 </div>
 
 <script>
@@ -490,17 +524,29 @@ const liberados = [
 ];
 
 let usuarioAtual = null;
-let isAdmin = false;
+let modoAdmin = false;
 
 // ==================== CONTADOR ====================
-function atualizarContador() {
-    db.ref('usuarios').on('value', snap => {
-        const total = snap.numChildren();
-        const el = document.getElementById('total-alunos');
-        if(el) el.textContent = total;
-    });
+db.ref('usuarios').on('value', snap => {
+    const el = document.getElementById('total-alunos');
+    if(el) el.textContent = snap.numChildren();
+});
+
+// ==================== NAVEGAÇÃO ENTRE TELAS ====================
+function mostrarTela(idTela) {
+    // Esconde TODAS as telas
+    document.getElementById('tela-login').classList.add('tela-oculta');
+    document.getElementById('tela-aluno').classList.add('tela-oculta');
+    document.getElementById('tela-admin').classList.add('tela-oculta');
+    document.getElementById('tela-registro-admin').classList.add('tela-oculta');
+    document.getElementById('tela-questoes').classList.add('tela-oculta');
+    
+    // Mostra a solicitada
+    const tela = document.getElementById(idTela);
+    if(tela) {
+        tela.classList.remove('tela-oculta');
+    }
 }
-atualizarContador();
 
 // ==================== ENTRAR ====================
 function entrar() {
@@ -513,34 +559,52 @@ function entrar() {
         return;
     }
 
-    // ADMIN
-    if(cel === "860407269" && nome.toUpperCase() === "ANACLETO BEBANE" && pin === "6300") {
-        isAdmin = true;
+    // ========== VERIFICA ADMIN ==========
+    if(cel === "860407269" && nome.toUpperCase() === "ANACLETO BEBANE") {
+        // Verifica PIN do admin (0000 por padrão, mude aqui)
+        if(pin !== "0000") {
+            alert("PIN de administrador incorreto!");
+            return;
+        }
+        
+        modoAdmin = true;
         usuarioAtual = { nome: "ANACLETO BEBANE", celular: cel };
-        abrirApp("ANACLETO BEBANE");
+        
+        // MOSTRA TELA ADMIN
+        mostrarTela('tela-admin');
+        carregarPendentes();
         return;
     }
 
+    // ========== USUÁRIO NORMAL ==========
     const ref = db.ref('usuarios/' + cel);
-    ref.once('value').then(snapshot => {
+    ref.once('value', snapshot => {
         const dados = snapshot.val();
         
         if(dados) {
-            // Já existe
-            if(dados.pin === pin) {
-                if(dados.status === "aprovado") {
-                    usuarioAtual = dados;
-                    abrirApp(dados.nome);
-                } else {
-                    alert("Aguarde aprovação do administrador.");
-                }
-            } else {
+            // Já existe - verifica PIN
+            if(dados.pin !== pin) {
                 alert("PIN incorreto!");
+                return;
             }
+            
+            // Verifica status
+            if(dados.status !== "aprovado") {
+                alert("Aguarde aprovação do administrador Anacleto.");
+                return;
+            }
+            
+            // Entra como aluno
+            modoAdmin = false;
+            usuarioAtual = dados;
+            document.getElementById('nome-aluno').textContent = dados.nome;
+            mostrarTela('tela-aluno');
+            
         } else {
             // Novo registro
-            const status = liberados.includes(cel) ? "aprovado" : "pendente";
-            const nivel = liberados.includes(cel) ? 2 : 1;
+            const preAprovado = liberados.includes(cel);
+            const status = preAprovado ? "aprovado" : "pendente";
+            const nivel = preAprovado ? 2 : 1;
             
             ref.set({
                 nome: nome,
@@ -549,54 +613,43 @@ function entrar() {
                 nivel: nivel,
                 data: new Date().toISOString()
             }).then(() => {
-                if(status === "aprovado") {
+                if(preAprovado) {
+                    modoAdmin = false;
                     usuarioAtual = { nome: nome, celular: cel, status: status, nivel: nivel };
-                    abrirApp(nome);
-                    alert("Bem-vindo! Registo aprovado automaticamente.");
+                    document.getElementById('nome-aluno').textContent = nome;
+                    mostrarTela('tela-aluno');
+                    alert("Bem-vindo! Seu registo foi aprovado automaticamente.");
                 } else {
-                    alert("Registado com sucesso! Aguarde aprovação do Anacleto.");
+                    alert("Registado com sucesso! Aguarde aprovação do administrador Anacleto.");
+                    // Limpa campos
+                    document.getElementById('nome').value = '';
+                    document.getElementById('celular').value = '';
+                    document.getElementById('pin').value = '';
                 }
             });
         }
     });
 }
 
-// ==================== ABRIR APP ====================
-function abrirApp(nome) {
-    document.getElementById('auth-box').classList.add('hidden');
-    document.getElementById('app-box').classList.remove('hidden');
-    document.getElementById('user-nome').textContent = nome;
-    
-    if(isAdmin) {
-        document.getElementById('admin-panel').classList.remove('hidden');
-        carregarPendentes();
-    }
-}
-
 // ==================== ADMIN - PENDENTES ====================
 function carregarPendentes() {
     db.ref('usuarios').orderByChild('status').equalTo('pendente').on('value', snap => {
         const div = document.getElementById('lista-pendentes');
-        let html = '<h4 style="margin:15px 0 10px;color:#1a5f3c;">Alunos Pendentes</h4>';
         
         if(!snap.hasChildren()) {
-            html += '<p style="color:#888;font-size:0.9rem;">Nenhum aluno pendente.</p>';
+            div.innerHTML = '<p style="color:#888;font-size:0.9rem;">Nenhum aluno pendente.</p>';
+            return;
         }
         
+        let html = '';
         snap.forEach(item => {
             const u = item.val();
-            html += `
-                <div class="user-item">
-                    <div>
-                        <strong>${u.nome}</strong><br>
-                        <small>${item.key} - Nível ${u.nivel || 1}</small>
-                    </div>
-                    <div>
-                        <button onclick="aprovar('${item.key}')">Aprovar</button>
-                        <button class="rejeitar" onclick="rejeitar('${item.key}')">X</button>
-                    </div>
-                </div>
-            `;
+            html += '<div class="user-item">';
+            html += '<div><strong>' + u.nome + '</strong><br><small>' + item.key + '</small></div>';
+            html += '<div>';
+            html += '<button onclick="aprovar(\'' + item.key + '\')">Aprovar</button> ';
+            html += '<button class="rejeitar" onclick="rejeitar(\'' + item.key + '\')">X</button>';
+            html += '</div></div>';
         });
         
         div.innerHTML = html;
@@ -614,11 +667,6 @@ function rejeitar(celular) {
 }
 
 // ==================== ADMIN - REGISTRAR ALUNO ====================
-function mostrarRegistroAdmin() {
-    document.getElementById('app-box').classList.add('hidden');
-    document.getElementById('registro-admin-box').classList.remove('hidden');
-}
-
 function registrarAdmin() {
     const nome = document.getElementById('admin-reg-nome').value.trim();
     const cel = document.getElementById('admin-reg-celular').value.trim();
@@ -639,20 +687,19 @@ function registrarAdmin() {
         registradoPor: "admin"
     }).then(() => {
         alert("Aluno " + nome + " registrado e aprovado!");
-        voltarAdmin();
+        
+        // Limpa e volta
+        document.getElementById('admin-reg-nome').value = '';
+        document.getElementById('admin-reg-celular').value = '';
+        document.getElementById('admin-reg-pin').value = '';
+        mostrarTela('tela-admin');
     });
 }
 
 // ==================== ADMIN - QUESTÕES ====================
-function mostrarQuestoes() {
-    document.getElementById('app-box').classList.add('hidden');
-    document.getElementById('questoes-box').classList.remove('hidden');
-    listarQuestoes();
-}
-
-function mostrarAddQuestao(tipo) {
+function mostrarFormQuestao(tipo) {
     document.getElementById('questao-tipo').value = tipo;
-    document.getElementById('form-questao').classList.remove('hidden');
+    document.getElementById('form-questao').classList.remove('tela-oculta');
 }
 
 function salvarQuestao() {
@@ -678,43 +725,42 @@ function salvarQuestao() {
 
     db.ref(tipo + '/questoes').push(questao).then(() => {
         alert("Questão salva!");
+        
+        // Limpa
         document.getElementById('questao-texto').value = '';
         document.getElementById('questao-op1').value = '';
         document.getElementById('questao-op2').value = '';
         document.getElementById('questao-op3').value = '';
         document.getElementById('questao-op4').value = '';
+        
         listarQuestoes();
     });
 }
 
 function listarQuestoes() {
     const div = document.getElementById('lista-questoes');
+    div.innerHTML = '<p style="color:#888;">Carregando...</p>';
     
-    db.ref('exercicios/questoes').on('value', snap => {
+    db.ref('exercicios/questoes').once('value').then(snap => {
         let html = '<h4 style="margin:15px 0 10px;color:#4ecdc4;">Exercícios (' + snap.numChildren() + ')</h4>';
+        
         snap.forEach(item => {
-            const q = item.val();
-            html += `<div class="user-item"><div><strong>${q.pergunta}</strong></div></div>`;
+            html += '<div class="user-item"><div>' + item.val().pergunta + '</div></div>';
         });
         
-        db.ref('exame/questoes').on('value', snap2 => {
+        db.ref('exame/questoes').once('value').then(snap2 => {
             html += '<h4 style="margin:15px 0 10px;color:#d4af37;">Exame (' + snap2.numChildren() + ')</h4>';
+            
             snap2.forEach(item => {
-                const q = item.val();
-                html += `<div class="user-item"><div><strong>${q.pergunta}</strong></div></div>`;
+                html += '<div class="user-item"><div>' + item.val().pergunta + '</div></div>';
             });
+            
             div.innerHTML = html;
         });
     });
 }
 
-// ==================== NAVEGAÇÃO ====================
-function voltarAdmin() {
-    document.getElementById('registro-admin-box').classList.add('hidden');
-    document.getElementById('questoes-box').classList.add('hidden');
-    document.getElementById('app-box').classList.remove('hidden');
-}
-
+// ==================== LINKS ====================
 function abrirVideo() {
     alert("Vídeo Aulas - Em breve!");
 }
@@ -729,7 +775,7 @@ function abrirExame() {
 
 function sair() {
     usuarioAtual = null;
-    isAdmin = false;
+    modoAdmin = false;
     location.reload();
 }
 </script>
