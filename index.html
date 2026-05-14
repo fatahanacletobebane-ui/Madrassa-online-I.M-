@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Madrassa Online - Gestão de Pagamentos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --primary: #1a5f2a;
+            --primary-dark: #124a1f;
+            --primary-light: #2d8a42;
+            --accent: #e8b923;
+            --accent-dark: #c99a0a;
+            --danger: #dc3545;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f4f0 0%, #e8f0e8 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        .loading-screen.hidden { opacity: 0; pointer-events: none; }
+        .loading-logo {
+            width: 80px; height: 80px; background: var(--white); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px; animation: pulse 1.5s infinite;
+        }
+        .loading-logo i { font-size: 40px; color: var(--primary); }
+        @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+        .loading-text { color: var(--white); font-size: 18px; font-weight: 500; }
+        .loading-bar { width: 200px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; margin-top: 15px; overflow: hidden; }
+        .loading-bar-fill { height: 100%; width: 0%; background: var(--accent); border-radius: 2px; animation: loadProgress 2s ease forwards; }
+        @keyframes loadProgress { 0%{width:0%} 100%{width:100%} }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white); padding: 20px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow);
+        }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand-icon { width: 45px; height: 45px; background: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--dark); }
+        .brand-text h1 { font-size: 18px; font-weight: 700; line-height: 1.2; }
+        .brand-text span { font-size: 11px; opacity: 0.9; font-weight: 400; }
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .btn-icon { width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.15); color: var(--white); border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all 0.3s ease; }
+        .btn-icon:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
+        /* Main */
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        /* Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--white); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); transition: transform 0.3s ease; }
+        .stat-card:hover { transform: translateY(-3px); }
+        .stat-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .stat-label { font-size: 12px; color: var(--gray); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .stat-icon.green { background: rgba(40,167,69,0.1); color: var(--success); }
+        .stat-icon.red { background: rgba(220,53,69,0.1); color: var(--danger); }
+        .stat-icon.yellow { background: rgba(255,193,7,0.1); color: var(--accent-dark); }
+        .stat-icon.blue { background: rgba(23,162,184,0.1); color: var(--info); }
+        .stat-value { font-size: 28px; font-weight: 700; color: var(--dark); }
+        .stat-sub { font-size: 12px; color: var(--gray); margin-top: 4px; }
+
+        /* Search */
+        .search-section { background: var(--white); border-radius: var(--radius); padding: 15px 20px; margin-bottom: 20px; box-shadow: var(--shadow); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .search-box { flex: 1; min-width: 250px; position: relative; }
+        .search-box input { width: 100%; padding: 12px 15px 12px 45px; border: 2px solid var(--gray-light); border-radius: var(--radius-sm); font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; transition: border-color 0.3s ease; }
+        .search-box input:focus { border-color: var(--primary); }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 16px; }
+        .filter-group { display: flex; gap: 8px; }
+        .filter-btn { padding: 10px 18px; border: 2px solid var(--gray-light); background: var(--white); border-radius: var(--radius-sm); font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; color: var(--gray); }
+        .filter-btn.active { background: var(--primary); color: var(--white); border-color: var(--primary); }
+        .filter-btn:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
+
+        /* Legend */
+        .legend-bar { display: flex; gap: 20px; padding: 15px 20px; background: var(--white); border-radius: var(--radius); margin-bottom: 20px; box-shadow: var(--shadow); flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gray); }
+        .legend-dot { width: 16px; height: 16px; border-radius: 4px; }
+        .legend-dot.paid { background: var(--success); }
+        .legend-dot.unpaid { background: var(--danger); }
+        .legend-dot.scholarship { background: var(--info); }
+        .legend-dot.na { background: var(--gray-light); border: 1px solid var(--gray); }
+
+        /* Table */
+        .students-section { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+        .section-header { padding: 20px; border-bottom: 1px solid var(--gray-light); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .section-title { font-size: 18px; font-weight: 600; color: var(--dark); display: flex; align-items: center; gap: 10px; }
+        .section-title i { color: var(--primary); }
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-primary { background: rgba(26,95,42,0.1); color: var(--primary); }
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        thead { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: var(--white); }
+        th { padding: 15px 12px; text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+        td { padding: 14px 12px; border-bottom: 1px solid var(--gray-light); vertical-align: middle; }
+        tbody tr { transition: background 0.2s ease; }
+        tbody tr:hover { background: rgba(26,95,42,0.03); }
+        tbody tr:last-child td { border-bottom: none; }
+
+        .student-info { display: flex; align-items: center; gap: 12px; }
+        .student-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: var(--white); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; flex-shrink: 0; }
+        .student-details h4 { font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 2px; }
+        .student-details span { font-size: 12px; color: var(--gray); }
+        .contact-cell { display: flex; align-items: center; gap: 8px; color: var(--gray); font-size: 13px; }
+        .contact-cell i { color: var(--primary); font-size: 14px; }
+        .contact-cell a { color: var(--primary); text-decoration: none; font-weight: 500; }
+        .contact-cell a:hover { text-decoration: underline; }
+
+        .month-dot { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; cursor: pointer; transition: transform 0.2s ease; }
+        .month-dot:hover { transform: scale(1.15); }
+        .month-dot.paid { background: var(--success); color: var(--white); }
+        .month-dot.unpaid { background: var(--danger); color: var(--white); }
+        .month-dot.scholarship { background: var(--info); color: var(--white); }
+        .month-dot.na { background: var(--gray-light); color: var(--gray); }
+
+        .payment-status { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-paid { background: rgba(40,167,69,0.1); color: var(--success); }
+        .status-unpaid { background: rgba(220,53,69,0.1); color: var(--danger); }
+        .status-scholarship { background: rgba(23,162,184,0.1); color: var(--info); }
+        .status-na { background: rgba(108,117,125,0.1); color: var(--gray); }
+
+        .empty-state { text-align: center; padding: 60px 20px; }
+        .empty-state i { font-size: 60px; color: var(--gray-light); margin-bottom: 15px; }
+        .empty-state h3 { font-size: 18px; color: var(--gray); margin-bottom: 8px; }
+        .empty-state p { font-size: 14px; color: var(--gray); }
+
+        /* Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 20px; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal { background: var(--white); border-radius: var(--radius); width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; transform: scale(0.9) translateY(20px); transition: all 0.3s ease; box-shadow: var(--shadow-lg); }
+        .modal-overlay.active .modal { transform: scale(1) translateY(0); }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--gray-light); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h2 { font-size: 18px; font-weight: 600; }
+        .modal-close { width: 36px; height: 36px; border: none; background: var(--gray-light); border-radius: 10px; cursor: pointer; font-size: 16px; color: var(--gray); transition: all 0.3s ease; }
+        .modal-close:hover { background: var(--danger); color: var(--white); }
+        .modal-body { padding: 20px; }
+        .modal-footer { padding: 15px 20px; border-top: 1px solid var(--gray-light); display: flex; justify-content: flex-end; gap: 10px; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
+        .form-group input, .form-group select { width: 100%; padding: 12px 15px; border: 2px solid var(--gray-light); border-radius: var(--radius-sm); font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; transition: border-color 0.3s ease; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .months-grid-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .month-toggle { padding: 10px; border: 2px solid var(--gray-light); border-radius: var(--radius-sm); text-align: center; cursor: pointer; transition: all 0.3s ease; font-size: 12px; font-weight: 500; }
+        .month-toggle.paid { background: var(--success); color: var(--white); border-color: var(--success); }
+        .month-toggle.unpaid { background: var(--danger); color: var(--white); border-color: var(--danger); }
+        .month-toggle.scholarship { background: var(--info); color: var(--white); border-color: var(--info); }
+        .month-toggle.na { background: var(--gray-light); color: var(--gray); border-color: var(--gray-light); }
+
+        .btn { padding: 12px 24px; border: none; border-radius: var(--radius-sm); font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: var(--white); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(26,95,42,0.3); }
+        .btn-secondary { background: var(--gray-light); color: var(--gray); }
+        .btn-secondary:hover { background: #dee2e6; }
+        .btn-danger { background: var(--danger); color: var(--white); }
+        .btn-danger:hover { background: #c82333; }
+
+        /* Login */
+        .login-form { text-align: center; padding: 20px 0; }
+        .login-form i { font-size: 50px; color: var(--primary); margin-bottom: 15px; }
+        .login-form h3 { font-size: 20px; margin-bottom: 8px; }
+        .login-form p { color: var(--gray); font-size: 14px; margin-bottom: 25px; }
+        .pin-input { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        .pin-digit { width: 50px; height: 55px; border: 2px solid var(--gray-light); border-radius: var(--radius-sm); text-align: center; font-size: 24px; font-weight: 700; font-family: 'Poppins', sans-serif; outline: none; transition: all 0.3s ease; }
+        .pin-digit:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,95,42,0.1); }
+        .login-error { color: var(--danger); font-size: 13px; margin-top: 10px; display: none; }
+        .login-error.show { display: block; }
+
+        /* Toast */
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: var(--white); border-radius: var(--radius-sm); padding: 15px 20px; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 12px; min-width: 300px; transform: translateX(120%); transition: transform 0.4s ease; }
+        .toast.show { transform: translateX(0); }
+        .toast-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .toast-icon.success { background: rgba(40,167,69,0.1); color: var(--success); }
+        .toast-icon.error { background: rgba(220,53,69,0.1); color: var(--danger); }
+        .toast-icon.info { background: rgba(23,162,184,0.1); color: var(--info); }
+        .toast-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+        .toast-content p { font-size: 12px; color: var(--gray); }
+
+        /* FAB */
+        .fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: var(--white); border: none; font-size: 24px; cursor: pointer; box-shadow: 0 5px 20px rgba(26,95,42,0.4); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; z-index: 50; }
+        .fab:hover { transform: scale(1.1) rotate(90deg); }
+        .fab.hidden { display: none; }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeIn 0.4s ease forwards; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--gray-light); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .stat-value { font-size: 22px; }
+            .header-content { flex-wrap: wrap; gap: 10px; }
+            .brand-text h1 { font-size: 15px; }
+            .search-section { flex-direction: column; align-items: stretch; }
+            .search-box { min-width: 100%; }
+            .filter-group { justify-content: center; }
+            .form-row { grid-template-columns: 1fr; }
+            .months-grid-form { grid-template-columns: repeat(2, 1fr); }
+            th, td { padding: 10px 8px; font-size: 12px; }
+            .student-avatar { width: 32px; height: 32px; font-size: 12px; }
+            .month-dot { width: 24px; height: 24px; font-size: 9px; }
+            .modal { max-height: 95vh; }
+            .legend-bar { gap: 12px; }
+            .legend-item { font-size: 11px; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .month-grid { gap: 2px; }
+            .month-dot { width: 22px; height: 22px; font-size: 8px; }
+            .payment-status { padding: 4px 10px; font-size: 11px; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <!-- Loading -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo"><i class="fas fa-mosque"></i></div>
+        <div class="loading-text">Madrassa Online</div>
+        <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+    </div>
+
+    <!-- Toasts -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="brand">
+                <div class="brand-icon"><i class="fas fa-mosque"></i></div>
+                <div class="brand-text"><h1>Madrassa Online</h1><span>Islam Moçambique - Gestão de Pagamentos</span></div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-icon" onclick="showLoginModal()" id="adminBtn" title="Painel Administrativo"><i class="fas fa-lock"></i></button>
+                <button class="btn-icon" onclick="shareLink()" title="Partilhar Link"><i class="fas fa-share-alt"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main-container">
+        <!-- Stats -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-header"><span class="stat-label">Total Alunos</span><div class="stat-icon blue"><i class="fas fa-users"></i></div></div>
+                <div class="stat-value" id="totalStudents">0</div><div class="stat-sub">Alunos registados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header"><span class="stat-label">Pagamentos OK</span><div class="stat-icon green"><i class="fas fa-check-circle"></i></div></div>
+                <div class="stat-value" id="paidCount">0</div><div class="stat-sub">Alunos em dia</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header"><span class="stat-label">Em Dívida</span><div class="stat-icon red"><i class="fas fa-times-circle"></i></div></div>
+                <div class="stat-value" id="unpaidCount">0</div><div class="stat-sub">Alunos com pendências</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header"><span class="stat-label">Bolsas</span><div class="stat-icon yellow"><i class="fas fa-graduation-cap"></i></div></div>
+                <div class="stat-value" id="scholarshipCount">0</div><div class="stat-sub">Alunos com bolsa</div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend-bar">
+            <div class="legend-item"><div class="legend-dot paid"></div><span>Pago</span></div>
+            <div class="legend-item"><div class="legend-dot unpaid"></div><span>Não Pago</span></div>
+            <div class="legend-item"><div class="legend-dot scholarship"></div><span>Bolsa</span></div>
+            <div class="legend-item"><div class="legend-dot na"></div><span>Não Aplicável</span></div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-section">
+            <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Pesquisar aluno por nome..." oninput="filterStudents()"></div>
+            <div class="filter-group">
+                <button class="filter-btn active" onclick="setFilter('all')" id="filterAll">Todos</button>
+                <button class="filter-btn" onclick="setFilter('paid')" id="filterPaid">Pagos</button>
+                <button class="filter-btn" onclick="setFilter('unpaid')" id="filterUnpaid">Dívidas</button>
+                <button class="filter-btn" onclick="setFilter('scholarship')" id="filterScholarship">Bolsas</button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="students-section">
+            <div class="section-header">
+                <div class="section-title"><i class="fas fa-list"></i> Lista de Alunos</div>
+                <span class="badge badge-primary" id="studentCountBadge">0 alunos</span>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead><tr><th>Aluno</th><th>Inscrição</th><th>Contacto</th><th>Abr</th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Set</th><th>Estado</th></tr></thead>
+                    <tbody id="studentsTableBody"></tbody>
+                </table>
+            </div>
+            <div class="empty-state" id="emptyState" style="display:none;"><i class="fas fa-inbox"></i><h3>Nenhum aluno encontrado</h3><p>Adicione alunos no painel administrativo</p></div>
+        </div>
+    </main>
+
+    <!-- FAB -->
+    <button class="fab hidden" id="fabAdd" onclick="openAddModal()"><i class="fas fa-plus"></i></button>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal" style="max-width:400px;">
+            <div class="modal-header"><h2><i class="fas fa-shield-alt"></i> Acesso Administrativo</h2><button class="modal-close" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button></div>
+            <div class="modal-body">
+                <div class="login-form">
+                    <i class="fas fa-user-shield"></i><h3>Painel do Administrador</h3><p>Introduza o PIN de 4 dígitos para aceder</p>
+                    <div class="pin-input">
+                        <input type="password" class="pin-digit" maxlength="1" id="pin1" oninput="movePin(1)" onkeydown="movePinBack(1,event)">
+                        <input type="password" class="pin-digit" maxlength="1" id="pin2" oninput="movePin(2)" onkeydown="movePinBack(2,event)">
+                        <input type="password" class="pin-digit" maxlength="1" id="pin3" oninput="movePin(3)" onkeydown="movePinBack(3,event)">
+                        <input type="password" class="pin-digit" maxlength="1" id="pin4" oninput="checkPin()" onkeydown="movePinBack(4,event)">
+                    </div>
+                    <div class="login-error" id="loginError"><i class="fas fa-exclamation-circle"></i> PIN incorreto. Tente novamente.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Modal -->
+    <div class="modal-overlay" id="studentModal">
+        <div class="modal">
+            <div class="modal-header"><h2 id="modalTitle"><i class="fas fa-user-plus"></i> Novo Aluno</h2><button class="modal-close" onclick="closeModal('studentModal')"><i class="fas fa-times"></i></button></div>
+            <div class="modal-body">
+                <form id="studentForm">
+                    <input type="hidden" id="studentId">
+                    <div class="form-row">
+                        <div class="form-group"><label><i class="fas fa-user"></i> Nome Completo</label><input type="text" id="studentName" required placeholder="Ex: Abdullah Kharim"></div>
+                        <div class="form-group"><label><i class="fas fa-phone"></i> Contacto</label><input type="tel" id="studentPhone" required placeholder="Ex: 867947389"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label><i class="fas fa-calendar"></i> Data de Inscrição</label><input type="date" id="studentDate" required></div>
+                        <div class="form-group"><label><i class="fas fa-tag"></i> Tipo</label><select id="studentType"><option value="regular">Regular</option><option value="scholarship">Bolsa</option></select></div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-money-bill-wave"></i> Pagamentos Mensais (clique para alterar)</label>
+                        <div class="months-grid-form" id="monthsGridForm">
+                            <div class="month-toggle na" data-month="abril" onclick="toggleMonth(this)"><i class="fas fa-minus"></i><br>Abril</div>
+                            <div class="month-toggle na" data-month="maio" onclick="toggleMonth(this)"><i class="fas fa-minus"></i><br>Maio</div>
+                            <div class="month-toggle na" data-month="junho" onclick="toggleMonth(this)"><i class="fas fa-minus"></i><br>Junho</div>
+                            <div class="month-toggle na" data-month="julho" onclick="toggleMonth(this)"><i class="fas fa-minus"></i><br>Julho</div>
+                            <div class="month-toggle na" data-month="agosto" onclick="toggleMonth(this)"><i class="fas fa-minus"></i><br>Agosto</div>
+                            <div class="month-toggle na" data-month="setembro" onclick="toggleMonth(this)"><i class="fas fa-minus"></i><br>Setembro</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('studentModal')"><i class="fas fa-times"></i> Cancelar</button>
+                <button class="btn btn-danger" id="deleteBtn" onclick="deleteStudent()" style="display:none;"><i class="fas fa-trash"></i> Eliminar</button>
+                <button class="btn btn-primary" onclick="saveStudent()"><i class="fas fa-save"></i> Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyD2rNS7HSJyek3OCrRquudFgqQSWXZJYrY",
+            authDomain: "madrassa-online-b851c.firebaseapp.com",
+            databaseURL: "https://madrassa-online-b851c-default-rtdb.firebaseio.com",
+            projectId: "madrassa-online-b851c",
+            storageBucket: "madrassa-online-b851c.firebasestorage.app",
+            messagingSenderId: "360782668012",
+            appId: "1:360782668012:web:d501ef187911db632445c9",
+            measurementId: "G-RV9GD4S22T"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const studentsRef = database.ref('pagamentos/alunos');
+
+        // State
+        let students = [];
+        let currentFilter = 'all';
+        let isAdmin = false;
+        const ADMIN_PIN = '1234';
+        let editingId = null;
+
+        const monthOrder = ['abril','maio','junho','julho','agosto','setembro'];
+        const monthLabels = {abril:'Abr',maio:'Mai',junho:'Jun',julho:'Jul',agosto:'Ago',setembro:'Set'};
+
+        // Loading
+        setTimeout(() => document.getElementById('loadingScreen').classList.add('hidden'), 2000);
+
+        // Firebase Listener
+        studentsRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            students = data ? Object.entries(data).map(([id,s]) => ({id,...s})) : [];
+            renderStudents();
+            updateStats();
+        }, (err) => { console.error(err); showToast('Erro','Não foi possível carregar dados','error'); });
+
+        // Render
+        function renderStudents() {
+            const tbody = document.getElementById('studentsTableBody');
+            const emptyState = document.getElementById('emptyState');
+            const badge = document.getElementById('studentCountBadge');
+
+            let filtered = students;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm) filtered = filtered.filter(s => s.name.toLowerCase().includes(searchTerm));
+
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(s => {
+                    const months = s.months || {};
+                    const vals = Object.values(months);
+                    if (currentFilter === 'paid') return vals.some(v => v === 'paid');
+                    if (currentFilter === 'unpaid') return vals.some(v => v === 'unpaid');
+                    if (currentFilter === 'scholarship') return s.type === 'scholarship' || vals.some(v => v === 'scholarship');
+                    return true;
+                });
+            }
+
+            badge.textContent = filtered.length + ' aluno' + (filtered.length !== 1 ? 's' : '');
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            emptyState.style.display = 'none';
+
+            tbody.innerHTML = filtered.map((student, index) => {
+                const initials = student.name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+                const months = student.months || {};
+
+                let status = 'paid', statusText = 'Em Dia', statusIcon = 'fa-check-circle';
+                const vals = Object.values(months);
+                if (student.type === 'scholarship') { status = 'scholarship'; statusText = 'Bolsa'; statusIcon = 'fa-graduation-cap'; }
+                else if (vals.some(v => v === 'unpaid')) { status = 'unpaid'; statusText = 'Em Dívida'; statusIcon = 'fa-times-circle'; }
+                else if (!vals.some(v => v === 'paid')) { status = 'na'; statusText = 'Sem Dados'; statusIcon = 'fa-minus-circle'; }
+
+                const monthCells = monthOrder.map(m => {
+                    const val = months[m] || 'na';
+                    const labels = {paid:'✓',unpaid:'✗',scholarship:'B',na:'-'};
+                    return `<div class="month-dot ${val}" title="${m}: ${val==='paid'?'Pago':val==='unpaid'?'Não Pago':val==='scholarship'?'Bolsa':'N/A'}">${labels[val]}</div>`;
+                }).join('');
+
+                return `<tr class="animate-in" style="animation-delay:${index*0.05}s">
+                    <td><div class="student-info"><div class="student-avatar">${initials}</div><div class="student-details"><h4>${escapeHtml(student.name)}</h4><span>${student.type==='scholarship'?'Bolsa':'Regular'}</span></div></div></td>
+                    <td>${formatDate(student.date)}</td>
+                    <td><div class="contact-cell"><i class="fab fa-whatsapp"></i><a href="https://wa.me/258${student.phone}" target="_blank">${formatPhone(student.phone)}</a></div></td>
+                    ${monthOrder.map(m => `<td>${getMonthDot(months[m]||'na')}</td>`).join('')}
+                    <td><span class="payment-status status-${status}"><i class="fas ${statusIcon}"></i> ${statusText}</span></td>
+                </tr>`;
+            }).join('');
+        }
+
+        function getMonthDot(status) {
+            const labels = {paid:'✓',unpaid:'✗',scholarship:'B',na:'-'};
+            return `<div class="month-dot ${status}">${labels[status]}</div>`;
+        }
+
+        function updateStats() {
+            document.getElementById('totalStudents').textContent = students.length;
+            let paid = 0, unpaid = 0, scholarship = 0;
+            students.forEach(s => {
+                const months = s.months || {};
+                const vals = Object.values(months);
+                if (s.type === 'scholarship') scholarship++;
+                else if (vals.some(v => v === 'unpaid')) unpaid++;
+                else if (vals.some(v => v === 'paid')) paid++;
+            });
+            document.getElementById('paidCount').textContent = paid;
+            document.getElementById('unpaidCount').textContent = unpaid;
+            document.getElementById('scholarshipCount').textContent = scholarship;
+        }
+
+        // Filter & Search
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('filter' + filter.charAt(0).toUpperCase() + filter.slice(1)).classList.add('active');
+            renderStudents();
+        }
+        function filterStudents() { renderStudents(); }
+
+        // Admin
+        function showLoginModal() {
+            if (isAdmin) { logoutAdmin(); return; }
+            document.getElementById('loginModal').classList.add('active');
+            setTimeout(() => document.getElementById('pin1').focus(), 100);
+        }
+        function movePin(n) {
+            const val = document.getElementById('pin'+n).value;
+            if (val && n < 4) document.getElementById('pin'+(n+1)).focus();
+        }
+        function movePinBack(n, e) {
+            if (e.key === 'Backspace' && !e.target.value && n > 1) document.getElementById('pin'+(n-1)).focus();
+        }
+        function checkPin() {
+            const pin = ['pin1','pin2','pin3','pin4'].map(id => document.getElementById(id).value).join('');
+            if (pin.length === 4) {
+                if (pin === ADMIN_PIN) {
+                    isAdmin = true;
+                    closeModal('loginModal');
+                    document.getElementById('adminBtn').innerHTML = '<i class="fas fa-unlock"></i>';
+                    document.getElementById('adminBtn').title = 'Sair (Admin)';
+                    document.getElementById('fabAdd').classList.remove('hidden');
+                    showToast('Bem-vindo','Acesso administrativo concedido','success');
+                    ['pin1','pin2','pin3','pin4'].forEach(id => document.getElementById(id).value = '');
+                } else {
+                    document.getElementById('loginError').classList.add('show');
+                    ['pin1','pin2','pin3','pin4'].forEach(id => document.getElementById(id).value = '');
+                    document.getElementById('pin1').focus();
+                    setTimeout(() => document.getElementById('loginError').classList.remove('show'), 3000);
+                }
+            }
+        }
+        function logoutAdmin() {
+            isAdmin = false;
+            document.getElementById('adminBtn').innerHTML = '<i class="fas fa-lock"></i>';
+            document.getElementById('adminBtn').title = 'Painel Administrativo';
+            document.getElementById('fabAdd').classList.add('hidden');
+            showToast('Sessão terminada','Saiu do modo administrativo','info');
+        }
+
+        // CRUD
+        function openAddModal() {
+            if (!isAdmin) { showToast('Acesso negado','Faça login como administrador','error'); return; }
+            editingId = null;
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus"></i> Novo Aluno';
+            document.getElementById('studentForm').reset();
+            document.getElementById('studentDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('deleteBtn').style.display = 'none';
+            resetMonthToggles();
+            document.getElementById('studentModal').classList.add('active');
+        }
+
+        function resetMonthToggles() {
+            document.querySelectorAll('.month-toggle').forEach(el => {
+                el.className = 'month-toggle na';
+                updateMonthToggleIcon(el, 'na');
+            });
+        }
+
+        function toggleMonth(el) {
+            const states = ['na','paid','unpaid','scholarship'];
+            const current = el.classList.contains('paid') ? 'paid' : el.classList.contains('unpaid') ? 'unpaid' : el.classList.contains('scholarship') ? 'scholarship' : 'na';
+            const next = states[(states.indexOf(current) + 1) % states.length];
+            el.className = 'month-toggle ' + next;
+            updateMonthToggleIcon(el, next);
+        }
+
+        function updateMonthToggleIcon(el, status) {
+            const icons = {paid:'fa-check',unpaid:'fa-times',scholarship:'fa-graduation-cap',na:'fa-minus'};
+            const monthNames = {abril:'Abril',maio:'Maio',junho:'Junho',julho:'Julho',agosto:'Agosto',setembro:'Setembro'};
+            el.innerHTML = '<i class="fas ' + icons[status] + '"></i><br>' + monthNames[el.dataset.month];
+        }
+
+        function saveStudent() {
+            const name = document.getElementById('studentName').value.trim();
+            const phone = document.getElementById('studentPhone').value.trim();
+            const date = document.getElementById('studentDate').value;
+            const type = document.getElementById('studentType').value;
+
+            if (!name || !phone || !date) { showToast('Erro','Preencha todos os campos obrigatórios','error'); return; }
+
+            const months = {};
+            document.querySelectorAll('.month-toggle').forEach(el => {
+                const month = el.dataset.month;
+                const status = el.classList.contains('paid') ? 'paid' : el.classList.contains('unpaid') ? 'unpaid' : el.classList.contains('scholarship') ? 'scholarship' : 'na';
+                if (status !== 'na') months[month] = status;
+            });
+
+            const studentData = {name,phone,date,type,months};
+
+            if (editingId) {
+                studentsRef.child(editingId).update(studentData)
+                    .then(() => { showToast('Sucesso','Aluno actualizado','success'); closeModal('studentModal'); })
+                    .catch(err => showToast('Erro',err.message,'error'));
+            } else {
+                studentsRef.push(studentData)
+                    .then(() => { showToast('Sucesso','Aluno adicionado','success'); closeModal('studentModal'); })
+                    .catch(err => showToast('Erro',err.message,'error'));
+            }
+        }
+
+        function deleteStudent() {
+            if (!editingId) return;
+            if (!confirm('Tem certeza que deseja eliminar este aluno?')) return;
+            studentsRef.child(editingId).remove()
+                .then(() => { showToast('Sucesso','Aluno eliminado','success'); closeModal('studentModal'); })
+                .catch(err => showToast('Erro',err.message,'error'));
+        }
+
+        // Modal Utils
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(modal.id); });
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(m => closeModal(m.id));
+        });
+
+        // Toast
+        function showToast(title, message, type) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            const icon = type === 'success' ? 'fa-check' : type === 'error' ? 'fa-exclamation' : 'fa-info';
+            toast.innerHTML = '<div class="toast-icon ' + type + '"><i class="fas ' + icon + '"></i></div><div class="toast-content"><h4>' + title + '</h4><p>' + message + '</p></div>';
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3000);
+        }
+
+        // Utils
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        function formatDate(dateStr) { if (!dateStr) return '-'; const [y,m,d] = dateStr.split('-'); return d+'/'+m+'/'+y; }
+        function formatPhone(phone) { if (!phone) return '-'; const p = phone.toString().replace(/\D/g,''); if (p.length === 9) return p.slice(0,3)+' '+p.slice(3,6)+' '+p.slice(6); return phone; }
+        function shareLink() {
+            const url = window.location.href;
+            if (navigator.share) { navigator.share({title:'Madrassa Online - Pagamentos',url}); }
+            else { navigator.clipboard.writeText(url).then(() => showToast('Link copiado','Copiado para a área de transferência','success')); }
+        }
+    </script>
+</body>
+</html>
